@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="HTML元素的位置属性offset-*获取偏移量，参照物是“offsetParent”：  offsetParent：最近的“定位”（position属性不等于static）的祖先元素（MDN的描述是“closest positioned containing element”）。x` offsetTop／offsetLeft：相对于offsetParent的top／left的距离（像素数）。 o">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/2018/05/06/TODO_HTML元素的位置属性/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="HTML元素的位置属性offset-*获取偏移量，参照物是“offsetParent”：  offsetParent：最近的“定位”（position属性不等于static）的祖先元素（MDN的描述是“closest positioned containing element”）。x` offsetTop／offsetLeft：相对于offsetParent的top／left的距离（像素数）。 o">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/var/folders/xy/2t85m_ts1rq990rd9n_3b_z80000gp/T/abnerworks.Typora/image-20180419165236440.png">
+<meta property="og:updated_time" content="2018-05-05T17:03:36.629Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+<meta name="twitter:description" content="HTML元素的位置属性offset-*获取偏移量，参照物是“offsetParent”：  offsetParent：最近的“定位”（position属性不等于static）的祖先元素（MDN的描述是“closest positioned containing element”）。x` offsetTop／offsetLeft：相对于offsetParent的top／left的距离（像素数）。 o">
+<meta name="twitter:image" content="http://yoursite.com/var/folders/xy/2t85m_ts1rq990rd9n_3b_z80000gp/T/abnerworks.Typora/image-20180419165236440.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-TODO_HTML元素的位置属性" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/05/06/TODO_HTML元素的位置属性/" class="article-date">
+  <time datetime="2018-05-05T17:03:36.629Z" itemprop="datePublished">2018-05-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="HTML元素的位置属性"><a href="#HTML元素的位置属性" class="headerlink" title="HTML元素的位置属性"></a>HTML元素的位置属性</h1><h2 id="offset"><a href="#offset" class="headerlink" title="offset-*"></a>offset-*</h2><p>获取偏移量，参照物是“offsetParent”：</p>
+<ul>
+<li>offsetParent：最近的“定位”（position属性不等于static）的祖先元素（MDN的描述是“closest positioned containing element”）。x`</li>
+<li>offsetTop／offsetLeft：相对于offsetParent的top／left的距离（像素数）。</li>
+<li>offsetWidth／offsetHeight：</li>
+</ul>
+<p>该属性有以下特点：</p>
+<ol>
+<li>偏移量是“静态”的，是初始状态下的元素间的相对距离，之后也不会随滚动而变化。</li>
+<li>根据offsetParent的定义可知：对于某个元素，当它的position=absolute时，offsetTop／offsetLeft与CSS中的top／left相对应。</li>
+</ol>
+<h2 id="scroll"><a href="#scroll" class="headerlink" title="scroll-*"></a>scroll-*</h2><p>获取滚动量。HTML中产生滚动的条件是：</p>
+<ol>
+<li>子元素的高度／宽度大于父元素；</li>
+<li>父元素的overflow属性为scroll。</li>
+</ol>
+<p>比如说一个垂直滚动，就可以看作是：高度有限的父元素（局部viewport）在一个很高的子元素中上下移动，所以scrollTop表示的是父元素的top相对于子元素的top的距离，所以我们获取竖直滚动距离时，会这样做：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> scrollTop = child.scrollTop; <span class="comment">// 错</span></span><br><span class="line"><span class="keyword">var</span> scrollTop = parent.scrollTop; <span class="comment">// 对</span></span><br></pre></td></tr></table></figure>
+<p>它也有类似的集合：</p>
+<ul>
+<li>scrollTop／scrollLeft：父元素的top相对于子元素的top的距离。</li>
+<li>scrollWidth／scrollHeight：padding盒子的度，包括在overflow=[scroll|hidden]下折叠的部分，不包括滚动条。</li>
+</ul>
+<p>BTW，onscroll函数也是绑定在parent上，而不是child上。</p>
+<h2 id="element-getBoundingClientRect"><a href="#element-getBoundingClientRect" class="headerlink" title="element.getBoundingClientRect()"></a>element.getBoundingClientRect()</h2><p>获取一个对象，表示当前元素相对于viewport的位置信息。该对象含有top、left等属性。与scroll-*类似，都是在滚动的过程中不断变化着的。常见的用途是在“图片懒加载”（lazyload）中判断元素是否可见。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> rect = element.getBoundingClientRect();</span><br><span class="line"><span class="built_in">console</span>.log(rect);</span><br></pre></td></tr></table></figure>
+<p>随便找个结果：</p>
+<p><img src="/var/folders/xy/2t85m_ts1rq990rd9n_3b_z80000gp/T/abnerworks.Typora/image-20180419165236440.png" alt="image-20180419165236440"></p>
+<h1 id="client"><a href="#client" class="headerlink" title="client-*"></a>client-*</h1>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/05/06/TODO_HTML元素的位置属性/" data-id="cjgtn5bl500009o122n6senvg" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/05/06/Vue响应式/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/05/05/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hello World</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/05/06/TODO_Throttle与Debounce/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/05/06/JS快速创建数组/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/05/06/TODO_NPM全局路径/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/05/06/Currying与Uncurrying/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/05/06/清除浮动/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="浏览器本地存储​    Web本地存储有三种方式，分别是：cookie、sessionStorage、localStorage。 cookie​    cookie存在于浏览器端，但它对应于服务端的某个session，主要作用是给无状态的（stateless）HTTP通信维护一个特定用户状态，使服务端根据其中的KV对来“记住”某个用户。它具有以下特点：  存储内容：存储的是KV对，每个KV对可以指">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/2018/05/06/浏览器本地存储/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="浏览器本地存储​    Web本地存储有三种方式，分别是：cookie、sessionStorage、localStorage。 cookie​    cookie存在于浏览器端，但它对应于服务端的某个session，主要作用是给无状态的（stateless）HTTP通信维护一个特定用户状态，使服务端根据其中的KV对来“记住”某个用户。它具有以下特点：  存储内容：存储的是KV对，每个KV对可以指">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-05-05T17:03:36.630Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+<meta name="twitter:description" content="浏览器本地存储​    Web本地存储有三种方式，分别是：cookie、sessionStorage、localStorage。 cookie​    cookie存在于浏览器端，但它对应于服务端的某个session，主要作用是给无状态的（stateless）HTTP通信维护一个特定用户状态，使服务端根据其中的KV对来“记住”某个用户。它具有以下特点：  存储内容：存储的是KV对，每个KV对可以指">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-浏览器本地存储" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/05/06/浏览器本地存储/" class="article-date">
+  <time datetime="2018-05-05T17:03:36.629Z" itemprop="datePublished">2018-05-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="浏览器本地存储"><a href="#浏览器本地存储" class="headerlink" title="浏览器本地存储"></a>浏览器本地存储</h1><p>​    Web本地存储有三种方式，分别是：cookie、sessionStorage、localStorage。</p>
+<h2 id="cookie"><a href="#cookie" class="headerlink" title="cookie"></a>cookie</h2><p>​    cookie存在于浏览器端，但它对应于服务端的某个session，主要作用是给无状态的（stateless）HTTP通信维护一个特定用户状态，使服务端根据其中的KV对来“记住”某个用户。它具有以下特点：</p>
+<ul>
+<li>存储内容：存储的是KV对，每个KV对可以指定：key、value、expires、domain、path、secure、httponly等属性：<ul>
+<li>key、value：指定KV对的内容，是必填项。比如：”name=Bob”。</li>
+<li>expires：指定cookie过期的时间点，遵循格式【Wdy, DD Mon yyyy HH:MM:SS GMT】。比如：”expires=Sat, 30 Mar 2017 21:15:20”。</li>
+<li>domain：指定当前cookie发送到哪个域中，等请求那个域时进行尾部比较，如果满足就可以带上；可以用来扩充cookie应用的域。默认值是当前域名。另外，cookie原本只能在协议、域名、端口都相同即“同源”的情况下才能共享，但二级域名相同的站点，可以通过这种方式，实现cookie的共享。比如：浏览器向”a.some.com”发送请求后，如果（主动／被动）设置了某个KV对的domain为“.some.com”，那么浏览器随后向“b.some.com”请求时，将会允许带上该KV对。</li>
+<li>path：与domain类似，指定发送cookie需要满足的路径，但只有domain通过了验证，才会继续验证path。比如“path=/user”，只有在请求”${domain}/user”这样的站点时才发送当前cookie。</li>
+<li>secure：指定当前KV对只在SSL/HTTPS的请求中才会发送。这是一个标记/布尔值，不需要值：”name=Bob; secure”。然而，这个标志并不能给cookie带来安全性，CH/FF 52开始不支持它了。</li>
+<li>httponly：指定当前KV对不能通过JS API即document.cookie访问/修改，而只能通过服务器修改，浏览器端只能单纯地传输。主要用以防止XSS（cross-site scripting）。</li>
+</ul>
+</li>
+<li>存储数量：有“个数”上的限制，而个数取决于每种浏览器的不同实现。</li>
+<li>存在位置：作为header之一，存在于HTTP请求报文中。服务端通过在（第一次？）返回报文中设置Set-Cookie这个header，来给浏览器设置cookie，以后的每一次请求，请求报文都会携带上Cookie这个header。</li>
+<li>作用时长：通过给KV对指定max-age、expires等属性。如果不指定，默认是“会话级”（cookie的一个会话存在于一个浏览器进程）。</li>
+</ul>
+<h2 id="localStorage-sessionStorage"><a href="#localStorage-sessionStorage" class="headerlink" title="localStorage/sessionStorage"></a>localStorage/sessionStorage</h2><p>​    Storage存在于浏览器端，与服务器没有直接联系。作为HTML5 API，它提供严谨的方式来操作本地数据。主要作用是在客户端本地存储大量数据，它具有以下特点：</p>
+<ul>
+<li>存储内容：存储的也是KV对。这里要注意，setItem的第二个参数、以及getItem的返回值，都应该是一个字符串。所以，有时候需要配合JSON.stringify、JSON.parse这两个函数使用，因为通常而言，object需要序列化后才能放进Storage，而从Storage取出的string需要反序列化成对象以进一步使用。</li>
+<li>存储数量：有“空间”上的限制，而这个空间多大也是取决于每种浏览器的不同实现。</li>
+<li>存在位置：浏览器。</li>
+<li>作用时长：<ul>
+<li>localStorage是永久有效，除非用户使用浏览器工具、或写JS脚本删除。</li>
+<li>sessionStorage是”会话级“存储，注意这里的会话级，在时间上比cookie的会话级还要短，一般它不能跨标签（除非使用target=_blank跳转）。</li>
+</ul>
+</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies" target="_blank" rel="noopener">HTTP cookies - HTTP | MDN</a><br><a href="https://zhuanlan.zhihu.com/p/31656937?utm_medium=social&amp;utm_source=ZHShareTargetIDMore" target="_blank" rel="noopener">关于客户端存储的前端面试题总结</a><br><a href="http://bubkoo.com/2014/04/21/http-cookies-explained/" target="_blank" rel="noopener">HTTP cookies 详解 | bubkoo</a><br><a href="https://zhuanlan.zhihu.com/p/31404516" target="_blank" rel="noopener">同样是客户端会话级存储，sessionStorage和session cookie有什么？</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/05/06/浏览器本地存储/" data-id="cjgtn5blq00089o12rt7q33a6" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/05/06/Vue_methods_computed_watch/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/05/06/Vue响应式/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/05/06/TODO_Throttle与Debounce/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/05/06/JS快速创建数组/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/05/06/TODO_NPM全局路径/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/05/06/Currying与Uncurrying/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/05/06/清除浮动/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

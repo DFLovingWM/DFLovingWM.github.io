@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Vue：methods|computed|watch的比较 methods：每次重渲染必定会执行至少一遍。  12345678910new Vue(&amp;#123;    methods: &amp;#123;        activeValue() &amp;#123;            // 每次re-render都会执行        &amp;#125;    &amp;#125;&amp;#125;)// 使用的时候就要调用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/2018/05/06/Vue_methods_computed_watch/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Vue：methods|computed|watch的比较 methods：每次重渲染必定会执行至少一遍。  12345678910new Vue(&amp;#123;    methods: &amp;#123;        activeValue() &amp;#123;            // 每次re-render都会执行        &amp;#125;    &amp;#125;&amp;#125;)// 使用的时候就要调用">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-05-05T17:03:36.629Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+<meta name="twitter:description" content="Vue：methods|computed|watch的比较 methods：每次重渲染必定会执行至少一遍。  12345678910new Vue(&amp;#123;    methods: &amp;#123;        activeValue() &amp;#123;            // 每次re-render都会执行        &amp;#125;    &amp;#125;&amp;#125;)// 使用的时候就要调用">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Vue_methods_computed_watch" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/05/06/Vue_methods_computed_watch/" class="article-date">
+  <time datetime="2018-05-05T17:03:36.629Z" itemprop="datePublished">2018-05-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Vue：methods-computed-watch的比较"><a href="#Vue：methods-computed-watch的比较" class="headerlink" title="Vue：methods|computed|watch的比较"></a>Vue：methods|computed|watch的比较</h1><ul>
+<li>methods：每次重渲染必定会执行至少一遍。</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    methods: &#123;</span><br><span class="line">        activeValue() &#123;</span><br><span class="line">            <span class="comment">// 每次re-render都会执行</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用的时候就要调用一下</span></span><br><span class="line">&lt;div&gt;&#123;&#123; activeValue() &#125;&#125;&lt;<span class="regexp">/div&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>computed：有缓存，当属性的计算比较耗时的时候，就体现出比methods更多的优势。而与watch相比，有“声明式”的优点。<ul>
+<li>get：作用响应某些data的改动。回调时机与一般的get不同：只有当监听的数据有修改，并且数据的newValue不等于oldValue时，该get函数才会执行；同时把结果缓存，之后每次读取当前变量，都返回这个缓存值。<ul>
+<li>set(newVal)：与get相对。回调时机与一般的set一样，只要给当前变量赋值就会回调该set函数（即使赋同样的值，也会回调）。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    computed: &#123;</span><br><span class="line">        <span class="string">'activeValue'</span>: &#123;</span><br><span class="line">            get() &#123;</span><br><span class="line">                </span><br><span class="line">            &#125;,</span><br><span class="line">            set(newValue) &#123;</span><br><span class="line">                </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>watch：可以看作是computed的“AngularJS版本”（命令式）。与computed的get的作用一样，并且回调时机也一样：只有监听的数据变化并且newValue!==oldValue时。不同的是，它可以取到oldValue：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    watch: &#123;</span><br><span class="line">        <span class="string">'activeValue'</span>: <span class="function"><span class="keyword">function</span> (<span class="params">newValue, oldValue</span>) </span>&#123;</span><br><span class="line">            <span class="comment">// newValue、oldValue分别是新值、旧值</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/05/06/Vue_methods_computed_watch/" data-id="cjgtn5blm00069o125b3uippw" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/05/06/组件通信/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/05/06/浏览器本地存储/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/05/06/TODO_Throttle与Debounce/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/05/06/JS快速创建数组/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/05/06/TODO_NPM全局路径/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/05/06/Currying与Uncurrying/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/05/06/清除浮动/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
