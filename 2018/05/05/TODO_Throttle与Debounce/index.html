@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="性能优化,闭包," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言​    DOM API提供了许多基于事件监听的回调函数，我们可以赋值（或追加）自己的操作，比如点击事件： 1234567891011const app = document.getElementById(&apos;app&apos;);// DOM0 APIapp.onclick = function (event) &amp;#123;    // 用户交互逻辑&amp;#125;// DOM2 APIapp.addEve">
+<meta name="keywords" content="性能优化,闭包">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Throttle（节流）与Debounce（防抖动）">
+<meta property="og:url" content="http://yoursite.com/2018/05/05/TODO_Throttle与Debounce/index.html">
+<meta property="og:site_name" content="肥凯的博客">
+<meta property="og:description" content="前言​    DOM API提供了许多基于事件监听的回调函数，我们可以赋值（或追加）自己的操作，比如点击事件： 1234567891011const app = document.getElementById(&apos;app&apos;);// DOM0 APIapp.onclick = function (event) &amp;#123;    // 用户交互逻辑&amp;#125;// DOM2 APIapp.addEve">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-05-06T07:32:37.248Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Throttle（节流）与Debounce（防抖动）">
+<meta name="twitter:description" content="前言​    DOM API提供了许多基于事件监听的回调函数，我们可以赋值（或追加）自己的操作，比如点击事件： 1234567891011const app = document.getElementById(&apos;app&apos;);// DOM0 APIapp.onclick = function (event) &amp;#123;    // 用户交互逻辑&amp;#125;// DOM2 APIapp.addEve">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/05/TODO_Throttle与Debounce/"/>
+
+
+
+
+
+  <title>Throttle（节流）与Debounce（防抖动） | 肥凯的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">肥凯的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">写技术总结、心得的地方</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/TODO_Throttle与Debounce/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="肥凯的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Throttle（节流）与Debounce（防抖动）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-05T00:00:00+08:00">
+                2018-05-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>​    DOM API提供了许多基于事件监听的回调函数，我们可以赋值（或追加）自己的操作，比如点击事件：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> app = <span class="built_in">document</span>.getElementById(<span class="string">'app'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// DOM0 API</span></span><br><span class="line">app.onclick = <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 用户交互逻辑</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// DOM2 API</span></span><br><span class="line">app.addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 用户交互逻辑</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>​    像click这样的事件，它设计成用户每点击一次，就回调一次。而另外有些事件是频繁回调的，比如：onresize（窗口大小改变事件）、onscroll（滚动事件）、ontouchmove（移动端触摸移动事件）等：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">'resize'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'resize'</span>);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>​    这样，用户对浏览器窗口进行放缩的时候，控制台就会不断打印“resize”；可能缩放一点点，就会打印出几十个，说明resize事件回调的频率还是很高的。如果我们这里不是简单地打印字符串，而是一些耗时操作，那么JS主线程就会出现类似于“阻塞”的现象，表现为用户界面卡顿，不能很快响应之后的操作了。</p>
+<p>​    用户是无法对DOM事件回调的频率进行更改的，所以我们只能限制用户交互部分的逻辑发生的频率。而这时候，节流、防抖动就可以派上用场了。它们一般来说会（利用闭包）设计成高阶函数，返回一个新的用户函数，并且在内部限制了频率；至于怎么限制，则有很多种实现方式。总体上，我们期望的样子是（拿throttle来说）：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> myCallback = <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'resize'</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">myCallback = throttle(myCallback, <span class="number">150</span>); <span class="comment">// 参数‘150’是限制‘myCallback’的触发间隔</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">'resize'</span>, myCallback);</span><br></pre></td></tr></table></figure>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="Debounce：防抖动"><a href="#Debounce：防抖动" class="headerlink" title="Debounce：防抖动"></a>Debounce：防抖动</h3><p>​    防抖动最显著的特点是，把某个时间段内的多次操作合为一次回调，并且取的是最后的那一次操作。而且：</p>
+<ul>
+<li>当频繁操作时，一次都不会回调；<ul>
+<li>当结束频繁操作时，会在${wait}时间后发生一次回调。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Function</span>.prototype.debounce = <span class="function"><span class="keyword">function</span> (<span class="params">wait = <span class="number">100</span></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">const</span> func = <span class="keyword">this</span>;</span><br><span class="line">	<span class="keyword">let</span> timerId = <span class="literal">null</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (timerId) &#123;</span><br><span class="line">			<span class="comment">// 如果已经存在一个定时器，就先取消掉，稍后重新设一个</span></span><br><span class="line">			clearTimeout(timerId);</span><br><span class="line">		&#125;</span><br><span class="line">		timerId = setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">			func.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">		&#125;, wait);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Throttle：节流"><a href="#Throttle：节流" class="headerlink" title="Throttle：节流"></a>Throttle：节流</h3><p>​    节流的特点是，控制前后两次操作的时间间隔。并且：</p>
+<ul>
+<li>当频繁操作时，每 ${wait}时间发生一次回调；</li>
+<li>当结束频繁操作时，也是一样，看是否满足${wait}间隔。</li>
+</ul>
+<p>实现方式（1）：记录上一次回调的时间戳，然后每次想要回调时，检查是否满足{wait}时间间隔：如果大于${wait}，就触发，并更新时间戳；否则不触发。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 记录每次触发的时间戳</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="built_in">Function</span>.prototype.throttle = <span class="function"><span class="keyword">function</span> (<span class="params">wait = <span class="number">100</span></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">const</span> func = <span class="keyword">this</span>;</span><br><span class="line">	<span class="keyword">let</span> lastTriggerAt = <span class="number">0</span>; <span class="comment">// 上一次进行用户交互的时间点。初始值为0是为了第一次一定可以执行</span></span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">let</span> currentTime = <span class="built_in">Date</span>.now();</span><br><span class="line">		<span class="keyword">if</span> (currentTime - lastTriggerAt &gt; wait) &#123;</span><br><span class="line">			<span class="comment">// 满足最小间隔，进行</span></span><br><span class="line">			func.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">			<span class="comment">// 更新时间点</span></span><br><span class="line">			lastTriggerAt = currentTime;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>实现方式（2）：每次触发都设一个定时器（延后回调），当想要再次触发时检查是否已经存在有定时器：如果存在，就忽略；否则就设定一个定时器。不过同时延后回调也是一个小小的缺点。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 设定每次触发的定时器</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="built_in">Function</span>.prototype.throttle = <span class="function"><span class="keyword">function</span> (<span class="params">wait = <span class="number">100</span></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">const</span> func = <span class="keyword">this</span>;</span><br><span class="line">	<span class="keyword">let</span> timerId = <span class="literal">null</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (timerId) &#123; <span class="comment">// 如果已经有定时器在进行，就不管这次操作</span></span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 延时执行</span></span><br><span class="line">		timerId = setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">			<span class="comment">// 执行</span></span><br><span class="line">			func.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">			<span class="comment">// 清空定时器</span></span><br><span class="line">			clearTimeout(timerId);</span><br><span class="line">			timerId = <span class="literal">null</span>;</span><br><span class="line">		&#125;, wait);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://css-tricks.com/debouncing-throttling-explained-examples/" target="_blank" rel="noopener">Debouncing and Throttling Explained Through Examples | CSS-Tricks</a></p>
+<p>曾探《JavaScript设计模式与开发实践》：Chapter3.2.4 | 高阶函数的其他应用 | 3.函数节流</p>
+<p><a href="https://keelii.github.io/2016/06/11/javascript-throttle/?hmsr=toutiao.io&amp;utm_medium=toutiao.io&amp;utm_source=toutiao.io" target="_blank" rel="noopener">JavaScript 节流函数 Throttle 详解</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/性能优化/" rel="tag"># 性能优化</a>
+          
+            <a href="/tags/闭包/" rel="tag"># 闭包</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/05/Vue_methods_computed_watch/" rel="next" title="Vue：methods|computed|watch的比较">
+                <i class="fa fa-chevron-left"></i> Vue：methods|computed|watch的比较
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/05/TODO_NPM全局路径/" rel="prev" title="NPM全局路径">
+                NPM全局路径 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">JK</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现"><span class="nav-number">2.</span> <span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Debounce：防抖动"><span class="nav-number">2.1.</span> <span class="nav-text">Debounce：防抖动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Throttle：节流"><span class="nav-number">2.2.</span> <span class="nav-text">Throttle：节流</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">JK</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
