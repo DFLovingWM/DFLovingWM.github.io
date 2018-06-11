@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="在Vue构建的单页面应用（SPA）中，路由模块一般使用vue-router。vue-router不保存被切换组件的状态，它进行push或者replace时，旧组件会被销毁，而新组件会被新建，走一遍完整的生命周期。 但有时候，我们有一些需求，比如跳转到详情页面时，需要保持列表页的滚动条的深度，等返回的时候依然在这个位置，这样可以提高用户体验。在Vue中，我们可以使用keep-alive组件来解决这个">
+<meta name="description" content="页面缓存在Vue构建的单页面应用（SPA）中，路由模块一般使用vue-router。vue-router不保存被切换组件的状态，它进行push或者replace时，旧组件会被销毁，而新组件会被新建，走一遍完整的生命周期。 但有时候，我们有一些需求，比如跳转到详情页面时，需要保持列表页的滚动条的深度，等返回的时候依然在这个位置，这样可以提高用户体验。在Vue中，对于这种“页面缓存”的需求，我们可以使">
 <meta name="keywords" content="keep-alive,Vue,vue-router">
 <meta property="og:type" content="article">
 <meta property="og:title" content="keep-alive组件">
 <meta property="og:url" content="http://yoursite.com/2018/06/11/KeepAlive组件/index.html">
 <meta property="og:site_name" content="大肥凯">
-<meta property="og:description" content="在Vue构建的单页面应用（SPA）中，路由模块一般使用vue-router。vue-router不保存被切换组件的状态，它进行push或者replace时，旧组件会被销毁，而新组件会被新建，走一遍完整的生命周期。 但有时候，我们有一些需求，比如跳转到详情页面时，需要保持列表页的滚动条的深度，等返回的时候依然在这个位置，这样可以提高用户体验。在Vue中，我们可以使用keep-alive组件来解决这个">
+<meta property="og:description" content="页面缓存在Vue构建的单页面应用（SPA）中，路由模块一般使用vue-router。vue-router不保存被切换组件的状态，它进行push或者replace时，旧组件会被销毁，而新组件会被新建，走一遍完整的生命周期。 但有时候，我们有一些需求，比如跳转到详情页面时，需要保持列表页的滚动条的深度，等返回的时候依然在这个位置，这样可以提高用户体验。在Vue中，对于这种“页面缓存”的需求，我们可以使">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-06-11T02:29:12.100Z">
+<meta property="og:updated_time" content="2018-06-11T02:40:17.108Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="keep-alive组件">
-<meta name="twitter:description" content="在Vue构建的单页面应用（SPA）中，路由模块一般使用vue-router。vue-router不保存被切换组件的状态，它进行push或者replace时，旧组件会被销毁，而新组件会被新建，走一遍完整的生命周期。 但有时候，我们有一些需求，比如跳转到详情页面时，需要保持列表页的滚动条的深度，等返回的时候依然在这个位置，这样可以提高用户体验。在Vue中，我们可以使用keep-alive组件来解决这个">
+<meta name="twitter:description" content="页面缓存在Vue构建的单页面应用（SPA）中，路由模块一般使用vue-router。vue-router不保存被切换组件的状态，它进行push或者replace时，旧组件会被销毁，而新组件会被新建，走一遍完整的生命周期。 但有时候，我们有一些需求，比如跳转到详情页面时，需要保持列表页的滚动条的深度，等返回的时候依然在这个位置，这样可以提高用户体验。在Vue中，对于这种“页面缓存”的需求，我们可以使">
 
 
 
@@ -300,14 +300,14 @@
       
 
       
-        <p>在Vue构建的单页面应用（SPA）中，路由模块一般使用vue-router。vue-router不保存被切换组件的状态，它进行push或者replace时，旧组件会被销毁，而新组件会被新建，走一遍完整的生命周期。</p>
-<p>但有时候，我们有一些需求，比如跳转到详情页面时，需要保持列表页的滚动条的深度，等返回的时候依然在这个位置，这样可以提高用户体验。在Vue中，我们可以使用keep-alive组件来解决这个需求。</p>
-<h2 id="keep-alive的使用方式"><a href="#keep-alive的使用方式" class="headerlink" title="keep-alive的使用方式"></a>keep-alive的使用方式</h2><p>keep-alive是个抽象组件（或称为功能型组件），实际上不会被渲染在DOM树中。它的作用是在内存中缓存组件（不让组件销毁），等到下次再渲染的时候，还会保持其中的所有状态，并且会触发activated钩子函数。因为缓存的需要通常出现在页面切换时，所以常与router-view一起出现：</p>
+        <h2 id="页面缓存"><a href="#页面缓存" class="headerlink" title="页面缓存"></a>页面缓存</h2><p>在Vue构建的单页面应用（SPA）中，路由模块一般使用vue-router。vue-router不保存被切换组件的状态，它进行push或者replace时，旧组件会被销毁，而新组件会被新建，走一遍完整的生命周期。</p>
+<p>但有时候，我们有一些需求，比如跳转到详情页面时，需要保持列表页的滚动条的深度，等返回的时候依然在这个位置，这样可以提高用户体验。在Vue中，对于这种“页面缓存”的需求，我们可以使用keep-alive组件来解决这个需求。</p>
+<h2 id="使用方式"><a href="#使用方式" class="headerlink" title="使用方式"></a>使用方式</h2><p>keep-alive是个抽象组件（或称为功能型组件），实际上不会被渲染在DOM树中。它的作用是在内存中缓存组件（不让组件销毁），等到下次再渲染的时候，还会保持其中的所有状态，并且会触发activated钩子函数。因为缓存的需要通常出现在页面切换时，所以常与router-view一起出现：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;keep-alive&gt;</span><br><span class="line">	&lt;router-view /&gt;</span><br><span class="line">&lt;/keep-alive&gt;</span><br></pre></td></tr></table></figure>
 <p>如此以来，每一个在router-view中渲染的组件，都会被缓存起来。</p>
 <p>如果只想渲染某一些页面/组件，可以使用keep-alive组件的include/exclude属性。include属性表示要缓存的组件名（即组件定义时的name属性），接收的类型为string、RegExp或string数组；exclude属性有着相反的作用，匹配到的组件不会被缓存。假如可能出现在同一router-view的N个页面中，我只想缓存列表页和详情页，那么可以这样写：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;keep-alive :include=&quot;[&apos;ListView&apos;, &apos;DetailView&apos;]&quot;&gt;</span><br><span class="line">	&lt;router-view /&gt;</span><br><span class="line">&lt;/keep-alive&gt;</span><br></pre></td></tr></table></figure>
-<h2 id="条件缓存"><a href="#条件缓存" class="headerlink" title="条件缓存"></a>条件缓存</h2><p>上面include的写法不是常用的，因为它固定了哪几个页面缓存或不缓存，假如有下面这个场景：</p>
+<h2 id="实现条件缓存：全局的include数组"><a href="#实现条件缓存：全局的include数组" class="headerlink" title="实现条件缓存：全局的include数组"></a>实现条件缓存：全局的include数组</h2><p>上面include的写法不是常用的，因为它固定了哪几个页面缓存或不缓存，假如有下面这个场景：</p>
 <ul>
 <li>现有页面：首页（A）、列表页（B）、详情页（C），一般可以从：A-&gt;B-&gt;C；</li>
 <li>B到C再返回B时，B要保持列表滚动的距离；</li>
@@ -329,6 +329,9 @@
 <p>4、取消缓存的时机：对缓存组件使用路由的组件层钩子beforeRouteLeave。因为B-&gt;A-&gt;B时不需要缓存B，所以可以认为：当B的下一个页面不是C时取消B的缓存，那么下次进入B组件时B就是全新的：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">    name: <span class="string">'B'</span>,</span><br><span class="line">    </span><br><span class="line">    created () &#123;</span><br><span class="line">        <span class="comment">// ...设置滚动条在最顶部</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    beforeRouteLeave (to, <span class="keyword">from</span>, next) &#123;</span><br><span class="line">        <span class="comment">// 如果下一个页面不是详情页（C），则取消列表页（B）的缓存</span></span><br><span class="line">        <span class="keyword">if</span> (to.name !== <span class="string">'C'</span>) &#123;</span><br><span class="line">            <span class="keyword">this</span>.$store.commit(<span class="string">'global/noKeepAlive'</span>, <span class="keyword">from</span>.name)</span><br><span class="line">        &#125;</span><br><span class="line">        next()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>因为B的条件缓存，是B自己的职责，所以最好把该业务逻辑写在B的内部，而不是A中，这样不至于让组件之间的跳转关系变得混乱。</p>
+<h2 id="另一种方式？"><a href="#另一种方式？" class="headerlink" title="另一种方式？"></a>另一种方式？</h2><p>网上看到实现条件缓存的另一种方式很类似，但它是在父组件中，使用两个router-view并进行条件渲染：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// App.vue</span><br><span class="line"></span><br><span class="line">&lt;div class=&quot;app&quot;&gt;</span><br><span class="line">    &lt;keep-alive&gt;</span><br><span class="line">    	&lt;router-view v-if=&quot;$route.meta.keepAlive&quot;&gt;&lt;/router-view&gt;</span><br><span class="line">    &lt;/keep-alive&gt;</span><br><span class="line">    &lt;router-view v-if=&quot;!$route.meta.keepAlive&quot;&gt;&lt;/router-view&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+<p>在GitHub的issue中（见参考链接）有一些争议，本人也还没有比较全面的验证过，所以也暂不知道效果如何。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Vuex作为官方路由库，是数据的缓存；而keep-alive作为功能型组件，实现了对组件的缓存。使用Vuex管理keep-alive的include数组，是一个不错的实现条件缓存的思路。</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li>文档</li>
@@ -509,7 +512,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#keep-alive的使用方式"><span class="nav-number">1.</span> <span class="nav-text">keep-alive的使用方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#条件缓存"><span class="nav-number">2.</span> <span class="nav-text">条件缓存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#页面缓存"><span class="nav-number">1.</span> <span class="nav-text">页面缓存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用方式"><span class="nav-number">2.</span> <span class="nav-text">使用方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现条件缓存：全局的include数组"><span class="nav-number">3.</span> <span class="nav-text">实现条件缓存：全局的include数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#另一种方式？"><span class="nav-number">4.</span> <span class="nav-text">另一种方式？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
