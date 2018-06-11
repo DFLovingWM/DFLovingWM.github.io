@@ -233,6 +233,597 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/Currying与Uncurrying/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/05/Currying与Uncurrying/" itemprop="url">Currying & Uncurrying：函数的(去)柯里化</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-05T00:00:00+08:00">
+                2018-05-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Currying"><a href="#Currying" class="headerlink" title="Currying"></a>Currying</h2><p>​    所谓函数的柯里化（currying）是指，把一个“接受多个参数的函数”转换成“形参更少的函数”，即确认了部分参数。在JavaScript中，柯里化一般可以通过两种方式来实现：</p>
+<ul>
+<li>自己手写咯。</li>
+</ul>
+<ul>
+<li>更简单点，就借助Function.prototype.bind函数来实现。但是有需要注意的地方（稍后说）。</li>
+</ul>
+<p>比如下面的例子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 简单的加法函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line">add(<span class="number">10</span>, <span class="number">15</span>); <span class="comment">// 25</span></span><br></pre></td></tr></table></figure>
+<p>现在函数接受2个参数，但假如我想要绑定第一个参数，实现一个“f(x) = 10 + x”的柯里化函数，那我可以这样做：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">addBy</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">b</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a + b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 或者更简单地，使用ES6的箭头函数（自己可以琢磨下</span></span><br><span class="line"><span class="keyword">var</span> addBy = <span class="function"><span class="params">a</span> =&gt;</span> b =&gt; a + b;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> add10 = addBy(<span class="number">10</span>); <span class="comment">// 这就实现了柯里化函数：add10</span></span><br><span class="line">add10(<span class="number">1</span>); <span class="comment">// 11</span></span><br></pre></td></tr></table></figure>
+<p>如果借助bind，就更简单了，因为可以直接在已有的add函数的基础上修改：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> add10 = add.bind(<span class="literal">null</span>, <span class="number">10</span>); <span class="comment">// bind的第一个参数是函数执行的this，这里无关紧要，传null</span></span><br><span class="line">add10(<span class="number">1</span>); <span class="comment">// 11</span></span><br></pre></td></tr></table></figure>
+<p>不过使用bind的方式进行柯里化，有两个需要注意的地方，其实是bind函数本身的注意点：</p>
+<ul>
+<li>第一个参数，始终是函数执行时内部的this，之后的参数才会一个接一个对应着形参。</li>
+<li>第一个参数不能重复绑定。</li>
+</ul>
+<p>我们可以进行验证：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`当前的this指向的是：<span class="subst">$&#123;<span class="keyword">this</span>&#125;</span>`</span>);</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> someObj = &#123; </span><br><span class="line">    toString() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'某个对象'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> add10 = add.bind(<span class="built_in">window</span>, <span class="number">10</span>); <span class="comment">// 柯里化后得到add10，内部this指向window</span></span><br><span class="line">add10(<span class="number">5</span>); <span class="comment">// window 15</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> sum15 = add10.bind(someObj, <span class="number">5</span>); <span class="comment">// 再进行柯里化。这里想要再次绑定someObj，是无效的。</span></span><br><span class="line">sum15(); <span class="comment">// 依然是window，然后返回15</span></span><br></pre></td></tr></table></figure>
+<h2 id="Uncurrying"><a href="#Uncurrying" class="headerlink" title="Uncurrying"></a>Uncurrying</h2><p>​    与之相对的概念是uncurrying，即“去柯里化”。顾名思义，就是把已经确定了的参数“脱离”开。一般用于<strong>对某些内置方法的借用</strong>。最常见的应用，就是让“类数组对象”（array-like object）使用数组的内置方法。所谓的类数组对象，就是满足以下条件的对象：</p>
+<ol>
+<li><p>具有length属性；</p>
+</li>
+<li><p><del>可以通过下标访问</del> 。比如：</p>
+<ul>
+<li>函数内部（执行期间）的arguments对象</li>
+<li>document.querySelectorAll()返回的NodeList对象</li>
+<li>document.getElementsByTagName()返回的HTMLCollection对象</li>
+<li>$(‘…’)返回的jQuery对象，等等……</li>
+</ul>
+<p>举个uncurrying的例子：对于arguments对象，我们假如想要截取前面的一部分，我们会这样使用slice方法：</p>
+</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">get_leftmost_3_elements</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>, <span class="number">0</span>, <span class="number">3</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">get_leftmost_3_elements(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>); <span class="comment">// [1,2,3]</span></span><br></pre></td></tr></table></figure>
+<p>​    arguments对象不是数组，因而没有slice方法，但是我们可以“借用”数组的slice方法，即通过apply，“强行”把slice方法作用在arguments上。而因为JS语言本身的鸭子类型（duck type）机制，slice可以完美地在arguments对象上作用，产生期望的结果。</p>
+<p>​    再举个相似的例子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> array_like_object = &#123;</span><br><span class="line">    length: <span class="number">3</span>,</span><br><span class="line">    <span class="number">0</span>: <span class="number">100</span>,</span><br><span class="line">    <span class="number">1</span>: <span class="number">200</span>,</span><br><span class="line">    <span class="number">2</span>: <span class="number">300</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">[].slice.call(array_like_object, <span class="number">0</span>, <span class="number">2</span>); <span class="comment">// [100, 200]</span></span><br><span class="line">[].slice.call(array_like_object, <span class="number">2</span>); <span class="comment">// [300]</span></span><br></pre></td></tr></table></figure>
+<p>​    （1）如果，我想使用下面这种OOP的方式来调用：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">array_like_object.slice(<span class="number">0</span>, <span class="number">2</span>); <span class="comment">// 期望结果：[100, 200]</span></span><br><span class="line">array_like_object.slice(<span class="number">2</span>); <span class="comment">// 期望结果：[300]</span></span><br></pre></td></tr></table></figure>
+<p>​    我们就可以使用uncurrying去实现：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.prototype.slice = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">this</span>.hasOwnProperty(<span class="string">'length'</span>)) &#123;<span class="comment">// 如果不是类数组对象</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'不是类数组对象！'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// this就是调用slice的类数组对象，这里将它作为借用slice时的上下文</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Array</span>.prototype.slice.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">array_like_object.slice(<span class="number">0</span>, <span class="number">2</span>); <span class="comment">// [100, 200]</span></span><br><span class="line">array_like_object.slice(<span class="number">2</span>); <span class="comment">// [300]</span></span><br></pre></td></tr></table></figure>
+<p>​    （2）而如果，我想定义一个（全局的）slice函数，以过程式的方式来调用：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">slice(array_like_object, <span class="number">0</span>, <span class="number">2</span>); <span class="comment">// 期望结果：[100, 200]</span></span><br><span class="line">slice(array_like_object, <span class="number">2</span>); <span class="comment">// 期望结果：[300]</span></span><br></pre></td></tr></table></figure>
+<p>​    那么我就可以这样做：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 原理：把之后将要接受的第一个参数作为调用slice的context */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">slice</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> context = [].shift.call(<span class="built_in">arguments</span>); <span class="comment">// arguments[0]作为之后调用时的上下文</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Array</span>.prototype.slice.apply(context, <span class="built_in">arguments</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">slice(array_like_object, <span class="number">0</span>, <span class="number">2</span>); <span class="comment">// [100, 200]</span></span><br><span class="line">slice(array_like_object, <span class="number">2</span>); <span class="comment">// [300]</span></span><br></pre></td></tr></table></figure>
+<p>​    或者换一个思路，这样做：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> unboundSlice = <span class="built_in">Array</span>.prototype.slice;</span><br><span class="line"><span class="keyword">var</span> slice = <span class="built_in">Function</span>.prototype.call.bind(unboundSlice); <span class="comment">// 关键代码(有点难理解)，下面有说明</span></span><br><span class="line"></span><br><span class="line">slice(array_like_object, <span class="number">0</span>, <span class="number">2</span>); <span class="comment">// [100, 200]</span></span><br><span class="line">slice(array_like_object, <span class="number">2</span>); <span class="comment">// [300]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 原理：</span></span><br><span class="line"><span class="comment">* 正常情况下，我们需要：</span></span><br><span class="line"><span class="comment">*	var result = unboundSlice.call(array_like_object, 0, 2);</span></span><br><span class="line"><span class="comment">* 我们的目的是省略掉“.call”这部分。</span></span><br><span class="line"><span class="comment">* 重点来了：</span></span><br><span class="line"><span class="comment">* 本来unboundSlice是个函数，但函数也是个对象，</span></span><br><span class="line"><span class="comment">* 所以可以把unboundSlice看作是对象（上下文），call是它的实例方法，那么其实等同于：</span></span><br><span class="line"><span class="comment">*	call.call(array_like_object, 0, 2)</span></span><br><span class="line"><span class="comment">* 即：</span></span><br><span class="line"><span class="comment">*	var result = Function.prototype.call.call(array_like_object, 0, 2);</span></span><br><span class="line"><span class="comment">* 我们想返回一个函数，还不是马上调用，就换成bind即：</span></span><br><span class="line"><span class="comment">*	var slice = Function.prototype.call.bind(array_like_object, 0, 2);</span></span><br><span class="line"><span class="comment">* 这就是那句关键代码的由来。</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+<p>​    最后，我们定义一个高阶函数：uncurrying，以总结去柯里化的两种方式：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 去柯里化</span></span><br><span class="line"><span class="comment">* @param &#123;fn&#125; 要进行去柯里化的函数</span></span><br><span class="line"><span class="comment">* @return 一个新的函数</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">uncurrying</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> context = [].shift.call(<span class="built_in">arguments</span>);</span><br><span class="line">        <span class="keyword">return</span> fn.apply(context, <span class="built_in">arguments</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 或者</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">uncurrying</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> call = <span class="built_in">Function</span>.prototype.call;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> call.apply(fn, <span class="built_in">arguments</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> array_like_object = &#123; <span class="attr">length</span>: <span class="number">3</span>, <span class="number">0</span>: <span class="string">'zero'</span>, <span class="number">1</span>: <span class="string">'one'</span>, <span class="number">2</span>: <span class="string">'two'</span> &#125;;</span><br><span class="line"><span class="keyword">var</span> slice = uncurrying( <span class="built_in">Array</span>.prototype.slice );</span><br><span class="line">slice(array_like_object, <span class="number">2</span>); <span class="comment">// ['two']</span></span><br></pre></td></tr></table></figure>
+<h2 id="后语"><a href="#后语" class="headerlink" title="后语"></a>后语</h2><p>​    函数的柯里化、去柯里化可以说是进阶的内容，可以帮助我们更好地理解JS中bind／call／apply方法的作用，以及应用到一些重要的场合，是非常值得掌握的知识点。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>曾探《JavaScript设计模式与开发实践》：Chapter3.2.4 高级函数的其他应用</p>
+<p><a href="https://www.smashingmagazine.com/2014/01/understanding-javascript-function-prototype-bind/" target="_blank" rel="noopener">Understanding JavaScript Bind () — Smashing Magazine</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/清除浮动/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/05/清除浮动/" itemprop="url">清除浮动的几种思路</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-05T00:00:00+08:00">
+                2018-05-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>​    浮动元素会脱离文档流，使得容器不能撑开从而影响布局，我们需要清除浮动。比如一个简单的HTML部分：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"container"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"left"</span>&gt;</span>This is left<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"right"</span>&gt;</span>This is right<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>​    而清除浮动通常有下面几种思路。</p>
+<h2 id="1-clear-both"><a href="#1-clear-both" class="headerlink" title="1 clear: both"></a>1 clear: both</h2><p>​    在浮动元素之后，添加带有该属性的同级block元素（例如空div），该block元素因为强制换行导致父容器被撑开。</p>
+<h3 id="1-1-直接添加一个（无语义）元素"><a href="#1-1-直接添加一个（无语义）元素" class="headerlink" title="1.1 直接添加一个（无语义）元素"></a>1.1 直接添加一个（无语义）元素</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"container"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"left"</span>&gt;</span>This is left<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"right"</span>&gt;</span>This is right<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"clear: both"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="1-2-更简洁的方法：使用-after伪类"><a href="#1-2-更简洁的方法：使用-after伪类" class="headerlink" title="1.2 更简洁的方法：使用:after伪类"></a>1.2 更简洁的方法：使用:after伪类</h3><p>​    该方法的好处就是不用像上面那样，添加一个空元素，影响DOM树结构的可读性。<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.container</span><span class="selector-pseudo">:after</span> &#123;</span><br><span class="line">	<span class="attribute">clear</span>: both;</span><br><span class="line">	<span class="attribute">display</span>: block; <span class="comment">/* block元素强制换行 */</span></span><br><span class="line">	<span class="attribute">content</span>: <span class="string">''</span>; <span class="comment">/* 这里要指定content为空，否则也不会撑开 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="2-BFC"><a href="#2-BFC" class="headerlink" title="2 BFC"></a>2 BFC</h2><p>​    用某种方法，触发父容器的BFC（利用BFC包含浮动元素的特性）。比如可以使用overflow：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.container</span> &#123;</span><br><span class="line">	<span class="attribute">overflow</span>: auto; <span class="comment">/* auto或hidden都行 */</span></span><br><span class="line">	<span class="attribute">zoom</span>: <span class="number">1</span>; <span class="comment">/* 兼容IE，原理是触发IE的hasLayout，同时，1倍并不改变容器样式 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="3-参考"><a href="#3-参考" class="headerlink" title="3 参考"></a>3 参考</h2><p><a href="https://segmentfault.com/a/1190000004865198" target="_blank" rel="noopener">CSS-清除浮动 - 前端小渣 - SegmentFault 思否</a><br><a href="http://riny.net/2013/haslayout/" target="_blank" rel="noopener">深入理解IE hasLayout</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/浏览器本地存储/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/05/浏览器本地存储/" itemprop="url">浏览器本地存储</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-05T00:00:00+08:00">
+                2018-05-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>​    Web本地存储有三种方式，分别是：cookie、sessionStorage、localStorage。</p>
+<h2 id="cookie"><a href="#cookie" class="headerlink" title="cookie"></a>cookie</h2><p>​    cookie存在于浏览器端，但它对应于服务端的某个session，主要作用是给无状态的（stateless）HTTP通信维护一个特定用户状态，使服务端根据其中的KV对来“记住”某个用户。它具有以下特点：</p>
+<ul>
+<li>存储内容：存储的是KV对，每个KV对可以指定：key、value、expires、domain、path、secure、httponly等属性：<ul>
+<li>key、value：指定KV对的内容，是必填项。比如：”name=Bob”。</li>
+<li>expires：指定cookie过期的时间点，遵循格式【Wdy, DD Mon yyyy HH:MM:SS GMT】。比如：”expires=Sat, 30 Mar 2017 21:15:20”。</li>
+<li>domain：指定当前cookie发送到哪个域中，等请求那个域时进行尾部比较，如果满足就可以带上；可以用来扩充cookie应用的域。默认值是当前域名。另外，cookie原本只能在协议、域名、端口都相同即“同源”的情况下才能共享，但二级域名相同的站点，可以通过这种方式，实现cookie的共享。比如：浏览器向”a.some.com”发送请求后，如果（主动／被动）设置了某个KV对的domain为“.some.com”，那么浏览器随后向“b.some.com”请求时，将会允许带上该KV对。</li>
+<li>path：与domain类似，指定发送cookie需要满足的路径，但只有domain通过了验证，才会继续验证path。比如“path=/user”，只有在请求”${domain}/user”这样的站点时才发送当前cookie。</li>
+<li>secure：指定当前KV对只在SSL/HTTPS的请求中才会发送。这是一个标记/布尔值，不需要值：”name=Bob; secure”。然而，这个标志并不能给cookie带来安全性，CH/FF 52开始不支持它了。</li>
+<li>httponly：指定当前KV对不能通过JS API即document.cookie访问/修改，而只能通过服务器修改，浏览器端只能单纯地传输。主要用以防止XSS（cross-site scripting）。</li>
+</ul>
+</li>
+<li>存储数量：有“个数”上的限制，而个数取决于每种浏览器的不同实现。</li>
+<li>存在位置：作为header之一，存在于HTTP请求报文中。服务端通过在（第一次？）返回报文中设置Set-Cookie这个header，来给浏览器设置cookie，以后的每一次请求，请求报文都会携带上Cookie这个header。</li>
+<li>作用时长：通过给KV对指定max-age、expires等属性。如果不指定，默认是“会话级”（cookie的一个会话存在于一个浏览器进程）。</li>
+</ul>
+<h2 id="localStorage-sessionStorage"><a href="#localStorage-sessionStorage" class="headerlink" title="localStorage/sessionStorage"></a>localStorage/sessionStorage</h2><p>​    Storage存在于浏览器端，与服务器没有直接联系。作为HTML5 API，它提供严谨的方式来操作本地数据。主要作用是在客户端本地存储大量数据，它具有以下特点：</p>
+<ul>
+<li>存储内容：存储的也是KV对。这里要注意，setItem的第二个参数、以及getItem的返回值，都应该是一个字符串。所以，有时候需要配合JSON.stringify、JSON.parse这两个函数使用，因为通常而言，object需要序列化后才能放进Storage，而从Storage取出的string需要反序列化成对象以进一步使用。</li>
+<li>存储数量：有“空间”上的限制，而这个空间多大也是取决于每种浏览器的不同实现。</li>
+<li>存在位置：浏览器。</li>
+<li>作用时长：<ul>
+<li>localStorage是永久有效，除非用户使用浏览器工具、或写JS脚本删除。</li>
+<li>sessionStorage是”会话级“存储，注意这里的会话级，在时间上比cookie的会话级还要短，一般它不能跨标签（除非使用target=_blank跳转）。</li>
+</ul>
+</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies" target="_blank" rel="noopener">HTTP cookies - HTTP | MDN</a><br><a href="https://zhuanlan.zhihu.com/p/31656937?utm_medium=social&amp;utm_source=ZHShareTargetIDMore" target="_blank" rel="noopener">关于客户端存储的前端面试题总结</a><br><a href="http://bubkoo.com/2014/04/21/http-cookies-explained/" target="_blank" rel="noopener">HTTP cookies 详解 | bubkoo</a><br><a href="https://zhuanlan.zhihu.com/p/31404516" target="_blank" rel="noopener">同样是客户端会话级存储，sessionStorage和session cookie有什么？</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/TODO_Throttle与Debounce/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/05/TODO_Throttle与Debounce/" itemprop="url">Throttle（节流）与Debounce（防抖动）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-05T00:00:00+08:00">
+                2018-05-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>​    DOM API提供了许多基于事件监听的回调函数，我们可以赋值（或追加）自己的操作，比如点击事件：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> app = <span class="built_in">document</span>.getElementById(<span class="string">'app'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// DOM0 API</span></span><br><span class="line">app.onclick = <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 用户交互逻辑</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// DOM2 API</span></span><br><span class="line">app.addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 用户交互逻辑</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>​    像click这样的事件，它设计成用户每点击一次，就回调一次。而另外有些事件是频繁回调的，比如：onresize（窗口大小改变事件）、onscroll（滚动事件）、ontouchmove（移动端触摸移动事件）等：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">'resize'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'resize'</span>);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>​    这样，用户对浏览器窗口进行放缩的时候，控制台就会不断打印“resize”；可能缩放一点点，就会打印出几十个，说明resize事件回调的频率还是很高的。如果我们这里不是简单地打印字符串，而是一些耗时操作，那么JS主线程就会出现类似于“阻塞”的现象，表现为用户界面卡顿，不能很快响应之后的操作了。</p>
+<p>​    用户是无法对DOM事件回调的频率进行更改的，所以我们只能限制用户交互部分的逻辑发生的频率。而这时候，节流、防抖动就可以派上用场了。它们一般来说会（利用闭包）设计成高阶函数，返回一个新的用户函数，并且在内部限制了频率；至于怎么限制，则有很多种实现方式。总体上，我们期望的样子是（拿throttle来说）：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> myCallback = <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'resize'</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">myCallback = throttle(myCallback, <span class="number">150</span>); <span class="comment">// 参数‘150’是限制‘myCallback’的触发间隔</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">'resize'</span>, myCallback);</span><br></pre></td></tr></table></figure>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="Debounce：防抖动"><a href="#Debounce：防抖动" class="headerlink" title="Debounce：防抖动"></a>Debounce：防抖动</h3><p>​    防抖动最显著的特点是，把某个时间段内的多次操作合为一次回调，并且取的是最后的那一次操作。而且：</p>
+<ul>
+<li>当频繁操作时，一次都不会回调；<ul>
+<li>当结束频繁操作时，会在${wait}时间后发生一次回调。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Function</span>.prototype.debounce = <span class="function"><span class="keyword">function</span> (<span class="params">wait = <span class="number">100</span></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">const</span> func = <span class="keyword">this</span>;</span><br><span class="line">	<span class="keyword">let</span> timerId = <span class="literal">null</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (timerId) &#123;</span><br><span class="line">			<span class="comment">// 如果已经存在一个定时器，就先取消掉，稍后重新设一个</span></span><br><span class="line">			clearTimeout(timerId);</span><br><span class="line">		&#125;</span><br><span class="line">		timerId = setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">			func.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">		&#125;, wait);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Throttle：节流"><a href="#Throttle：节流" class="headerlink" title="Throttle：节流"></a>Throttle：节流</h3><p>​    节流的特点是，控制前后两次操作的时间间隔。并且：</p>
+<ul>
+<li>当频繁操作时，每 ${wait}时间发生一次回调；</li>
+<li>当结束频繁操作时，也是一样，看是否满足${wait}间隔。</li>
+</ul>
+<p>实现方式（1）：记录上一次回调的时间戳，然后每次想要回调时，检查是否满足{wait}时间间隔：如果大于${wait}，就触发，并更新时间戳；否则不触发。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 记录每次触发的时间戳</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="built_in">Function</span>.prototype.throttle = <span class="function"><span class="keyword">function</span> (<span class="params">wait = <span class="number">100</span></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">const</span> func = <span class="keyword">this</span>;</span><br><span class="line">	<span class="keyword">let</span> lastTriggerAt = <span class="number">0</span>; <span class="comment">// 上一次进行用户交互的时间点。初始值为0是为了第一次一定可以执行</span></span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">let</span> currentTime = <span class="built_in">Date</span>.now();</span><br><span class="line">		<span class="keyword">if</span> (currentTime - lastTriggerAt &gt; wait) &#123;</span><br><span class="line">			<span class="comment">// 满足最小间隔，进行</span></span><br><span class="line">			func.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">			<span class="comment">// 更新时间点</span></span><br><span class="line">			lastTriggerAt = currentTime;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>实现方式（2）：每次触发都设一个定时器（延后回调），当想要再次触发时检查是否已经存在有定时器：如果存在，就忽略；否则就设定一个定时器。不过同时延后回调也是一个小小的缺点。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 设定每次触发的定时器</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="built_in">Function</span>.prototype.throttle = <span class="function"><span class="keyword">function</span> (<span class="params">wait = <span class="number">100</span></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">const</span> func = <span class="keyword">this</span>;</span><br><span class="line">	<span class="keyword">let</span> timerId = <span class="literal">null</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (timerId) &#123; <span class="comment">// 如果已经有定时器在进行，就不管这次操作</span></span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 延时执行</span></span><br><span class="line">		timerId = setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">			<span class="comment">// 执行</span></span><br><span class="line">			func.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">			<span class="comment">// 清空定时器</span></span><br><span class="line">			clearTimeout(timerId);</span><br><span class="line">			timerId = <span class="literal">null</span>;</span><br><span class="line">		&#125;, wait);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://css-tricks.com/debouncing-throttling-explained-examples/" target="_blank" rel="noopener">Debouncing and Throttling Explained Through Examples | CSS-Tricks</a></p>
+<p>曾探《JavaScript设计模式与开发实践》：Chapter3.2.4 | 高阶函数的其他应用 | 3.函数节流</p>
+<p><a href="https://keelii.github.io/2016/06/11/javascript-throttle/?hmsr=toutiao.io&amp;utm_medium=toutiao.io&amp;utm_source=toutiao.io" target="_blank" rel="noopener">JavaScript 节流函数 Throttle 详解</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/组件通信/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -393,7 +984,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -406,7 +997,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">28</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>

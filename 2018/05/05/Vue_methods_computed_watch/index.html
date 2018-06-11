@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="methods：每次重渲染必定会执行至少一遍。  12345678910new Vue(&amp;#123;    methods: &amp;#123;        activeValue() &amp;#123;            // 每次re-render都会执行        &amp;#125;    &amp;#125;&amp;#125;)// 使用的时候就要调用一下&amp;lt;div&amp;gt;&amp;#123;&amp;#123; act">
+<meta name="description" content="methods每次重渲染必定会执行至少一遍。 12345678910new Vue(&amp;#123;    methods: &amp;#123;        activeValue() &amp;#123;            // 每次re-render都会执行        &amp;#125;    &amp;#125;&amp;#125;)// 使用的时候就要调用一下&amp;lt;div&amp;gt;&amp;#123;&amp;#123; active">
 <meta name="keywords" content="Vue,computed,响应式">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Vue：methods|computed|watch的比较">
 <meta property="og:url" content="http://yoursite.com/2018/05/05/Vue_methods_computed_watch/index.html">
 <meta property="og:site_name" content="大肥凯">
-<meta property="og:description" content="methods：每次重渲染必定会执行至少一遍。  12345678910new Vue(&amp;#123;    methods: &amp;#123;        activeValue() &amp;#123;            // 每次re-render都会执行        &amp;#125;    &amp;#125;&amp;#125;)// 使用的时候就要调用一下&amp;lt;div&amp;gt;&amp;#123;&amp;#123; act">
+<meta property="og:description" content="methods每次重渲染必定会执行至少一遍。 12345678910new Vue(&amp;#123;    methods: &amp;#123;        activeValue() &amp;#123;            // 每次re-render都会执行        &amp;#125;    &amp;#125;&amp;#125;)// 使用的时候就要调用一下&amp;lt;div&amp;gt;&amp;#123;&amp;#123; active">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-05-06T07:31:50.667Z">
+<meta property="og:updated_time" content="2018-05-19T08:31:57.333Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Vue：methods|computed|watch的比较">
-<meta name="twitter:description" content="methods：每次重渲染必定会执行至少一遍。  12345678910new Vue(&amp;#123;    methods: &amp;#123;        activeValue() &amp;#123;            // 每次re-render都会执行        &amp;#125;    &amp;#125;&amp;#125;)// 使用的时候就要调用一下&amp;lt;div&amp;gt;&amp;#123;&amp;#123; act">
+<meta name="twitter:description" content="methods每次重渲染必定会执行至少一遍。 12345678910new Vue(&amp;#123;    methods: &amp;#123;        activeValue() &amp;#123;            // 每次re-render都会执行        &amp;#125;    &amp;#125;&amp;#125;)// 使用的时候就要调用一下&amp;lt;div&amp;gt;&amp;#123;&amp;#123; active">
 
 
 
@@ -300,23 +300,17 @@
       
 
       
-        <ul>
-<li>methods：每次重渲染必定会执行至少一遍。</li>
-</ul>
+        <h2 id="methods"><a href="#methods" class="headerlink" title="methods"></a>methods</h2><p>每次重渲染必定会执行至少一遍。</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    methods: &#123;</span><br><span class="line">        activeValue() &#123;</span><br><span class="line">            <span class="comment">// 每次re-render都会执行</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用的时候就要调用一下</span></span><br><span class="line">&lt;div&gt;&#123;&#123; activeValue() &#125;&#125;&lt;<span class="regexp">/div&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="computed"><a href="#computed" class="headerlink" title="computed"></a>computed</h2><p>有缓存，当属性的计算比较耗时的时候，就体现出比methods更多的优势。而与watch相比，有“声明式”的优点。</p>
 <ul>
-<li>computed：有缓存，当属性的计算比较耗时的时候，就体现出比methods更多的优势。而与watch相比，有“声明式”的优点。<ul>
 <li>get：作用响应某些data的改动。回调时机与一般的get不同：只有当监听的数据有修改，并且数据的newValue不等于oldValue时，该get函数才会执行；同时把结果缓存，之后每次读取当前变量，都返回这个缓存值。<ul>
 <li>set(newVal)：与get相对。回调时机与一般的set一样，只要给当前变量赋值就会回调该set函数（即使赋同样的值，也会回调）。</li>
 </ul>
 </li>
 </ul>
-</li>
-</ul>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    computed: &#123;</span><br><span class="line">        <span class="string">'activeValue'</span>: &#123;</span><br><span class="line">            get() &#123;</span><br><span class="line">                </span><br><span class="line">            &#125;,</span><br><span class="line">            set(newValue) &#123;</span><br><span class="line">                </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<ul>
-<li>watch：可以看作是computed的“AngularJS版本”（命令式）。与computed的get的作用一样，并且回调时机也一样：只有监听的数据变化并且newValue!==oldValue时。不同的是，它可以取到oldValue：</li>
-</ul>
+<h2 id="watch"><a href="#watch" class="headerlink" title="watch"></a>watch</h2><p>可以看作是computed的“AngularJS版本”（命令式）。与computed的get的作用一样，并且回调时机也一样：只有监听的数据变化并且newValue!==oldValue时。不同的是，它可以取到oldValue：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    watch: &#123;</span><br><span class="line">        <span class="string">'activeValue'</span>: <span class="function"><span class="keyword">function</span> (<span class="params">newValue, oldValue</span>) </span>&#123;</span><br><span class="line">            <span class="comment">// newValue、oldValue分别是新值、旧值</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
       
@@ -362,8 +356,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/05/10/从Dialog理解v-model/" rel="prev" title="Vue：从Dialog理解v-model">
-                Vue：从Dialog理解v-model <i class="fa fa-chevron-right"></i>
+              <a href="/2018/05/05/Vue响应式/" rel="prev" title="Vue响应式">
+                Vue响应式 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -416,8 +410,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -432,7 +435,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -445,7 +448,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">28</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>
@@ -468,6 +471,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#methods"><span class="nav-number">1.</span> <span class="nav-text">methods</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#computed"><span class="nav-number">2.</span> <span class="nav-text">computed</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#watch"><span class="nav-number">3.</span> <span class="nav-text">watch</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

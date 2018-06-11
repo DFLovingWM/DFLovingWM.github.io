@@ -233,6 +233,570 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/11/KeepAlive组件/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/11/KeepAlive组件/" itemprop="url">keep-alive组件</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-11T09:13:26+08:00">
+                2018-06-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在Vue构建的单页面应用（SPA）中，路由模块一般使用vue-router。vue-router不保存被切换组件的状态，它进行push或者replace时，旧组件会被销毁，而新组件会被新建，走一遍完整的生命周期。</p>
+<p>但有时候，我们有一些需求，比如跳转到详情页面时，需要保持列表页的滚动条的深度，等返回的时候依然在这个位置，这样可以提高用户体验。在Vue中，我们可以使用keep-alive组件来解决这个需求。</p>
+<h2 id="keep-alive的使用方式"><a href="#keep-alive的使用方式" class="headerlink" title="keep-alive的使用方式"></a>keep-alive的使用方式</h2><p>keep-alive是个抽象组件（或称为功能型组件），实际上不会被渲染在DOM树中。它的作用是在内存中缓存组件（不让组件销毁），等到下次再渲染的时候，还会保持其中的所有状态，并且会触发activated钩子函数。因为缓存的需要通常出现在页面切换时，所以常与router-view一起出现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;keep-alive&gt;</span><br><span class="line">	&lt;router-view /&gt;</span><br><span class="line">&lt;/keep-alive&gt;</span><br></pre></td></tr></table></figure>
+<p>如此以来，每一个在router-view中渲染的组件，都会被缓存起来。</p>
+<p>如果只想渲染某一些页面/组件，可以使用keep-alive组件的include/exclude属性。include属性表示要缓存的组件名（即组件定义时的name属性），接收的类型为string、RegExp或string数组；exclude属性有着相反的作用，匹配到的组件不会被缓存。假如可能出现在同一router-view的N个页面中，我只想缓存列表页和详情页，那么可以这样写：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;keep-alive :include=&quot;[&apos;ListView&apos;, &apos;DetailView&apos;]&quot;&gt;</span><br><span class="line">	&lt;router-view /&gt;</span><br><span class="line">&lt;/keep-alive&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="条件缓存"><a href="#条件缓存" class="headerlink" title="条件缓存"></a>条件缓存</h2><p>上面include的写法不是常用的，因为它固定了哪几个页面缓存或不缓存，假如有下面这个场景：</p>
+<ul>
+<li>现有页面：首页（A）、列表页（B）、详情页（C），一般可以从：A-&gt;B-&gt;C；</li>
+<li>B到C再返回B时，B要保持列表滚动的距离；</li>
+<li>B返回A再进入B时，B不需要保持状态，是全新的。</li>
+</ul>
+<p>很明显，这个例子中，B是“条件缓存”的，C-&gt;B时保持缓存，A-&gt;B时放弃缓存。其实解决方案也不难，只需要将B动态地从include数组中增加/删除就行了。具体步骤是：</p>
+<ol>
+<li>在Vuex中定义一个全局的缓存数组，待传给include：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// global.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">	namespaced: <span class="literal">true</span>,</span><br><span class="line">    state: &#123;</span><br><span class="line">        keepAliveComponents: [] <span class="comment">// 缓存数组</span></span><br><span class="line">    &#125;,</span><br><span class="line">    mutations: &#123;</span><br><span class="line">        keepAlive (state, component) &#123;</span><br><span class="line">            <span class="comment">// 注：防止重复添加（当然也可以使用Set）</span></span><br><span class="line">            !state.keepAliveComponents.includes(component) &amp;&amp; </span><br><span class="line">                state.keepAliveComponents.push(component)</span><br><span class="line">        &#125;,</span><br><span class="line">        noKeepAlive (state, component) &#123;</span><br><span class="line">            <span class="keyword">const</span> index = state.keepAliveComponents.indexOf(component)</span><br><span class="line">            index !== <span class="number">-1</span> &amp;&amp;</span><br><span class="line">                state.keepAliveComponents.splice(index, <span class="number">1</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>在父页面中定义keep-alive，并传入全局的缓存数组：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// App.vue</span><br><span class="line"></span><br><span class="line">&lt;div class=&quot;app&quot;&gt;</span><br><span class="line">    &lt;!--传入include数组--&gt;</span><br><span class="line">    &lt;keep-alive :include=&quot;keepAliveComponents&quot;&gt;</span><br><span class="line">    	&lt;router-view&gt;&lt;/router-view&gt;</span><br><span class="line">    &lt;/keep-alive&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">	computed: &#123;</span><br><span class="line">        ...mapState(&#123;</span><br><span class="line">			keepAliveComponents: state =&gt; state.global.keepAliveComponents</span><br><span class="line">        &#125;)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>缓存：在路由配置页中，约定使用meta属性keepAlive，值为true表示组件需要缓存。在全局路由钩子beforeEach中对该属性进行处理，这样一来，每次进入该组件，都进行缓存：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> router = <span class="keyword">new</span> Router(&#123;</span><br><span class="line">    routes: [</span><br><span class="line">        &#123;</span><br><span class="line">            path: <span class="string">'/A/B'</span>,</span><br><span class="line">            name: <span class="string">'B'</span>,</span><br><span class="line">            component: B,</span><br><span class="line">            meta: &#123;</span><br><span class="line">                title: <span class="string">'B页面'</span>,</span><br><span class="line">                keepAlive: <span class="literal">true</span> <span class="comment">// 这里指定B组件的缓存性</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">router.beforeEach(<span class="function">(<span class="params">to, <span class="keyword">from</span>, next</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 在路由全局钩子beforeEach中，根据keepAlive属性，统一设置页面的缓存性</span></span><br><span class="line">    <span class="comment">// 作用是每次进入该组件，就将它缓存</span></span><br><span class="line">    <span class="keyword">if</span> (to.meta.keepAlive) &#123;</span><br><span class="line">        store.commit(<span class="string">'global/keepAlive'</span>, to.name)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>4、取消缓存的时机：对缓存组件使用路由的组件层钩子beforeRouteLeave。因为B-&gt;A-&gt;B时不需要缓存B，所以可以认为：当B的下一个页面不是C时取消B的缓存，那么下次进入B组件时B就是全新的：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">    name: <span class="string">'B'</span>,</span><br><span class="line">    </span><br><span class="line">    created () &#123;</span><br><span class="line">        <span class="comment">// ...设置滚动条在最顶部</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    beforeRouteLeave (to, <span class="keyword">from</span>, next) &#123;</span><br><span class="line">        <span class="comment">// 如果下一个页面不是详情页（C），则取消列表页（B）的缓存</span></span><br><span class="line">        <span class="keyword">if</span> (to.name !== <span class="string">'C'</span>) &#123;</span><br><span class="line">            <span class="keyword">this</span>.$store.commit(<span class="string">'global/noKeepAlive'</span>, <span class="keyword">from</span>.name)</span><br><span class="line">        &#125;</span><br><span class="line">        next()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为B的条件缓存，是B自己的职责，所以最好把该业务逻辑写在B的内部，而不是A中，这样不至于让组件之间的跳转关系变得混乱。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Vuex作为官方路由库，是数据的缓存；而keep-alive作为功能型组件，实现了对组件的缓存。使用Vuex管理keep-alive的include数组，是一个不错的实现条件缓存的思路。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>文档</li>
+</ul>
+<p><a href="https://cn.vuejs.org/v2/guide/components-dynamic-async.html#%E5%9C%A8%E5%8A%A8%E6%80%81%E7%BB%84%E4%BB%B6%E4%B8%8A%E4%BD%BF%E7%94%A8-keep-alive" target="_blank" rel="noopener">在动态组件上使用-keep-alive</a></p>
+<p><a href="https://cn.vuejs.org/v2/api/#keep-alive" target="_blank" rel="noopener">API：keep-alive</a></p>
+<ul>
+<li>应用</li>
+</ul>
+<p><a href="https://www.jianshu.com/p/0b0222954483" target="_blank" rel="noopener">vue-router 之 keep-alive</a></p>
+<p><a href="https://juejin.im/post/5a69894a518825733b0f12f2" target="_blank" rel="noopener">vue实现前进刷新，后退不刷新</a></p>
+<ul>
+<li>讨论</li>
+</ul>
+<p><a href="https://github.com/vuejs/vue-router/issues/811" target="_blank" rel="noopener">https://github.com/vuejs/vue-router/issues/811</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/06/保持原型链的深克隆/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/06/保持原型链的深克隆/" itemprop="url">保持原型链的深克隆</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-06T16:03:38+08:00">
+                2018-06-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>如果用原生JS实现深克隆，可能一些人能够想到使用这个“奇技淫巧”：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> srcObj = &#123; <span class="attr">name</span>: <span class="string">'Bob'</span> &#125;</span><br><span class="line"><span class="keyword">var</span> destObj = <span class="built_in">JSON</span>.parse( <span class="built_in">JSON</span>.stringify( srcObj ) )</span><br></pre></td></tr></table></figure>
+<p>这个技巧在多数时候能够满足需求，但其实它有很多缺点，比如：忽略undefined；不能拷贝NaN，会变成null；忽略函数等等。</p>
+<p>最重要的是，它也会<u>忽略原型链上的属性</u>。那能否实现一个既是deep、同时又保持原型链（即继承关系）的克隆呢？答案是可以的，其实只是把两个独立的功能结合起来就可以了。即：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getClone</span> (<span class="params">srcObj</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> _deepClone( _augmentedClone( srcObj ) )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面我们可以实现一下这个deepClone（负责深克隆）和augmentedClone（负责继承）。</p>
+<h2 id="深克隆"><a href="#深克隆" class="headerlink" title="深克隆"></a>深克隆</h2><p>若自己实现深克隆，特别需要注意的无非两个：</p>
+<ul>
+<li>递归（终止条件）</li>
+<li>属性值的类型的判断</li>
+</ul>
+<p>下面是我实现的一个粗略版本，应该有很多细节上的错误，欢迎指正：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_deepClone</span> (<span class="params">srcObj</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> deepCopy</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> srcObj === <span class="string">'object'</span> &amp;&amp; srcObj !== <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="comment">// 如果当前值是对象，就递归地拷贝</span></span><br><span class="line">    deepCopy = <span class="built_in">Array</span>.isArray(srcObj) ? [] : &#123;&#125; <span class="comment">// 可能是数组</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> key <span class="keyword">in</span> srcObj) &#123;</span><br><span class="line">      deepCopy[key] = _deepClone( srcObj[key] ) </span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 否则，就直接赋值</span></span><br><span class="line">    deepCopy = srcObj</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> deepCopy</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="保持原型链"><a href="#保持原型链" class="headerlink" title="保持原型链"></a>保持原型链</h2><p>保持原型链，即让克隆出来的新对象与目标一样，在同一条原型链上，有共同的祖先。其中一种思路是让新对象“继承”目标类：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_augmentedClone</span> (<span class="params">srcObj</span>) </span>&#123;</span><br><span class="line">	<span class="comment">// 取得目标原型</span></span><br><span class="line">	<span class="keyword">var</span> srcPrototype = <span class="built_in">Object</span>.getPrototypeOf(srcObj)</span><br><span class="line">	<span class="comment">// 继承目标原型、并且合并目标的属性</span></span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">Object</span>.assign( <span class="built_in">Object</span>.create(srcPrototype), srcObj )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中的关键是Object.create(proto)的使用，它返回的是一个令proto成为其原型的新对象，这时候就继承了祖先的所有属性。然后，再使用Object.assign(obj1, obj2)，让它拷贝目标对象自身的属性。不过需要注意的是Object.assign属于浅拷贝，所以才需要结合上面的深拷贝。</p>
+<h2 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h2><p>我们可以举个继承的例子，稍稍验证一下。对于ES5继承，我喜欢举Student继承Person的例子：</p>
+<ul>
+<li>Person类：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person</span> (<span class="params">id</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">this</span>.id = id</span><br><span class="line">	<span class="keyword">this</span>.friends = []</span><br><span class="line">&#125;</span><br><span class="line">Person.prototype.sayId = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">`My id is <span class="subst">$&#123;<span class="keyword">this</span>.id&#125;</span>`</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Student类：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Student</span> (<span class="params">id, classId</span>) </span>&#123;</span><br><span class="line">	Person.call(<span class="keyword">this</span>, id)</span><br><span class="line">	<span class="keyword">this</span>.classId = classId</span><br><span class="line">	<span class="keyword">this</span>.teachers = []</span><br><span class="line">&#125;</span><br><span class="line">Student.prototype = <span class="built_in">Object</span>.create(Person.prototype)</span><br><span class="line">Student.prototype.sayClassId = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">`I am in class <span class="subst">$&#123;<span class="keyword">this</span>.classId&#125;</span>`</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后验证代码可以长这样：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 目标对象</span></span><br><span class="line"><span class="keyword">var</span> alice = <span class="keyword">new</span> Student(<span class="string">'Alice'</span>, <span class="string">'100'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 克隆出的新对象</span></span><br><span class="line"><span class="keyword">var</span> anotherAlice = getClone(alice)</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log( anotherAlice.friends === alice.friends )   <span class="comment">// 期望值：'false'</span></span><br><span class="line"><span class="built_in">console</span>.log( anotherAlice.teachers === alice.teachers ) <span class="comment">// 期望值：'false'</span></span><br><span class="line"><span class="built_in">console</span>.log( anotherAlice.sayId )	                    <span class="comment">// 期望值：不是'undefined'</span></span><br><span class="line"><span class="built_in">console</span>.log( anotherAlice.sayClassId )	                <span class="comment">// 期望值：不是'undefined'</span></span><br></pre></td></tr></table></figure>
+<p>说明：若克隆成功的话：</p>
+<ul>
+<li>friends、teachers是引用类型，经过拷贝后，两者的地址不应该相等，所以期望返回false</li>
+<li>sayId、sayClassId是祖先上的属性，两者都能够继承到新对象上，所以期望不返回undefined</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/28/Vuex使用场合/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/28/Vuex使用场合/" itemprop="url">Vuex使用场合</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-28T21:21:21+08:00">
+                2018-05-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/24/移动端调试/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/24/移动端调试/" itemprop="url">移动端调试</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-24T09:34:00+08:00">
+                2018-05-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>移动端调试的方式有以下几种：</p>
+<ul>
+<li>Chrome DevTools</li>
+<li>Mac Safari + iOS Safari</li>
+<li>weinre（Web Inspector Remote）</li>
+<li>vConsole</li>
+<li>抓包工具：Charles（Mac）/Fiddler（Win）</li>
+<li>ngrok</li>
+<li>微信开发者工具</li>
+<li>TBS：安卓x5内核</li>
+</ul>
+<p>// To be continued…</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/10/从Dialog理解v-model/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -323,12 +887,18 @@
 <p>然而，这样就存在一个不足。我们印象中的对话框，点击【交叉按钮/确定按钮】后，一般都会先关闭对话框，再去回调用户（在这里指App这个父组件）的函数。但是，组件内部控制显隐的props是不可变的，即子组件内部并不能含有关闭自己的逻辑。所以上面的例子中，我们只能把本应该是对话框关闭自己的逻辑，转移到了父组件中：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// App.vue</span></span><br><span class="line"></span><br><span class="line">onDialogCancel () &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">this</span>.isShowDialog = <span class="literal">false</span>; <span class="comment">// 父组件写这一句来关掉对话框</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
 <p>这样是不大好的做法，因为首先这会造成父组件的职责不单一；而且父组件很可能会忘记写这一句话，导致对话框没有关掉。</p>
+<p>下面介绍三种思路来解决：</p>
+<ul>
+<li>使用v-model指令，进行双向绑定</li>
+<li>对属性使用sync修饰符，进行双向绑定</li>
+<li></li>
+</ul>
 <h2 id="使用v-model改进"><a href="#使用v-model改进" class="headerlink" title="使用v-model改进"></a>使用v-model改进</h2><p>梳理一下，现在的问题是：子组件（SimpleDialog）关闭的逻辑只能写在父组件（App）中，但是这又违背了我们的直觉。像这种貌似父组件、子组件都可以改变的属性，其实就是“双向绑定”，在Vue中可以通过v-model这个指令来完成。v-model指令的基本使用方式是：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 写法1：v-model写法</span><br><span class="line">&lt;input v-model=&quot;name&quot;&gt;</span><br><span class="line"></span><br><span class="line">// 写法2（等价的写法，但不推荐）：与属性、事件名耦合的写法</span><br><span class="line">&lt;input :value=&quot;name&quot; @change=&quot;name = $event.target.value&quot;&gt;</span><br></pre></td></tr></table></figure>
 <p>同时它也可以使用在自定义组件中，只要组件内部接收一个”value”的props，以及在适当的时候发射”change”事件，就可以完美地完成双向绑定。当然，不一定就要叫”value”、”change”，子组件内部可以通过定义model.prop和model.event特性来决定它们的名字（稍后的例子会说明）。</p>
 <p><strong>重点是，虽然目标属性还是在父组件中改变，但是v-model为我们省去了这一步，我们不用自己来写，所以看起来就像是子组件自己改变了。这才是v-model最大的优点。</strong></p>
 <p>回到我们讨论的问题上，我们对子组件作一下修改：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  name: <span class="string">'simple-dialog'</span>,</span><br><span class="line">+  model: &#123;</span><br><span class="line">+    prop: <span class="string">'show'</span>,</span><br><span class="line">+    event: <span class="string">'close'</span></span><br><span class="line">+  &#125;,</span><br><span class="line">  props: [<span class="string">'show'</span>, <span class="string">'title'</span>, <span class="string">'content'</span>],</span><br><span class="line">  methods: &#123;</span><br><span class="line">    onCancel (event) &#123;</span><br><span class="line">+      <span class="keyword">this</span>.$emit(<span class="string">'close'</span>); <span class="comment">// 在这里间接关闭了对话框，给我们感觉是子组件自己关闭的</span></span><br><span class="line">      <span class="keyword">this</span>.$emit(<span class="string">'cancel'</span>); <span class="comment">// 随后触发用户回调</span></span><br><span class="line">    &#125;,</span><br><span class="line">    onConfirm (event) &#123;</span><br><span class="line">+      <span class="keyword">this</span>.$emit(<span class="string">'close'</span>); <span class="comment">// 同理。数据流：event('close') up =&gt; 父组件改变 =&gt; prop('show') down</span></span><br><span class="line">      <span class="keyword">this</span>.$emit(<span class="string">'confirm'</span>); <span class="comment">// 随后触发用户回调</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  name: <span class="string">'simple-dialog'</span>,</span><br><span class="line">+  model: &#123;</span><br><span class="line">+    prop: <span class="string">'show'</span>,</span><br><span class="line">+    event: <span class="string">'close'</span></span><br><span class="line">+  &#125;,</span><br><span class="line">  props: [<span class="string">'show'</span>, <span class="string">'title'</span>, <span class="string">'content'</span>],</span><br><span class="line">  methods: &#123;</span><br><span class="line">    onCancel (event) &#123;</span><br><span class="line">+      <span class="keyword">this</span>.$emit(<span class="string">'close'</span>, <span class="literal">false</span>); <span class="comment">// 在这里间接关闭了对话框，给我们感觉是子组件自己关闭的</span></span><br><span class="line">      <span class="keyword">this</span>.$emit(<span class="string">'cancel'</span>); <span class="comment">// 随后触发用户回调</span></span><br><span class="line">    &#125;,</span><br><span class="line">    onConfirm (event) &#123;</span><br><span class="line">+      <span class="keyword">this</span>.$emit(<span class="string">'close'</span>, <span class="literal">false</span>); <span class="comment">// 同理。数据流：event('close') up =&gt; 父组件改变 =&gt; prop('show') down</span></span><br><span class="line">      <span class="keyword">this</span>.$emit(<span class="string">'confirm'</span>); <span class="comment">// 随后触发用户回调</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>同时也修改下父组件，不必再显式地修改”isShowDialog”：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&lt;simple-dialog </span><br><span class="line">-	 :show=<span class="string">"isShowDialog"</span></span><br><span class="line">+    v-model=<span class="string">"isShowDialog"</span></span><br><span class="line">    title=<span class="string">"提示"</span> </span><br><span class="line">    @cancel=<span class="string">"onDialogCancel"</span> </span><br><span class="line">    @confirm=<span class="string">"onDialogConfirm"</span></span><br><span class="line">&gt;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  components: &#123;</span><br><span class="line">    SimpleDialog</span><br><span class="line">  &#125;,</span><br><span class="line">  name: <span class="string">'app'</span>,</span><br><span class="line">  data () &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      isShowDialog: <span class="literal">false</span>,</span><br><span class="line">      action: <span class="string">'无动作'</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    onDialogCancel () &#123;</span><br><span class="line">      <span class="keyword">this</span>.action = <span class="string">'点击了取消'</span>;</span><br><span class="line">-      <span class="comment">// this.isShowDialog = false;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    onDialogConfirm () &#123;</span><br><span class="line">      <span class="keyword">this</span>.action = <span class="string">'点击了确定'</span>;</span><br><span class="line">-      <span class="comment">// this.isShowDialog = false;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这样一来，我们就从写法上，解决了我们的问题（虽然似乎本质上并没有解决什么）。</p>
@@ -339,685 +909,14 @@
 <li>子组件通过发射事件，间接地修改数据。即”event up”。</li>
 <li>最大的优点看起来只是少写了一些代码，但由于屏蔽了父组件监听的逻辑，而这个逻辑通常是没有必要手动去写的，所以实现了父组件职责的单一性；同时也保持了”容器组件与展示组件”的理念。</li>
 </ul>
+<h2 id="使用sync修饰符改进"><a href="#使用sync修饰符改进" class="headerlink" title="使用sync修饰符改进"></a>使用sync修饰符改进</h2><p>看过Vue官方文档的话应该知道，sync是v-model的升级版，因为v-model只能双向绑定某个属性，而sync可以对任意多个属性进行绑定。所以上面的思路也可以使用sync这种方式去实现。</p>
+<p>将v-model改为如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// App.vue</span></span><br><span class="line"></span><br><span class="line">&lt;simple-dialog</span><br><span class="line">-      v-model=<span class="string">"isShowDialog"</span></span><br><span class="line">+      :show.sync=<span class="string">"isShowDialog"</span></span><br></pre></td></tr></table></figure>
+<p>然后将event的名字改为”update:变量名”：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SimpleDialog.vue</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  methods: &#123;</span><br><span class="line">    onCancel (event) &#123;</span><br><span class="line">-      <span class="keyword">this</span>.$emit(<span class="string">'close'</span>, <span class="literal">false</span>)</span><br><span class="line">+      <span class="keyword">this</span>.$emit(<span class="string">'update:show'</span>, <span class="literal">false</span>)</span><br><span class="line">      <span class="keyword">this</span>.$emit(<span class="string">'cancel'</span>)</span><br><span class="line">    &#125;,</span><br><span class="line">    onConfirm (event) &#123;</span><br><span class="line">-      <span class="keyword">this</span>.$emit(<span class="string">'close'</span>, <span class="literal">false</span>)</span><br><span class="line">+      <span class="keyword">this</span>.$emit(<span class="string">'update:show'</span>, <span class="literal">false</span>)</span><br><span class="line">      <span class="keyword">this</span>.$emit(<span class="string">'confirm'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其实就是在写法上，v-model与sync的小小区别，它们的作用是一样的，也没什么好说的了。</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://cn.vuejs.org/v2/guide/components-custom-events.html#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BB%84%E4%BB%B6%E7%9A%84-v-model" target="_blank" rel="noopener">自定义组件的-v-model</a></p>
 <p><a href="https://cn.vuejs.org/v2/guide/components-custom-events.html#sync-%E4%BF%AE%E9%A5%B0%E7%AC%A6" target="_blank" rel="noopener">sync-修饰符</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/Vue_methods_computed_watch/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JK">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="大肥凯">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/05/Vue_methods_computed_watch/" itemprop="url">Vue：methods|computed|watch的比较</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-05T00:00:00+08:00">
-                2018-05-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ul>
-<li>methods：每次重渲染必定会执行至少一遍。</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    methods: &#123;</span><br><span class="line">        activeValue() &#123;</span><br><span class="line">            <span class="comment">// 每次re-render都会执行</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用的时候就要调用一下</span></span><br><span class="line">&lt;div&gt;&#123;&#123; activeValue() &#125;&#125;&lt;<span class="regexp">/div&gt;</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>computed：有缓存，当属性的计算比较耗时的时候，就体现出比methods更多的优势。而与watch相比，有“声明式”的优点。<ul>
-<li>get：作用响应某些data的改动。回调时机与一般的get不同：只有当监听的数据有修改，并且数据的newValue不等于oldValue时，该get函数才会执行；同时把结果缓存，之后每次读取当前变量，都返回这个缓存值。<ul>
-<li>set(newVal)：与get相对。回调时机与一般的set一样，只要给当前变量赋值就会回调该set函数（即使赋同样的值，也会回调）。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    computed: &#123;</span><br><span class="line">        <span class="string">'activeValue'</span>: &#123;</span><br><span class="line">            get() &#123;</span><br><span class="line">                </span><br><span class="line">            &#125;,</span><br><span class="line">            set(newValue) &#123;</span><br><span class="line">                </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<ul>
-<li>watch：可以看作是computed的“AngularJS版本”（命令式）。与computed的get的作用一样，并且回调时机也一样：只有监听的数据变化并且newValue!==oldValue时。不同的是，它可以取到oldValue：</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    watch: &#123;</span><br><span class="line">        <span class="string">'activeValue'</span>: <span class="function"><span class="keyword">function</span> (<span class="params">newValue, oldValue</span>) </span>&#123;</span><br><span class="line">            <span class="comment">// newValue、oldValue分别是新值、旧值</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/TODO_HTML元素的位置属性/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JK">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="大肥凯">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/05/TODO_HTML元素的位置属性/" itemprop="url">HTML元素的位置属性</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-05T00:00:00+08:00">
-                2018-05-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="offset"><a href="#offset" class="headerlink" title="offset-*"></a>offset-*</h2><p>获取偏移量，参照物是“offsetParent”：</p>
-<ul>
-<li>offsetParent：最近的“定位”（position属性不等于static）的祖先元素（MDN的描述是“closest positioned containing element”）。x`</li>
-<li>offsetTop／offsetLeft：相对于offsetParent的top／left的距离（像素数）。</li>
-<li>offsetWidth／offsetHeight：</li>
-</ul>
-<p>该属性有以下特点：</p>
-<ol>
-<li>偏移量是“静态”的，是初始状态下的元素间的相对距离，之后也不会随滚动而变化。</li>
-<li>根据offsetParent的定义可知：对于某个元素，当它的position=absolute时，offsetTop／offsetLeft与CSS中的top／left相对应。</li>
-</ol>
-<h2 id="scroll"><a href="#scroll" class="headerlink" title="scroll-*"></a>scroll-*</h2><p>获取滚动量。HTML中产生滚动的条件是：</p>
-<ol>
-<li>子元素的高度／宽度大于父元素；</li>
-<li>父元素的overflow属性为scroll。</li>
-</ol>
-<p>比如说一个垂直滚动，就可以看作是：高度有限的父元素（局部viewport）在一个很高的子元素中上下移动，所以scrollTop表示的是父元素的top相对于子元素的top的距离，所以我们获取竖直滚动距离时，会这样做：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> scrollTop = child.scrollTop; <span class="comment">// 错</span></span><br><span class="line"><span class="keyword">var</span> scrollTop = parent.scrollTop; <span class="comment">// 对</span></span><br></pre></td></tr></table></figure>
-<p>它也有类似的集合：</p>
-<ul>
-<li>scrollTop／scrollLeft：父元素的top相对于子元素的top的距离。</li>
-<li>scrollWidth／scrollHeight：padding盒子的度，包括在overflow=[scroll|hidden]下折叠的部分，不包括滚动条。</li>
-</ul>
-<p>BTW，onscroll函数也是绑定在parent上，而不是child上。</p>
-<h2 id="element-getBoundingClientRect"><a href="#element-getBoundingClientRect" class="headerlink" title="element.getBoundingClientRect()"></a>element.getBoundingClientRect()</h2><p>获取一个对象，表示当前元素相对于viewport的位置信息。该对象含有top、left等属性。与scroll-*类似，都是在滚动的过程中不断变化着的。常见的用途是在“图片懒加载”（lazyload）中判断元素是否可见。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> rect = element.getBoundingClientRect();</span><br><span class="line"><span class="built_in">console</span>.log(rect);</span><br></pre></td></tr></table></figure>
-<p>随便找个结果：</p>
-<p><img src="/var/folders/xy/2t85m_ts1rq990rd9n_3b_z80000gp/T/abnerworks.Typora/image-20180419165236440.png" alt="image-20180419165236440"></p>
-<h1 id="client"><a href="#client" class="headerlink" title="client-*"></a>client-*</h1>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/TODO_NPM全局路径/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JK">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="大肥凯">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/05/TODO_NPM全局路径/" itemprop="url">NPM全局路径</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-05T00:00:00+08:00">
-                2018-05-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><img src="/var/folders/xy/2t85m_ts1rq990rd9n_3b_z80000gp/T/abnerworks.Typora/image-20180424165732930.png" alt="image-20180424165732930"></p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.npmjs.com.cn/files/folders/" target="_blank" rel="noopener">folders | npm 中文文档</a></p>
-<p><a href="https://www.npmjs.com.cn/misc/config/#global" target="_blank" rel="noopener">config | npm 中文文档</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/TODO_Throttle与Debounce/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JK">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="大肥凯">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/05/TODO_Throttle与Debounce/" itemprop="url">Throttle（节流）与Debounce（防抖动）</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-05T00:00:00+08:00">
-                2018-05-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>​    DOM API提供了许多基于事件监听的回调函数，我们可以赋值（或追加）自己的操作，比如点击事件：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> app = <span class="built_in">document</span>.getElementById(<span class="string">'app'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// DOM0 API</span></span><br><span class="line">app.onclick = <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 用户交互逻辑</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// DOM2 API</span></span><br><span class="line">app.addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 用户交互逻辑</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>​    像click这样的事件，它设计成用户每点击一次，就回调一次。而另外有些事件是频繁回调的，比如：onresize（窗口大小改变事件）、onscroll（滚动事件）、ontouchmove（移动端触摸移动事件）等：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">'resize'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'resize'</span>);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>​    这样，用户对浏览器窗口进行放缩的时候，控制台就会不断打印“resize”；可能缩放一点点，就会打印出几十个，说明resize事件回调的频率还是很高的。如果我们这里不是简单地打印字符串，而是一些耗时操作，那么JS主线程就会出现类似于“阻塞”的现象，表现为用户界面卡顿，不能很快响应之后的操作了。</p>
-<p>​    用户是无法对DOM事件回调的频率进行更改的，所以我们只能限制用户交互部分的逻辑发生的频率。而这时候，节流、防抖动就可以派上用场了。它们一般来说会（利用闭包）设计成高阶函数，返回一个新的用户函数，并且在内部限制了频率；至于怎么限制，则有很多种实现方式。总体上，我们期望的样子是（拿throttle来说）：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> myCallback = <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'resize'</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">myCallback = throttle(myCallback, <span class="number">150</span>); <span class="comment">// 参数‘150’是限制‘myCallback’的触发间隔</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">'resize'</span>, myCallback);</span><br></pre></td></tr></table></figure>
-<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="Debounce：防抖动"><a href="#Debounce：防抖动" class="headerlink" title="Debounce：防抖动"></a>Debounce：防抖动</h3><p>​    防抖动最显著的特点是，把某个时间段内的多次操作合为一次回调，并且取的是最后的那一次操作。而且：</p>
-<ul>
-<li>当频繁操作时，一次都不会回调；<ul>
-<li>当结束频繁操作时，会在${wait}时间后发生一次回调。</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Function</span>.prototype.debounce = <span class="function"><span class="keyword">function</span> (<span class="params">wait = <span class="number">100</span></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">const</span> func = <span class="keyword">this</span>;</span><br><span class="line">	<span class="keyword">let</span> timerId = <span class="literal">null</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (timerId) &#123;</span><br><span class="line">			<span class="comment">// 如果已经存在一个定时器，就先取消掉，稍后重新设一个</span></span><br><span class="line">			clearTimeout(timerId);</span><br><span class="line">		&#125;</span><br><span class="line">		timerId = setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">			func.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">		&#125;, wait);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Throttle：节流"><a href="#Throttle：节流" class="headerlink" title="Throttle：节流"></a>Throttle：节流</h3><p>​    节流的特点是，控制前后两次操作的时间间隔。并且：</p>
-<ul>
-<li>当频繁操作时，每 ${wait}时间发生一次回调；</li>
-<li>当结束频繁操作时，也是一样，看是否满足${wait}间隔。</li>
-</ul>
-<p>实现方式（1）：记录上一次回调的时间戳，然后每次想要回调时，检查是否满足{wait}时间间隔：如果大于${wait}，就触发，并更新时间戳；否则不触发。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 记录每次触发的时间戳</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="built_in">Function</span>.prototype.throttle = <span class="function"><span class="keyword">function</span> (<span class="params">wait = <span class="number">100</span></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">const</span> func = <span class="keyword">this</span>;</span><br><span class="line">	<span class="keyword">let</span> lastTriggerAt = <span class="number">0</span>; <span class="comment">// 上一次进行用户交互的时间点。初始值为0是为了第一次一定可以执行</span></span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">let</span> currentTime = <span class="built_in">Date</span>.now();</span><br><span class="line">		<span class="keyword">if</span> (currentTime - lastTriggerAt &gt; wait) &#123;</span><br><span class="line">			<span class="comment">// 满足最小间隔，进行</span></span><br><span class="line">			func.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">			<span class="comment">// 更新时间点</span></span><br><span class="line">			lastTriggerAt = currentTime;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>实现方式（2）：每次触发都设一个定时器（延后回调），当想要再次触发时检查是否已经存在有定时器：如果存在，就忽略；否则就设定一个定时器。不过同时延后回调也是一个小小的缺点。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 设定每次触发的定时器</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="built_in">Function</span>.prototype.throttle = <span class="function"><span class="keyword">function</span> (<span class="params">wait = <span class="number">100</span></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">const</span> func = <span class="keyword">this</span>;</span><br><span class="line">	<span class="keyword">let</span> timerId = <span class="literal">null</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (timerId) &#123; <span class="comment">// 如果已经有定时器在进行，就不管这次操作</span></span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 延时执行</span></span><br><span class="line">		timerId = setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">			<span class="comment">// 执行</span></span><br><span class="line">			func.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">			<span class="comment">// 清空定时器</span></span><br><span class="line">			clearTimeout(timerId);</span><br><span class="line">			timerId = <span class="literal">null</span>;</span><br><span class="line">		&#125;, wait);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://css-tricks.com/debouncing-throttling-explained-examples/" target="_blank" rel="noopener">Debouncing and Throttling Explained Through Examples | CSS-Tricks</a></p>
-<p>曾探《JavaScript设计模式与开发实践》：Chapter3.2.4 | 高阶函数的其他应用 | 3.函数节流</p>
-<p><a href="https://keelii.github.io/2016/06/11/javascript-throttle/?hmsr=toutiao.io&amp;utm_medium=toutiao.io&amp;utm_source=toutiao.io" target="_blank" rel="noopener">JavaScript 节流函数 Throttle 详解</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/JS快速创建数组/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JK">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="大肥凯">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/05/JS快速创建数组/" itemprop="url">JS快速创建数组</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-05T00:00:00+08:00">
-                2018-05-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="1-利用apply与fill实现"><a href="#1-利用apply与fill实现" class="headerlink" title="1 利用apply与fill实现"></a>1 利用apply与fill实现</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createArray</span>(<span class="params">length, initValue</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> </span><br><span class="line">		<span class="built_in">Array</span></span><br><span class="line">		.apply(<span class="literal">null</span>, &#123; length &#125;) <span class="comment">// 创建了长度为$&#123;length&#125;的数组，每一项(默认)为undefined</span></span><br><span class="line">		.fill(initValue); <span class="comment">// ES6新增API，把每一项覆盖为$&#123;initValue&#125;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="1-1-分析原理"><a href="#1-1-分析原理" class="headerlink" title="1.1 分析原理"></a>1.1 分析原理</h3><p>本质上是利用了Array构造函数的工作方式：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1、只有一个Int32型参数时，表示数组长度。但成员是没有定义的，每一个都是空的'slot'</span></span><br><span class="line"><span class="built_in">Array</span>(<span class="number">3</span>); <span class="comment">// [ , , , ]</span></span><br><span class="line"><span class="comment">// 等同于：</span></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3</span>);</span><br><span class="line"><span class="built_in">Array</span>.apply(<span class="literal">null</span>, <span class="number">3</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2、参数列表(spread)：依次作为数组成员</span></span><br><span class="line"><span class="built_in">Array</span>(<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>); <span class="comment">// [ 2, 3, 4 ]</span></span><br><span class="line"><span class="comment">// 等同于：</span></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>);</span><br><span class="line"><span class="built_in">Array</span>.apply(<span class="literal">null</span>, [<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3、apply的参数为类数组对象：按照给定的长度建立undefined数组，然后再根据给定的下标与值，来给成员赋特定值</span></span><br><span class="line"><span class="built_in">Array</span>.apply(<span class="literal">null</span>, &#123;</span><br><span class="line">	length: <span class="number">3</span>,</span><br><span class="line">	<span class="number">0</span>: <span class="string">'hello'</span>,</span><br><span class="line">	<span class="number">2</span>: <span class="string">'world'</span></span><br><span class="line">&#125;); <span class="comment">// ['hello', undefined, 'world']</span></span><br><span class="line"><span class="comment">// 然而这种方式与以下方式不等价（暂时不知道原因）：</span></span><br><span class="line"><span class="keyword">const</span> config = &#123;</span><br><span class="line">	length: <span class="number">3</span>,</span><br><span class="line">	<span class="number">0</span>: <span class="string">'hello'</span>,</span><br><span class="line">	<span class="number">2</span>: <span class="string">'world'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">Array</span>(config);	<span class="comment">// [&#123;...&#125;]</span></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Array</span>(config); <span class="comment">// [&#123;...&#125;]</span></span><br></pre></td></tr></table></figure>
-<h2 id="2-利用repeat实现"><a href="#2-利用repeat实现" class="headerlink" title="2 利用repeat实现"></a>2 利用repeat实现</h2><p>本质上是利用了字符串转换成数组：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createArray</span>(<span class="params">length, initValue</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">'0'</span>.repeat(length)  <span class="comment">// ES6新增API，制造一个长字符串</span></span><br><span class="line">			  .split(<span class="string">''</span>)	    <span class="comment">// 将长字符串分割成数组</span></span><br><span class="line">			  .fill(initValue); <span class="comment">// 再给初始值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="3-参考"><a href="#3-参考" class="headerlink" title="3 参考"></a>3 参考</h2><p><a href="https://stackoverflow.com/questions/28416547/difference-between-array-applynull-arrayx-and-arrayx" target="_blank" rel="noopener">javascript - Difference between Array.apply(null, Array(x) ) and Array(x) - Stack Overflow</a></p>
 
           
         
@@ -1218,7 +1117,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/Currying与Uncurrying/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/Vue_methods_computed_watch/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="JK">
@@ -1237,7 +1136,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/05/05/Currying与Uncurrying/" itemprop="url">Currying & Uncurrying：函数的(去)柯里化</a></h1>
+                <a class="post-title-link" href="/2018/05/05/Vue_methods_computed_watch/" itemprop="url">Vue：methods|computed|watch的比较</a></h1>
         
 
         <div class="post-meta">
@@ -1289,60 +1188,166 @@
       
         
           
-            <h2 id="Currying"><a href="#Currying" class="headerlink" title="Currying"></a>Currying</h2><p>​    所谓函数的柯里化（currying）是指，把一个“接受多个参数的函数”转换成“形参更少的函数”，即确认了部分参数。在JavaScript中，柯里化一般可以通过两种方式来实现：</p>
+            <h2 id="methods"><a href="#methods" class="headerlink" title="methods"></a>methods</h2><p>每次重渲染必定会执行至少一遍。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    methods: &#123;</span><br><span class="line">        activeValue() &#123;</span><br><span class="line">            <span class="comment">// 每次re-render都会执行</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用的时候就要调用一下</span></span><br><span class="line">&lt;div&gt;&#123;&#123; activeValue() &#125;&#125;&lt;<span class="regexp">/div&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="computed"><a href="#computed" class="headerlink" title="computed"></a>computed</h2><p>有缓存，当属性的计算比较耗时的时候，就体现出比methods更多的优势。而与watch相比，有“声明式”的优点。</p>
 <ul>
-<li>自己手写咯。</li>
+<li>get：作用响应某些data的改动。回调时机与一般的get不同：只有当监听的数据有修改，并且数据的newValue不等于oldValue时，该get函数才会执行；同时把结果缓存，之后每次读取当前变量，都返回这个缓存值。<ul>
+<li>set(newVal)：与get相对。回调时机与一般的set一样，只要给当前变量赋值就会回调该set函数（即使赋同样的值，也会回调）。</li>
 </ul>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    computed: &#123;</span><br><span class="line">        <span class="string">'activeValue'</span>: &#123;</span><br><span class="line">            get() &#123;</span><br><span class="line">                </span><br><span class="line">            &#125;,</span><br><span class="line">            set(newValue) &#123;</span><br><span class="line">                </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="watch"><a href="#watch" class="headerlink" title="watch"></a>watch</h2><p>可以看作是computed的“AngularJS版本”（命令式）。与computed的get的作用一样，并且回调时机也一样：只有监听的数据变化并且newValue!==oldValue时。不同的是，它可以取到oldValue：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    watch: &#123;</span><br><span class="line">        <span class="string">'activeValue'</span>: <span class="function"><span class="keyword">function</span> (<span class="params">newValue, oldValue</span>) </span>&#123;</span><br><span class="line">            <span class="comment">// newValue、oldValue分别是新值、旧值</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/TODO_HTML元素的位置属性/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/05/TODO_HTML元素的位置属性/" itemprop="url">HTML元素的位置属性</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-05T00:00:00+08:00">
+                2018-05-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="offset"><a href="#offset" class="headerlink" title="offset-*"></a>offset-*</h2><p>获取偏移量，参照物是“offsetParent”：</p>
 <ul>
-<li>更简单点，就借助Function.prototype.bind函数来实现。但是有需要注意的地方（稍后说）。</li>
+<li>offsetParent：最近的“定位”（position属性不等于static）的祖先元素（MDN的描述是“closest positioned containing element”）。x`</li>
+<li>offsetTop／offsetLeft：相对于offsetParent的top／left的距离（像素数）。</li>
+<li>offsetWidth／offsetHeight：</li>
 </ul>
-<p>比如下面的例子：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 简单的加法函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line">add(<span class="number">10</span>, <span class="number">15</span>); <span class="comment">// 25</span></span><br></pre></td></tr></table></figure>
-<p>现在函数接受2个参数，但假如我想要绑定第一个参数，实现一个“f(x) = 10 + x”的柯里化函数，那我可以这样做：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">addBy</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">b</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a + b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 或者更简单地，使用ES6的箭头函数（自己可以琢磨下</span></span><br><span class="line"><span class="keyword">var</span> addBy = <span class="function"><span class="params">a</span> =&gt;</span> b =&gt; a + b;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> add10 = addBy(<span class="number">10</span>); <span class="comment">// 这就实现了柯里化函数：add10</span></span><br><span class="line">add10(<span class="number">1</span>); <span class="comment">// 11</span></span><br></pre></td></tr></table></figure>
-<p>如果借助bind，就更简单了，因为可以直接在已有的add函数的基础上修改：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> add10 = add.bind(<span class="literal">null</span>, <span class="number">10</span>); <span class="comment">// bind的第一个参数是函数执行的this，这里无关紧要，传null</span></span><br><span class="line">add10(<span class="number">1</span>); <span class="comment">// 11</span></span><br></pre></td></tr></table></figure>
-<p>不过使用bind的方式进行柯里化，有两个需要注意的地方，其实是bind函数本身的注意点：</p>
-<ul>
-<li>第一个参数，始终是函数执行时内部的this，之后的参数才会一个接一个对应着形参。</li>
-<li>第一个参数不能重复绑定。</li>
-</ul>
-<p>我们可以进行验证：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`当前的this指向的是：<span class="subst">$&#123;<span class="keyword">this</span>&#125;</span>`</span>);</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> someObj = &#123; </span><br><span class="line">    toString() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'某个对象'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> add10 = add.bind(<span class="built_in">window</span>, <span class="number">10</span>); <span class="comment">// 柯里化后得到add10，内部this指向window</span></span><br><span class="line">add10(<span class="number">5</span>); <span class="comment">// window 15</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> sum15 = add10.bind(someObj, <span class="number">5</span>); <span class="comment">// 再进行柯里化。这里想要再次绑定someObj，是无效的。</span></span><br><span class="line">sum15(); <span class="comment">// 依然是window，然后返回15</span></span><br></pre></td></tr></table></figure>
-<h2 id="Uncurrying"><a href="#Uncurrying" class="headerlink" title="Uncurrying"></a>Uncurrying</h2><p>​    与之相对的概念是uncurrying，即“去柯里化”。顾名思义，就是把已经确定了的参数“脱离”开。一般用于<strong>对某些内置方法的借用</strong>。最常见的应用，就是让“类数组对象”（array-like object）使用数组的内置方法。所谓的类数组对象，就是满足以下条件的对象：</p>
+<p>该属性有以下特点：</p>
 <ol>
-<li><p>具有length属性；</p>
-</li>
-<li><p><del>可以通过下标访问</del> 。比如：</p>
-<ul>
-<li>函数内部（执行期间）的arguments对象</li>
-<li>document.querySelectorAll()返回的NodeList对象</li>
-<li>document.getElementsByTagName()返回的HTMLCollection对象</li>
-<li>$(‘…’)返回的jQuery对象，等等……</li>
-</ul>
-<p>举个uncurrying的例子：对于arguments对象，我们假如想要截取前面的一部分，我们会这样使用slice方法：</p>
-</li>
+<li>偏移量是“静态”的，是初始状态下的元素间的相对距离，之后也不会随滚动而变化。</li>
+<li>根据offsetParent的定义可知：对于某个元素，当它的position=absolute时，offsetTop／offsetLeft与CSS中的top／left相对应。</li>
 </ol>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">get_leftmost_3_elements</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>, <span class="number">0</span>, <span class="number">3</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">get_leftmost_3_elements(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>); <span class="comment">// [1,2,3]</span></span><br></pre></td></tr></table></figure>
-<p>​    arguments对象不是数组，因而没有slice方法，但是我们可以“借用”数组的slice方法，即通过apply，“强行”把slice方法作用在arguments上。而因为JS语言本身的鸭子类型（duck type）机制，slice可以完美地在arguments对象上作用，产生期望的结果。</p>
-<p>​    再举个相似的例子：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> array_like_object = &#123;</span><br><span class="line">    length: <span class="number">3</span>,</span><br><span class="line">    <span class="number">0</span>: <span class="number">100</span>,</span><br><span class="line">    <span class="number">1</span>: <span class="number">200</span>,</span><br><span class="line">    <span class="number">2</span>: <span class="number">300</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">[].slice.call(array_like_object, <span class="number">0</span>, <span class="number">2</span>); <span class="comment">// [100, 200]</span></span><br><span class="line">[].slice.call(array_like_object, <span class="number">2</span>); <span class="comment">// [300]</span></span><br></pre></td></tr></table></figure>
-<p>​    （1）如果，我想使用下面这种OOP的方式来调用：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">array_like_object.slice(<span class="number">0</span>, <span class="number">2</span>); <span class="comment">// 期望结果：[100, 200]</span></span><br><span class="line">array_like_object.slice(<span class="number">2</span>); <span class="comment">// 期望结果：[300]</span></span><br></pre></td></tr></table></figure>
-<p>​    我们就可以使用uncurrying去实现：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.prototype.slice = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">this</span>.hasOwnProperty(<span class="string">'length'</span>)) &#123;<span class="comment">// 如果不是类数组对象</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'不是类数组对象！'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// this就是调用slice的类数组对象，这里将它作为借用slice时的上下文</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Array</span>.prototype.slice.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">array_like_object.slice(<span class="number">0</span>, <span class="number">2</span>); <span class="comment">// [100, 200]</span></span><br><span class="line">array_like_object.slice(<span class="number">2</span>); <span class="comment">// [300]</span></span><br></pre></td></tr></table></figure>
-<p>​    （2）而如果，我想定义一个（全局的）slice函数，以过程式的方式来调用：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">slice(array_like_object, <span class="number">0</span>, <span class="number">2</span>); <span class="comment">// 期望结果：[100, 200]</span></span><br><span class="line">slice(array_like_object, <span class="number">2</span>); <span class="comment">// 期望结果：[300]</span></span><br></pre></td></tr></table></figure>
-<p>​    那么我就可以这样做：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 原理：把之后将要接受的第一个参数作为调用slice的context */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">slice</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> context = [].shift.call(<span class="built_in">arguments</span>); <span class="comment">// arguments[0]作为之后调用时的上下文</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Array</span>.prototype.slice.apply(context, <span class="built_in">arguments</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">slice(array_like_object, <span class="number">0</span>, <span class="number">2</span>); <span class="comment">// [100, 200]</span></span><br><span class="line">slice(array_like_object, <span class="number">2</span>); <span class="comment">// [300]</span></span><br></pre></td></tr></table></figure>
-<p>​    或者换一个思路，这样做：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> unboundSlice = <span class="built_in">Array</span>.prototype.slice;</span><br><span class="line"><span class="keyword">var</span> slice = <span class="built_in">Function</span>.prototype.call.bind(unboundSlice); <span class="comment">// 关键代码(有点难理解)，下面有说明</span></span><br><span class="line"></span><br><span class="line">slice(array_like_object, <span class="number">0</span>, <span class="number">2</span>); <span class="comment">// [100, 200]</span></span><br><span class="line">slice(array_like_object, <span class="number">2</span>); <span class="comment">// [300]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 原理：</span></span><br><span class="line"><span class="comment">* 正常情况下，我们需要：</span></span><br><span class="line"><span class="comment">*	var result = unboundSlice.call(array_like_object, 0, 2);</span></span><br><span class="line"><span class="comment">* 我们的目的是省略掉“.call”这部分。</span></span><br><span class="line"><span class="comment">* 重点来了：</span></span><br><span class="line"><span class="comment">* 本来unboundSlice是个函数，但函数也是个对象，</span></span><br><span class="line"><span class="comment">* 所以可以把unboundSlice看作是对象（上下文），call是它的实例方法，那么其实等同于：</span></span><br><span class="line"><span class="comment">*	call.call(array_like_object, 0, 2)</span></span><br><span class="line"><span class="comment">* 即：</span></span><br><span class="line"><span class="comment">*	var result = Function.prototype.call.call(array_like_object, 0, 2);</span></span><br><span class="line"><span class="comment">* 我们想返回一个函数，还不是马上调用，就换成bind即：</span></span><br><span class="line"><span class="comment">*	var slice = Function.prototype.call.bind(array_like_object, 0, 2);</span></span><br><span class="line"><span class="comment">* 这就是那句关键代码的由来。</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
-<p>​    最后，我们定义一个高阶函数：uncurrying，以总结去柯里化的两种方式：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 去柯里化</span></span><br><span class="line"><span class="comment">* @param &#123;fn&#125; 要进行去柯里化的函数</span></span><br><span class="line"><span class="comment">* @return 一个新的函数</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">uncurrying</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> context = [].shift.call(<span class="built_in">arguments</span>);</span><br><span class="line">        <span class="keyword">return</span> fn.apply(context, <span class="built_in">arguments</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 或者</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">uncurrying</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> call = <span class="built_in">Function</span>.prototype.call;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> call.apply(fn, <span class="built_in">arguments</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> array_like_object = &#123; <span class="attr">length</span>: <span class="number">3</span>, <span class="number">0</span>: <span class="string">'zero'</span>, <span class="number">1</span>: <span class="string">'one'</span>, <span class="number">2</span>: <span class="string">'two'</span> &#125;;</span><br><span class="line"><span class="keyword">var</span> slice = uncurrying( <span class="built_in">Array</span>.prototype.slice );</span><br><span class="line">slice(array_like_object, <span class="number">2</span>); <span class="comment">// ['two']</span></span><br></pre></td></tr></table></figure>
-<h2 id="后语"><a href="#后语" class="headerlink" title="后语"></a>后语</h2><p>​    函数的柯里化、去柯里化可以说是进阶的内容，可以帮助我们更好地理解JS中bind／call／apply方法的作用，以及应用到一些重要的场合，是非常值得掌握的知识点。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>曾探《JavaScript设计模式与开发实践》：Chapter3.2.4 高级函数的其他应用</p>
-<p><a href="https://www.smashingmagazine.com/2014/01/understanding-javascript-function-prototype-bind/" target="_blank" rel="noopener">Understanding JavaScript Bind () — Smashing Magazine</a></p>
-
+<h2 id="scroll"><a href="#scroll" class="headerlink" title="scroll-*"></a>scroll-*</h2><p>获取滚动量。HTML中产生滚动的条件是：</p>
+<ol>
+<li>子元素的高度／宽度大于父元素；</li>
+<li>父元素的overflow属性为scroll。</li>
+</ol>
+<p>比如说一个垂直滚动，就可以看作是：高度有限的父元素（局部viewport）在一个很高的子元素中上下移动，所以scrollTop表示的是父元素的top相对于子元素的top的距离，所以我们获取竖直滚动距离时，会这样做：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> scrollTop = child.scrollTop; <span class="comment">// 错</span></span><br><span class="line"><span class="keyword">var</span> scrollTop = parent.scrollTop; <span class="comment">// 对</span></span><br></pre></td></tr></table></figure>
+<p>它也有类似的集合：</p>
+<ul>
+<li>scrollTop／scrollLeft：父元素的top相对于子元素的top的距离。</li>
+<li>scrollWidth／scrollHeight：padding盒子的度，包括在overflow=[scroll|hidden]下折叠的部分，不包括滚动条。</li>
+</ul>
+<p>BTW，onscroll函数也是绑定在parent上，而不是child上。</p>
+<h2 id="element-getBoundingClientRect"><a href="#element-getBoundingClientRect" class="headerlink" title="element.getBoundingClientRect()"></a>element.getBoundingClientRect()</h2><p>获取一个对象，表示当前元素相对于viewport的位置信息。该对象含有top、left等属性。与scroll-*类似，都是在滚动的过程中不断变化着的。常见的用途是在“图片懒加载”（lazyload）中判断元素是否可见。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> rect = element.getBoundingClientRect();</span><br><span class="line"><span class="built_in">console</span>.log(rect);</span><br></pre></td></tr></table></figure>
+<p>随便找个结果：</p>
+<p><img src="/var/folders/xy/2t85m_ts1rq990rd9n_3b_z80000gp/T/abnerworks.Typora/image-20180419165236440.png" alt="image-20180419165236440"></p>
+<h1 id="client"><a href="#client" class="headerlink" title="client-*"></a>client-*</h1>
           
         
       
@@ -1390,7 +1395,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/浏览器本地存储/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/JS快速创建数组/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="JK">
@@ -1409,7 +1414,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/05/05/浏览器本地存储/" itemprop="url">浏览器本地存储</a></h1>
+                <a class="post-title-link" href="/2018/05/05/JS快速创建数组/" itemprop="url">JS快速创建数组</a></h1>
         
 
         <div class="post-meta">
@@ -1461,34 +1466,12 @@
       
         
           
-            <p>​    Web本地存储有三种方式，分别是：cookie、sessionStorage、localStorage。</p>
-<h2 id="cookie"><a href="#cookie" class="headerlink" title="cookie"></a>cookie</h2><p>​    cookie存在于浏览器端，但它对应于服务端的某个session，主要作用是给无状态的（stateless）HTTP通信维护一个特定用户状态，使服务端根据其中的KV对来“记住”某个用户。它具有以下特点：</p>
-<ul>
-<li>存储内容：存储的是KV对，每个KV对可以指定：key、value、expires、domain、path、secure、httponly等属性：<ul>
-<li>key、value：指定KV对的内容，是必填项。比如：”name=Bob”。</li>
-<li>expires：指定cookie过期的时间点，遵循格式【Wdy, DD Mon yyyy HH:MM:SS GMT】。比如：”expires=Sat, 30 Mar 2017 21:15:20”。</li>
-<li>domain：指定当前cookie发送到哪个域中，等请求那个域时进行尾部比较，如果满足就可以带上；可以用来扩充cookie应用的域。默认值是当前域名。另外，cookie原本只能在协议、域名、端口都相同即“同源”的情况下才能共享，但二级域名相同的站点，可以通过这种方式，实现cookie的共享。比如：浏览器向”a.some.com”发送请求后，如果（主动／被动）设置了某个KV对的domain为“.some.com”，那么浏览器随后向“b.some.com”请求时，将会允许带上该KV对。</li>
-<li>path：与domain类似，指定发送cookie需要满足的路径，但只有domain通过了验证，才会继续验证path。比如“path=/user”，只有在请求”${domain}/user”这样的站点时才发送当前cookie。</li>
-<li>secure：指定当前KV对只在SSL/HTTPS的请求中才会发送。这是一个标记/布尔值，不需要值：”name=Bob; secure”。然而，这个标志并不能给cookie带来安全性，CH/FF 52开始不支持它了。</li>
-<li>httponly：指定当前KV对不能通过JS API即document.cookie访问/修改，而只能通过服务器修改，浏览器端只能单纯地传输。主要用以防止XSS（cross-site scripting）。</li>
-</ul>
-</li>
-<li>存储数量：有“个数”上的限制，而个数取决于每种浏览器的不同实现。</li>
-<li>存在位置：作为header之一，存在于HTTP请求报文中。服务端通过在（第一次？）返回报文中设置Set-Cookie这个header，来给浏览器设置cookie，以后的每一次请求，请求报文都会携带上Cookie这个header。</li>
-<li>作用时长：通过给KV对指定max-age、expires等属性。如果不指定，默认是“会话级”（cookie的一个会话存在于一个浏览器进程）。</li>
-</ul>
-<h2 id="localStorage-sessionStorage"><a href="#localStorage-sessionStorage" class="headerlink" title="localStorage/sessionStorage"></a>localStorage/sessionStorage</h2><p>​    Storage存在于浏览器端，与服务器没有直接联系。作为HTML5 API，它提供严谨的方式来操作本地数据。主要作用是在客户端本地存储大量数据，它具有以下特点：</p>
-<ul>
-<li>存储内容：存储的也是KV对。这里要注意，setItem的第二个参数、以及getItem的返回值，都应该是一个字符串。所以，有时候需要配合JSON.stringify、JSON.parse这两个函数使用，因为通常而言，object需要序列化后才能放进Storage，而从Storage取出的string需要反序列化成对象以进一步使用。</li>
-<li>存储数量：有“空间”上的限制，而这个空间多大也是取决于每种浏览器的不同实现。</li>
-<li>存在位置：浏览器。</li>
-<li>作用时长：<ul>
-<li>localStorage是永久有效，除非用户使用浏览器工具、或写JS脚本删除。</li>
-<li>sessionStorage是”会话级“存储，注意这里的会话级，在时间上比cookie的会话级还要短，一般它不能跨标签（除非使用target=_blank跳转）。</li>
-</ul>
-</li>
-</ul>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies" target="_blank" rel="noopener">HTTP cookies - HTTP | MDN</a><br><a href="https://zhuanlan.zhihu.com/p/31656937?utm_medium=social&amp;utm_source=ZHShareTargetIDMore" target="_blank" rel="noopener">关于客户端存储的前端面试题总结</a><br><a href="http://bubkoo.com/2014/04/21/http-cookies-explained/" target="_blank" rel="noopener">HTTP cookies 详解 | bubkoo</a><br><a href="https://zhuanlan.zhihu.com/p/31404516" target="_blank" rel="noopener">同样是客户端会话级存储，sessionStorage和session cookie有什么？</a></p>
+            <h2 id="1-利用apply与fill实现"><a href="#1-利用apply与fill实现" class="headerlink" title="1 利用apply与fill实现"></a>1 利用apply与fill实现</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createArray</span>(<span class="params">length, initValue</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> </span><br><span class="line">		<span class="built_in">Array</span></span><br><span class="line">		.apply(<span class="literal">null</span>, &#123; length &#125;) <span class="comment">// 创建了长度为$&#123;length&#125;的数组，每一项(默认)为undefined</span></span><br><span class="line">		.fill(initValue); <span class="comment">// ES6新增API，把每一项覆盖为$&#123;initValue&#125;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="1-1-分析原理"><a href="#1-1-分析原理" class="headerlink" title="1.1 分析原理"></a>1.1 分析原理</h3><p>本质上是利用了Array构造函数的工作方式：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1、只有一个Int32型参数时，表示数组长度。但成员是没有定义的，每一个都是空的'slot'</span></span><br><span class="line"><span class="built_in">Array</span>(<span class="number">3</span>); <span class="comment">// [ , , , ]</span></span><br><span class="line"><span class="comment">// 等同于：</span></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3</span>);</span><br><span class="line"><span class="built_in">Array</span>.apply(<span class="literal">null</span>, <span class="number">3</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2、参数列表(spread)：依次作为数组成员</span></span><br><span class="line"><span class="built_in">Array</span>(<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>); <span class="comment">// [ 2, 3, 4 ]</span></span><br><span class="line"><span class="comment">// 等同于：</span></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>);</span><br><span class="line"><span class="built_in">Array</span>.apply(<span class="literal">null</span>, [<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3、apply的参数为类数组对象：按照给定的长度建立undefined数组，然后再根据给定的下标与值，来给成员赋特定值</span></span><br><span class="line"><span class="built_in">Array</span>.apply(<span class="literal">null</span>, &#123;</span><br><span class="line">	length: <span class="number">3</span>,</span><br><span class="line">	<span class="number">0</span>: <span class="string">'hello'</span>,</span><br><span class="line">	<span class="number">2</span>: <span class="string">'world'</span></span><br><span class="line">&#125;); <span class="comment">// ['hello', undefined, 'world']</span></span><br><span class="line"><span class="comment">// 然而这种方式与以下方式不等价（暂时不知道原因）：</span></span><br><span class="line"><span class="keyword">const</span> config = &#123;</span><br><span class="line">	length: <span class="number">3</span>,</span><br><span class="line">	<span class="number">0</span>: <span class="string">'hello'</span>,</span><br><span class="line">	<span class="number">2</span>: <span class="string">'world'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">Array</span>(config);	<span class="comment">// [&#123;...&#125;]</span></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Array</span>(config); <span class="comment">// [&#123;...&#125;]</span></span><br></pre></td></tr></table></figure>
+<h2 id="2-利用repeat实现"><a href="#2-利用repeat实现" class="headerlink" title="2 利用repeat实现"></a>2 利用repeat实现</h2><p>本质上是利用了字符串转换成数组：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createArray</span>(<span class="params">length, initValue</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">'0'</span>.repeat(length)  <span class="comment">// ES6新增API，制造一个长字符串</span></span><br><span class="line">			  .split(<span class="string">''</span>)	    <span class="comment">// 将长字符串分割成数组</span></span><br><span class="line">			  .fill(initValue); <span class="comment">// 再给初始值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-参考"><a href="#3-参考" class="headerlink" title="3 参考"></a>3 参考</h2><p><a href="https://stackoverflow.com/questions/28416547/difference-between-array-applynull-arrayx-and-arrayx" target="_blank" rel="noopener">javascript - Difference between Array.apply(null, Array(x) ) and Array(x) - Stack Overflow</a></p>
 
           
         
@@ -1537,7 +1520,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/清除浮动/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/TODO_NPM全局路径/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="JK">
@@ -1556,7 +1539,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/05/05/清除浮动/" itemprop="url">清除浮动的几种思路</a></h1>
+                <a class="post-title-link" href="/2018/05/05/TODO_NPM全局路径/" itemprop="url">NPM全局路径</a></h1>
         
 
         <div class="post-meta">
@@ -1608,13 +1591,9 @@
       
         
           
-            <p>​    浮动元素会脱离文档流，使得容器不能撑开从而影响布局，我们需要清除浮动。比如一个简单的HTML部分：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"container"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"left"</span>&gt;</span>This is left<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"right"</span>&gt;</span>This is right<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>​    而清除浮动通常有下面几种思路。</p>
-<h2 id="1-clear-both"><a href="#1-clear-both" class="headerlink" title="1 clear: both"></a>1 clear: both</h2><p>​    在浮动元素之后，添加带有该属性的同级block元素（例如空div），该block元素因为强制换行导致父容器被撑开。</p>
-<h3 id="1-1-直接添加一个（无语义）元素"><a href="#1-1-直接添加一个（无语义）元素" class="headerlink" title="1.1 直接添加一个（无语义）元素"></a>1.1 直接添加一个（无语义）元素</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"container"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"left"</span>&gt;</span>This is left<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"right"</span>&gt;</span>This is right<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"clear: both"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h3 id="1-2-更简洁的方法：使用-after伪类"><a href="#1-2-更简洁的方法：使用-after伪类" class="headerlink" title="1.2 更简洁的方法：使用:after伪类"></a>1.2 更简洁的方法：使用:after伪类</h3><p>​    该方法的好处就是不用像上面那样，添加一个空元素，影响DOM树结构的可读性。<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.container</span><span class="selector-pseudo">:after</span> &#123;</span><br><span class="line">	<span class="attribute">clear</span>: both;</span><br><span class="line">	<span class="attribute">display</span>: block; <span class="comment">/* block元素强制换行 */</span></span><br><span class="line">	<span class="attribute">content</span>: <span class="string">''</span>; <span class="comment">/* 这里要指定content为空，否则也不会撑开 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="2-BFC"><a href="#2-BFC" class="headerlink" title="2 BFC"></a>2 BFC</h2><p>​    用某种方法，触发父容器的BFC（利用BFC包含浮动元素的特性）。比如可以使用overflow：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.container</span> &#123;</span><br><span class="line">	<span class="attribute">overflow</span>: auto; <span class="comment">/* auto或hidden都行 */</span></span><br><span class="line">	<span class="attribute">zoom</span>: <span class="number">1</span>; <span class="comment">/* 兼容IE，原理是触发IE的hasLayout，同时，1倍并不改变容器样式 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="3-参考"><a href="#3-参考" class="headerlink" title="3 参考"></a>3 参考</h2><p><a href="https://segmentfault.com/a/1190000004865198" target="_blank" rel="noopener">CSS-清除浮动 - 前端小渣 - SegmentFault 思否</a><br><a href="http://riny.net/2013/haslayout/" target="_blank" rel="noopener">深入理解IE hasLayout</a></p>
+            <p><img src="/var/folders/xy/2t85m_ts1rq990rd9n_3b_z80000gp/T/abnerworks.Typora/image-20180424165732930.png" alt="image-20180424165732930"></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.npmjs.com.cn/files/folders/" target="_blank" rel="noopener">folders | npm 中文文档</a></p>
+<p><a href="https://www.npmjs.com.cn/misc/config/#global" target="_blank" rel="noopener">config | npm 中文文档</a></p>
 
           
         
@@ -1700,7 +1679,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1713,7 +1692,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">28</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>
