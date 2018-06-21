@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Vue,响应式,computed," />
+  <meta name="keywords" content="Vue,computed,watch,响应式," />
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="methods每次重渲染必定会执行至少一遍。 12345678910new Vue(&amp;#123;    methods: &amp;#123;        activeValue() &amp;#123;            // 每次re-render都会执行        &amp;#125;    &amp;#125;&amp;#125;)// 使用的时候就要调用一下&amp;lt;div&amp;gt;&amp;#123;&amp;#123; active">
-<meta name="keywords" content="Vue,响应式,computed">
+<meta name="description" content="先约定一个概念：“数据修改”。修改数据有两种方式：  赋值：对于基本类型，改变了值；对于对象，则改变了地址。 mutate：只对对象而言，对其属性进行赋值（对象本身地址不变）。  1. 纯方法：methodsmethods没啥好说的，就是每次重渲染时，必定会执行一遍。因为方法是没有缓存的，所以对于一些耗时的操作，就显得不那么高效率了。 12345678910new Vue(&amp;#123;    me">
+<meta name="keywords" content="Vue,computed,watch,响应式">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Vue：methods|computed|watch的比较">
+<meta property="og:title" content="Vue：比较methods|computed|watch">
 <meta property="og:url" content="http://yoursite.com/2018/05/05/Vue_methods_computed_watch/index.html">
 <meta property="og:site_name" content="大肥凯">
-<meta property="og:description" content="methods每次重渲染必定会执行至少一遍。 12345678910new Vue(&amp;#123;    methods: &amp;#123;        activeValue() &amp;#123;            // 每次re-render都会执行        &amp;#125;    &amp;#125;&amp;#125;)// 使用的时候就要调用一下&amp;lt;div&amp;gt;&amp;#123;&amp;#123; active">
+<meta property="og:description" content="先约定一个概念：“数据修改”。修改数据有两种方式：  赋值：对于基本类型，改变了值；对于对象，则改变了地址。 mutate：只对对象而言，对其属性进行赋值（对象本身地址不变）。  1. 纯方法：methodsmethods没啥好说的，就是每次重渲染时，必定会执行一遍。因为方法是没有缓存的，所以对于一些耗时的操作，就显得不那么高效率了。 12345678910new Vue(&amp;#123;    me">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-05-19T08:31:57.333Z">
+<meta property="og:updated_time" content="2018-06-21T04:03:13.658Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Vue：methods|computed|watch的比较">
-<meta name="twitter:description" content="methods每次重渲染必定会执行至少一遍。 12345678910new Vue(&amp;#123;    methods: &amp;#123;        activeValue() &amp;#123;            // 每次re-render都会执行        &amp;#125;    &amp;#125;&amp;#125;)// 使用的时候就要调用一下&amp;lt;div&amp;gt;&amp;#123;&amp;#123; active">
+<meta name="twitter:title" content="Vue：比较methods|computed|watch">
+<meta name="twitter:description" content="先约定一个概念：“数据修改”。修改数据有两种方式：  赋值：对于基本类型，改变了值；对于对象，则改变了地址。 mutate：只对对象而言，对其属性进行赋值（对象本身地址不变）。  1. 纯方法：methodsmethods没啥好说的，就是每次重渲染时，必定会执行一遍。因为方法是没有缓存的，所以对于一些耗时的操作，就显得不那么高效率了。 12345678910new Vue(&amp;#123;    me">
 
 
 
@@ -126,7 +126,7 @@
 
 
 
-  <title>Vue：methods|computed|watch的比较 | 大肥凯</title>
+  <title>Vue：比较methods|computed|watch | 大肥凯</title>
   
 
 
@@ -250,7 +250,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Vue：methods|computed|watch的比较</h1>
+          <h1 class="post-title" itemprop="name headline">Vue：比较methods|computed|watch</h1>
         
 
         <div class="post-meta">
@@ -300,18 +300,59 @@
       
 
       
-        <h2 id="methods"><a href="#methods" class="headerlink" title="methods"></a>methods</h2><p>每次重渲染必定会执行至少一遍。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    methods: &#123;</span><br><span class="line">        activeValue() &#123;</span><br><span class="line">            <span class="comment">// 每次re-render都会执行</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用的时候就要调用一下</span></span><br><span class="line">&lt;div&gt;&#123;&#123; activeValue() &#125;&#125;&lt;<span class="regexp">/div&gt;</span></span><br></pre></td></tr></table></figure>
-<h2 id="computed"><a href="#computed" class="headerlink" title="computed"></a>computed</h2><p>有缓存，当属性的计算比较耗时的时候，就体现出比methods更多的优势。而与watch相比，有“声明式”的优点。</p>
+        <p>先约定一个概念：“数据修改”。修改数据有两种方式：</p>
 <ul>
-<li>get：作用响应某些data的改动。回调时机与一般的get不同：只有当监听的数据有修改，并且数据的newValue不等于oldValue时，该get函数才会执行；同时把结果缓存，之后每次读取当前变量，都返回这个缓存值。<ul>
-<li>set(newVal)：与get相对。回调时机与一般的set一样，只要给当前变量赋值就会回调该set函数（即使赋同样的值，也会回调）。</li>
+<li>赋值：对于基本类型，改变了值；对于对象，则改变了地址。</li>
+<li>mutate：只对对象而言，对其属性进行赋值（对象本身地址不变）。</li>
 </ul>
-</li>
+<h2 id="1-纯方法：methods"><a href="#1-纯方法：methods" class="headerlink" title="1. 纯方法：methods"></a>1. 纯方法：methods</h2><p>methods没啥好说的，就是每次重渲染时，必定会执行一遍。因为方法是没有缓存的，所以对于一些耗时的操作，就显得不那么高效率了。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    methods: &#123;</span><br><span class="line">        activeValue () &#123;</span><br><span class="line">            <span class="comment">// 每次re-render都会执行</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用的时候就要调用一下</span></span><br><span class="line">&lt;div&gt;&#123;&#123; activeValue() &#125;&#125;&lt;<span class="regexp">/div&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="2-响应式"><a href="#2-响应式" class="headerlink" title="2. 响应式"></a>2. 响应式</h2><p>其实重点在于computed与watch异同点的比较，因为它们才是“响应式”的主角。</p>
+<h3 id="2-1-computed"><a href="#2-1-computed" class="headerlink" title="2.1 computed"></a>2.1 computed</h3><p>有缓存，当属性的计算比较耗时的时候，就体现出比methods更多的优势。它分为两个回调：</p>
+<ul>
+<li>get：“依赖性取值”。当<u>依赖的任意一个响应式属性被赋值（mutate不算）且newValue !== oldValue</u>时，重新计算；否则取缓存值。</li>
 </ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    computed: &#123;</span><br><span class="line">        <span class="string">'activeValue'</span>: &#123;</span><br><span class="line">            get() &#123;</span><br><span class="line">                </span><br><span class="line">            &#125;,</span><br><span class="line">            set(newValue) &#123;</span><br><span class="line">                </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h2 id="watch"><a href="#watch" class="headerlink" title="watch"></a>watch</h2><p>可以看作是computed的“AngularJS版本”（命令式）。与computed的get的作用一样，并且回调时机也一样：只有监听的数据变化并且newValue!==oldValue时。不同的是，它可以取到oldValue：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    watch: &#123;</span><br><span class="line">        <span class="string">'activeValue'</span>: <span class="function"><span class="keyword">function</span> (<span class="params">newValue, oldValue</span>) </span>&#123;</span><br><span class="line">            <span class="comment">// newValue、oldValue分别是新值、旧值</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>官方文档是这样描述的：</p>
+<blockquote>
+<p>计算属性的结果会被缓存，除非依赖的响应式属性变化才会重新计算。注意，如果某个依赖 (比如非响应式属性) 在该实例范畴之外，则计算属性是<strong>不会</strong>被更新的。</p>
+</blockquote>
+<ul>
+<li>set(newVal)：可以认为是监听当前属性（变量/对象）。当<u>属性被赋值（mutate不算），无论newValue与oldValue是否相等，都会回调</u>。</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    computed: &#123;</span><br><span class="line">        activeValue: &#123;</span><br><span class="line">            get () &#123;</span><br><span class="line">                </span><br><span class="line">            &#125;,</span><br><span class="line">            set (newValue) &#123;</span><br><span class="line">                </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="2-2-watch"><a href="#2-2-watch" class="headerlink" title="2.2 watch"></a>2.2 watch</h3><p>watch就是对属性的监视。有人认为上面的set是Vue风格，watch是Angular风格，其实它们还是有一些区别的：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>set</th>
+<th>watch</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回调时机</td>
+<td>赋值时</td>
+<td>赋新值时。设置了deep属性就是加上mutate时。</td>
+</tr>
+<tr>
+<td>回调参数</td>
+<td>set(newVal)</td>
+<td>someVar(newVal, oldVal)，即还可以取到旧值</td>
+</tr>
+<tr>
+<td>额外功能</td>
+<td>-</td>
+<td>deep：设置属性mutate时也回调<br>immediate：设置属性第一次赋值时也回调</td>
+</tr>
+</tbody>
+</table>
+<p>可以看到，watch比set更加强大，当然要根据不同场合来使用。</p>
+<p>watch用法示例：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    watch: &#123;</span><br><span class="line">        activeValue: &#123;</span><br><span class="line">            handler (newValue, oldValue) &#123;</span><br><span class="line">                <span class="comment">// newValue、oldValue分别是新值、旧值</span></span><br><span class="line">            &#125;,</span><br><span class="line">            deep: <span class="literal">true</span>, 	<span class="comment">// deep为true，表示当任意深层属性改变时，都会回调handler</span></span><br><span class="line">            immediate: <span class="literal">true</span>	<span class="comment">// immediate为true，表示一开始赋值的那一次也回调handler</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="3-参考"><a href="#3-参考" class="headerlink" title="3. 参考"></a>3. 参考</h2><p><a href="https://cn.vuejs.org/v2/guide/computed.html#%E4%BE%A6%E5%90%AC%E5%99%A8" target="_blank" rel="noopener">侦听器</a></p>
+<p><a href="https://cn.vuejs.org/v2/api/#watch" target="_blank" rel="noopener">Vue API: watch</a></p>
+<p><a href="https://cn.vuejs.org/v2/api/#computed" target="_blank" rel="noopener">Vue API: computed</a></p>
 
       
     </div>
@@ -331,9 +372,11 @@
           
             <a href="/tags/Vue/" rel="tag"># Vue</a>
           
-            <a href="/tags/响应式/" rel="tag"># 响应式</a>
-          
             <a href="/tags/computed/" rel="tag"># computed</a>
+          
+            <a href="/tags/watch/" rel="tag"># watch</a>
+          
+            <a href="/tags/响应式/" rel="tag"># 响应式</a>
           
         </div>
       
@@ -346,8 +389,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/05/05/Vue响应式/" rel="next" title="Vue响应式">
-                <i class="fa fa-chevron-left"></i> Vue响应式
+              <a href="/2018/05/05/JS快速创建数组/" rel="next" title="JS快速创建数组">
+                <i class="fa fa-chevron-left"></i> JS快速创建数组
               </a>
             
           </div>
@@ -356,8 +399,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/05/10/从Dialog理解v-model/" rel="prev" title="Vue：从Dialog理解v-model">
-                Vue：从Dialog理解v-model <i class="fa fa-chevron-right"></i>
+              <a href="/2018/05/05/TODO_NPM全局路径/" rel="prev" title="NPM全局路径">
+                NPM全局路径 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -435,7 +478,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -448,7 +491,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-count">48</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>
@@ -481,7 +524,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#methods"><span class="nav-number">1.</span> <span class="nav-text">methods</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#computed"><span class="nav-number">2.</span> <span class="nav-text">computed</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#watch"><span class="nav-number">3.</span> <span class="nav-text">watch</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-纯方法：methods"><span class="nav-number">1.</span> <span class="nav-text">1. 纯方法：methods</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-响应式"><span class="nav-number">2.</span> <span class="nav-text">2. 响应式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-computed"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 computed</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-watch"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 watch</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-参考"><span class="nav-number">3.</span> <span class="nav-text">3. 参考</span></a></li></ol></div>
             
 
           </div>

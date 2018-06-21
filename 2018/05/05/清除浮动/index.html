@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="HTML/CSS,浮动," />
+  <meta name="keywords" content="float,浮动,清除浮动,BFC,CSS," />
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="​    浮动元素会脱离文档流，使得容器不能撑开从而影响布局，我们需要清除浮动。比如一个简单的HTML部分：1234&amp;lt;div class=&quot;container&quot;&amp;gt;	&amp;lt;div class=&quot;left&quot;&amp;gt;This is left&amp;lt;/div&amp;gt;	&amp;lt;div class=&quot;right&quot;&amp;gt;This is right&amp;lt;/div&amp;gt;&amp;lt;/div&amp;gt;">
-<meta name="keywords" content="HTML&#x2F;CSS,浮动">
+<meta name="description" content="设置了浮动（float）的子元素会脱离文档流，从而使父元素塌陷，从而影响整体布局。所以，很多时候我们需要清除浮动。举个例子，一个简单的页面： 1234&amp;lt;div class=&quot;container&quot;&amp;gt;	&amp;lt;div class=&quot;left&quot; style=&quot;float: left;&quot;&amp;gt;This is left&amp;lt;/div&amp;gt;	&amp;lt;div class=&quot;right&quot; sty">
+<meta name="keywords" content="float,浮动,清除浮动,BFC,CSS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="清除浮动的几种思路">
 <meta property="og:url" content="http://yoursite.com/2018/05/05/清除浮动/index.html">
 <meta property="og:site_name" content="大肥凯">
-<meta property="og:description" content="​    浮动元素会脱离文档流，使得容器不能撑开从而影响布局，我们需要清除浮动。比如一个简单的HTML部分：1234&amp;lt;div class=&quot;container&quot;&amp;gt;	&amp;lt;div class=&quot;left&quot;&amp;gt;This is left&amp;lt;/div&amp;gt;	&amp;lt;div class=&quot;right&quot;&amp;gt;This is right&amp;lt;/div&amp;gt;&amp;lt;/div&amp;gt;">
+<meta property="og:description" content="设置了浮动（float）的子元素会脱离文档流，从而使父元素塌陷，从而影响整体布局。所以，很多时候我们需要清除浮动。举个例子，一个简单的页面： 1234&amp;lt;div class=&quot;container&quot;&amp;gt;	&amp;lt;div class=&quot;left&quot; style=&quot;float: left;&quot;&amp;gt;This is left&amp;lt;/div&amp;gt;	&amp;lt;div class=&quot;right&quot; sty">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-05-06T07:35:07.972Z">
+<meta property="og:updated_time" content="2018-06-14T01:20:28.864Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="清除浮动的几种思路">
-<meta name="twitter:description" content="​    浮动元素会脱离文档流，使得容器不能撑开从而影响布局，我们需要清除浮动。比如一个简单的HTML部分：1234&amp;lt;div class=&quot;container&quot;&amp;gt;	&amp;lt;div class=&quot;left&quot;&amp;gt;This is left&amp;lt;/div&amp;gt;	&amp;lt;div class=&quot;right&quot;&amp;gt;This is right&amp;lt;/div&amp;gt;&amp;lt;/div&amp;gt;">
+<meta name="twitter:description" content="设置了浮动（float）的子元素会脱离文档流，从而使父元素塌陷，从而影响整体布局。所以，很多时候我们需要清除浮动。举个例子，一个简单的页面： 1234&amp;lt;div class=&quot;container&quot;&amp;gt;	&amp;lt;div class=&quot;left&quot; style=&quot;float: left;&quot;&amp;gt;This is left&amp;lt;/div&amp;gt;	&amp;lt;div class=&quot;right&quot; sty">
 
 
 
@@ -300,13 +300,26 @@
       
 
       
-        <p>​    浮动元素会脱离文档流，使得容器不能撑开从而影响布局，我们需要清除浮动。比如一个简单的HTML部分：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"container"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"left"</span>&gt;</span>This is left<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"right"</span>&gt;</span>This is right<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>​    而清除浮动通常有下面几种思路。</p>
-<h2 id="1-clear-both"><a href="#1-clear-both" class="headerlink" title="1 clear: both"></a>1 clear: both</h2><p>​    在浮动元素之后，添加带有该属性的同级block元素（例如空div），该block元素因为强制换行导致父容器被撑开。</p>
+        <p>设置了浮动（float）的子元素会脱离文档流，从而使父元素塌陷，从而影响整体布局。所以，很多时候我们需要清除浮动。举个例子，一个简单的页面：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"container"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"left"</span> <span class="attr">style</span>=<span class="string">"float: left;"</span>&gt;</span>This is left<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"right"</span> <span class="attr">style</span>=<span class="string">"float: right;"</span>&gt;</span>This is right<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>container因其子元素浮动而塌陷，所以height将会是0。</p>
+<p>而清除浮动，通常有下面几种思路。</p>
+<h2 id="1-使用clear属性"><a href="#1-使用clear属性" class="headerlink" title="1. 使用clear属性"></a>1. 使用clear属性</h2><p>在浮动元素之后，添加带有该属性的同级block元素（例如空div），该block元素因为强制换行导致父容器被撑开。</p>
 <h3 id="1-1-直接添加一个（无语义）元素"><a href="#1-1-直接添加一个（无语义）元素" class="headerlink" title="1.1 直接添加一个（无语义）元素"></a>1.1 直接添加一个（无语义）元素</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"container"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"left"</span>&gt;</span>This is left<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"right"</span>&gt;</span>This is right<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"clear: both"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h3 id="1-2-更简洁的方法：使用-after伪类"><a href="#1-2-更简洁的方法：使用-after伪类" class="headerlink" title="1.2 更简洁的方法：使用:after伪类"></a>1.2 更简洁的方法：使用:after伪类</h3><p>​    该方法的好处就是不用像上面那样，添加一个空元素，影响DOM树结构的可读性。<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.container</span><span class="selector-pseudo">:after</span> &#123;</span><br><span class="line">	<span class="attribute">clear</span>: both;</span><br><span class="line">	<span class="attribute">display</span>: block; <span class="comment">/* block元素强制换行 */</span></span><br><span class="line">	<span class="attribute">content</span>: <span class="string">''</span>; <span class="comment">/* 这里要指定content为空，否则也不会撑开 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="2-BFC"><a href="#2-BFC" class="headerlink" title="2 BFC"></a>2 BFC</h2><p>​    用某种方法，触发父容器的BFC（利用BFC包含浮动元素的特性）。比如可以使用overflow：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.container</span> &#123;</span><br><span class="line">	<span class="attribute">overflow</span>: auto; <span class="comment">/* auto或hidden都行 */</span></span><br><span class="line">	<span class="attribute">zoom</span>: <span class="number">1</span>; <span class="comment">/* 兼容IE，原理是触发IE的hasLayout，同时，1倍并不改变容器样式 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="3-参考"><a href="#3-参考" class="headerlink" title="3 参考"></a>3 参考</h2><p><a href="https://segmentfault.com/a/1190000004865198" target="_blank" rel="noopener">CSS-清除浮动 - 前端小渣 - SegmentFault 思否</a><br><a href="http://riny.net/2013/haslayout/" target="_blank" rel="noopener">深入理解IE hasLayout</a></p>
+<h3 id="1-2-更好的方法：使用-after伪类"><a href="#1-2-更好的方法：使用-after伪类" class="headerlink" title="1.2 更好的方法：使用:after伪类"></a>1.2 更好的方法：使用:after伪类</h3><p>该方法的好处就是不用像上面那样，添加一个空元素，影响DOM树结构的可读性。不过需要注意的是，除了要写clear，还要声明display、content等属性。<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.container</span><span class="selector-pseudo">:after</span> &#123;</span><br><span class="line">	<span class="attribute">clear</span>: both;</span><br><span class="line">	<span class="attribute">display</span>: block; <span class="comment">/* block元素强制换行 */</span></span><br><span class="line">	<span class="attribute">content</span>: <span class="string">''</span>; 	<span class="comment">/* 这里要指定content为空，否则也不会撑开 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="2-触发“块格式化上下文”（BFC）"><a href="#2-触发“块格式化上下文”（BFC）" class="headerlink" title="2. 触发“块格式化上下文”（BFC）"></a>2. 触发“块格式化上下文”（BFC）</h2><p>BFC，我理解为具有某些特性的相对独立的区域，它的其中一个特性是“闭合浮动”，即BFC高度会包含其浮动元素。因此，可以通过对父容器触发BFC，来使其包含住浮动的子元素。而触发BFC的方式有很多，比如：</p>
+<ul>
+<li>display = inline-block | table-cell | table-caption | flex | table-flex</li>
+<li>浮动：float != none</li>
+<li>绝对定位：position = absolute | fixed</li>
+<li>overflow != visible</li>
+</ul>
+<p>我觉得使用overflow的影响是最小的，因为其它元素都会明显改变布局，像浮动、绝对定位又使父元素脱离文档流了，所以还是使用overflow吧：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.container</span> &#123;</span><br><span class="line">	<span class="attribute">overflow</span>: auto; <span class="comment">/* auto或hidden都可以 */</span></span><br><span class="line">	<span class="attribute">zoom</span>: <span class="number">1</span>; 		<span class="comment">/* 兼容IE，原理是触发IE的hasLayout，并且放缩1倍并不会影响容器样式 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-参考"><a href="#3-参考" class="headerlink" title="3. 参考"></a>3. 参考</h2><p><a href="https://segmentfault.com/a/1190000004865198" target="_blank" rel="noopener">CSS-清除浮动 - 前端小渣 - SegmentFault 思否</a></p>
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Block_formatting_context" target="_blank" rel="noopener">MDN：块格式化上下文</a></p>
+<p><a href="https://www.jianshu.com/p/11e764268c0d" target="_blank" rel="noopener">BFC特性及其简单应用</a></p>
+<p><a href="http://riny.net/2013/haslayout/" target="_blank" rel="noopener">深入理解IE hasLayout</a></p>
 
       
     </div>
@@ -324,9 +337,15 @@
       
         <div class="post-tags">
           
-            <a href="/tags/HTML-CSS/" rel="tag"># HTML/CSS</a>
+            <a href="/tags/float/" rel="tag"># float</a>
           
             <a href="/tags/浮动/" rel="tag"># 浮动</a>
+          
+            <a href="/tags/清除浮动/" rel="tag"># 清除浮动</a>
+          
+            <a href="/tags/BFC/" rel="tag"># BFC</a>
+          
+            <a href="/tags/CSS/" rel="tag"># CSS</a>
           
         </div>
       
@@ -339,8 +358,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/05/05/TODO_NPM全局路径/" rel="next" title="NPM全局路径">
-                <i class="fa fa-chevron-left"></i> NPM全局路径
+              <a href="/2018/05/05/TODO_Throttle与Debounce/" rel="next" title="Throttle（节流）与Debounce（防抖动）">
+                <i class="fa fa-chevron-left"></i> Throttle（节流）与Debounce（防抖动）
               </a>
             
           </div>
@@ -349,8 +368,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/05/05/TODO_HTML元素的位置属性/" rel="prev" title="HTML元素的位置属性">
-                HTML元素的位置属性 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/05/05/浏览器本地存储/" rel="prev" title="浏览器本地存储">
+                浏览器本地存储 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -428,7 +447,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -441,7 +460,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-count">48</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>
@@ -474,7 +493,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-clear-both"><span class="nav-number">1.</span> <span class="nav-text">1 clear: both</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-直接添加一个（无语义）元素"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 直接添加一个（无语义）元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-更简洁的方法：使用-after伪类"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 更简洁的方法：使用:after伪类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-BFC"><span class="nav-number">2.</span> <span class="nav-text">2 BFC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-参考"><span class="nav-number">3.</span> <span class="nav-text">3 参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-使用clear属性"><span class="nav-number">1.</span> <span class="nav-text">1. 使用clear属性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-直接添加一个（无语义）元素"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 直接添加一个（无语义）元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-更好的方法：使用-after伪类"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 更好的方法：使用:after伪类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-触发“块格式化上下文”（BFC）"><span class="nav-number">2.</span> <span class="nav-text">2. 触发“块格式化上下文”（BFC）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-参考"><span class="nav-number">3.</span> <span class="nav-text">3. 参考</span></a></li></ol></div>
             
 
           </div>
