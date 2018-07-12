@@ -88,7 +88,7 @@
 <meta property="og:description" content="​    Vue的基本思想是“数据驱动视图”，即通过手动更新ViewModel中的数据，框架就会自动地帮我们更新视图，从而在View层（模板）达到“声明式”的编程方式，而不是像jQuery那种命令式的。 ​    但是，并不是所有数据都能触发“重渲染”（re-render）。我们需要把能够引发re-render的数据写在Vue实例／组件的data属性中，因为在Vue源码中，框架只对data对象（递">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/var/folders/xy/2t85m_ts1rq990rd9n_3b_z80000gp/T/abnerworks.Typora/image-20180418145545919.png">
-<meta property="og:updated_time" content="2018-05-06T07:36:13.285Z">
+<meta property="og:updated_time" content="2018-06-21T10:18:10.812Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Vue响应式">
 <meta name="twitter:description" content="​    Vue的基本思想是“数据驱动视图”，即通过手动更新ViewModel中的数据，框架就会自动地帮我们更新视图，从而在View层（模板）达到“声明式”的编程方式，而不是像jQuery那种命令式的。 ​    但是，并不是所有数据都能触发“重渲染”（re-render）。我们需要把能够引发re-render的数据写在Vue实例／组件的data属性中，因为在Vue源码中，框架只对data对象（递">
@@ -304,13 +304,13 @@
       
         <p>​    Vue的基本思想是“数据驱动视图”，即通过手动更新ViewModel中的数据，框架就会自动地帮我们更新视图，从而在View层（模板）达到“声明式”的编程方式，而不是像jQuery那种命令式的。</p>
 <p>​    但是，并不是所有数据都能触发“重渲染”（re-render）。我们需要把能够引发re-render的数据写在Vue实例／组件的data属性中，因为在Vue源码中，框架只对data对象（递归地）进行“数据劫持”。现实中，有几种情况需要我们注意。</p>
-<h2 id="1-data属性"><a href="#1-data属性" class="headerlink" title="1 data属性"></a>1 data属性</h2><p>​    有一个原则就是：把所有需要响应的属性都事先写到data中，暂时不需要的一开始可以初始化为null。因为，Vue不会对新添加的属性进行数据劫持。比如：</p>
+<h2 id="1-data属性"><a href="#1-data属性" class="headerlink" title="1. data属性"></a>1. data属性</h2><p>​    有一个原则就是：把所有需要响应的属性都事先写到data中，暂时不需要的一开始可以初始化为null。因为，Vue不会对新添加的属性进行数据劫持。比如：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> vm = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    data: &#123;</span><br><span class="line">        name: <span class="string">'JK'</span> <span class="comment">// name属性是响应式的</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">vm.nickname = <span class="string">'Fat K'</span>; <span class="comment">// 这里新增的nickname属性不是响应式的</span></span><br><span class="line">vm.nickname = <span class="string">'Fat Fat K'</span>; <span class="comment">// 再改变也不会引发re-render</span></span><br></pre></td></tr></table></figure>
 <p>​    对于这个，我们可以通过chrome的控制台查看：</p>
 <p><img src="/var/folders/xy/2t85m_ts1rq990rd9n_3b_z80000gp/T/abnerworks.Typora/image-20180418145545919.png" alt="image-20180418145545919"></p>
 <p>​    执行了上述代码后，vm中也只有name的getter、setter（说明对name属性进行了数据劫持），而没有nickname的getter／setter。</p>
 <p>​    上述例子中，name属性是值类型，只要发生了更改并且前后值不全等，就会触发re-render。那么对于引用类型呢？最常见的就是数组与对象了，下面就来说说这两种类型的属性如何触发re-render。</p>
-<h2 id="2-数组"><a href="#2-数组" class="headerlink" title="2 数组"></a>2 数组</h2><p>某个属性是数组时：</p>
+<h2 id="2-数组"><a href="#2-数组" class="headerlink" title="2. 数组"></a>2. 数组</h2><p>某个属性是数组时：</p>
 <p>可以触发重渲染的有：</p>
 <ul>
 <li>改变数组的引用，比如：items = [1,2,3]。React也是这样的。<ul>
@@ -329,7 +329,7 @@
 <p>​</p>
 </li>
 </ul>
-<h2 id="3-对象"><a href="#3-对象" class="headerlink" title="3 对象"></a>3 对象</h2><p>​    当某个属性是对象的时候，其实跟数组是差不多的，只不过对象没有像数组那样的push、pop方法，一般只能通过下标操作来添加、删除、修改属性。所以能够引发重渲染的只有：</p>
+<h2 id="3-对象"><a href="#3-对象" class="headerlink" title="3. 对象"></a>3. 对象</h2><p>​    当某个属性是对象的时候，其实跟数组是差不多的，只不过对象没有像数组那样的push、pop方法，一般只能通过下标操作来添加、删除、修改属性。所以能够引发重渲染的只有：</p>
 <ul>
 <li>改变引用</li>
 <li>Vue.set／vm.$set</li>
@@ -367,14 +367,18 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2018/05/05/JS快速创建数组/" rel="next" title="JS快速创建数组">
+                <i class="fa fa-chevron-left"></i> JS快速创建数组
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/05/05/组件通信/" rel="prev" title="组件间通信">
-                组件间通信 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/05/10/从Dialog理解v-model/" rel="prev" title="Vue：从Dialog理解v-model">
+                Vue：从Dialog理解v-model <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -452,7 +456,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -465,7 +469,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">48</span>
+                  <span class="site-state-item-count">49</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>
@@ -498,7 +502,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-data属性"><span class="nav-number">1.</span> <span class="nav-text">1 data属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-数组"><span class="nav-number">2.</span> <span class="nav-text">2 数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-对象"><span class="nav-number">3.</span> <span class="nav-text">3 对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-data属性"><span class="nav-number">1.</span> <span class="nav-text">1. data属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-数组"><span class="nav-number">2.</span> <span class="nav-text">2. 数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-对象"><span class="nav-number">3.</span> <span class="nav-text">3. 对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>

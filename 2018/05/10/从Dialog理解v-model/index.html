@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="大肥凯">
 <meta property="og:description" content="对话框是在网页应用中广泛使用的组件，以类似于对话的形式增强与用户的交互。JS中最简单的对话框就是confirm，它通过返回值来确定用户的选择： 123if ( confirm(&apos;确定要退出吗？&apos;) ) &amp;#123;    // 执行退出页面的逻辑&amp;#125; 缺点也很明显：  比较简单，样式不能定制 阻塞JS（内核）线程  于是我们想到，可以自定义一个对话框。 在Vue中使用自定义对话框参考ele">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-05-12T04:45:22.890Z">
+<meta property="og:updated_time" content="2018-06-21T10:19:25.805Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Vue：从Dialog理解v-model">
 <meta name="twitter:description" content="对话框是在网页应用中广泛使用的组件，以类似于对话的形式增强与用户的交互。JS中最简单的对话框就是confirm，它通过返回值来确定用户的选择： 123if ( confirm(&apos;确定要退出吗？&apos;) ) &amp;#123;    // 执行退出页面的逻辑&amp;#125; 缺点也很明显：  比较简单，样式不能定制 阻塞JS（内核）线程  于是我们想到，可以自定义一个对话框。 在Vue中使用自定义对话框参考ele">
@@ -319,11 +319,10 @@
 <p>然而，这样就存在一个不足。我们印象中的对话框，点击【交叉按钮/确定按钮】后，一般都会先关闭对话框，再去回调用户（在这里指App这个父组件）的函数。但是，组件内部控制显隐的props是不可变的，即子组件内部并不能含有关闭自己的逻辑。所以上面的例子中，我们只能把本应该是对话框关闭自己的逻辑，转移到了父组件中：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// App.vue</span></span><br><span class="line"></span><br><span class="line">onDialogCancel () &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">this</span>.isShowDialog = <span class="literal">false</span>; <span class="comment">// 父组件写这一句来关掉对话框</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
 <p>这样是不大好的做法，因为首先这会造成父组件的职责不单一；而且父组件很可能会忘记写这一句话，导致对话框没有关掉。</p>
-<p>下面介绍三种思路来解决：</p>
+<p>其实解决方法就是：双向绑定，它具有以下两种方式（其实是类似的，理解好v-model就可以了）：</p>
 <ul>
 <li>使用v-model指令，进行双向绑定</li>
 <li>对属性使用sync修饰符，进行双向绑定</li>
-<li></li>
 </ul>
 <h2 id="使用v-model改进"><a href="#使用v-model改进" class="headerlink" title="使用v-model改进"></a>使用v-model改进</h2><p>梳理一下，现在的问题是：子组件（SimpleDialog）关闭的逻辑只能写在父组件（App）中，但是这又违背了我们的直觉。像这种貌似父组件、子组件都可以改变的属性，其实就是“双向绑定”，在Vue中可以通过v-model这个指令来完成。v-model指令的基本使用方式是：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 写法1：v-model写法</span><br><span class="line">&lt;input v-model=&quot;name&quot;&gt;</span><br><span class="line"></span><br><span class="line">// 写法2（等价的写法，但不推荐）：与属性、事件名耦合的写法</span><br><span class="line">&lt;input :value=&quot;name&quot; @change=&quot;name = $event.target.value&quot;&gt;</span><br></pre></td></tr></table></figure>
@@ -385,8 +384,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/05/05/Currying与Uncurrying/" rel="next" title="Currying & Uncurrying：函数的(去)柯里化">
-                <i class="fa fa-chevron-left"></i> Currying & Uncurrying：函数的(去)柯里化
+              <a href="/2018/05/05/Vue响应式/" rel="next" title="Vue响应式">
+                <i class="fa fa-chevron-left"></i> Vue响应式
               </a>
             
           </div>
@@ -474,7 +473,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -487,7 +486,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">48</span>
+                  <span class="site-state-item-count">49</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>

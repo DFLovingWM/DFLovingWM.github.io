@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Vue,双向绑定,组件," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="自定义组件在项目中是常见的需求。在Vue项目中，定义一个可以双向绑定的组件时，需要处理好props与data的关系。 举个简单例子：比如我需要定义一个SuperInput组件，将普通的input[type=text]标签封装一下再加上一些漂亮的样式。用户代码可以在页面中这样使用： 1&amp;lt;super-input v-model=&amp;quot;count&amp;quot; /&amp;gt; 分析关系文档树从外到">
+<meta name="keywords" content="Vue,双向绑定,组件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue组件基础：双向绑定的不同写法">
+<meta property="og:url" content="http://yoursite.com/2018/07/12/Vue组件基础：双向绑定的不同写法/index.html">
+<meta property="og:site_name" content="大肥凯">
+<meta property="og:description" content="自定义组件在项目中是常见的需求。在Vue项目中，定义一个可以双向绑定的组件时，需要处理好props与data的关系。 举个简单例子：比如我需要定义一个SuperInput组件，将普通的input[type=text]标签封装一下再加上一些漂亮的样式。用户代码可以在页面中这样使用： 1&amp;lt;super-input v-model=&amp;quot;count&amp;quot; /&amp;gt; 分析关系文档树从外到">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-07-12T08:07:59.129Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue组件基础：双向绑定的不同写法">
+<meta name="twitter:description" content="自定义组件在项目中是常见的需求。在Vue项目中，定义一个可以双向绑定的组件时，需要处理好props与data的关系。 举个简单例子：比如我需要定义一个SuperInput组件，将普通的input[type=text]标签封装一下再加上一些漂亮的样式。用户代码可以在页面中这样使用： 1&amp;lt;super-input v-model=&amp;quot;count&amp;quot; /&amp;gt; 分析关系文档树从外到">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/07/12/Vue组件基础：双向绑定的不同写法/"/>
+
+
+
+
+
+  <title>Vue组件基础：双向绑定的不同写法 | 大肥凯</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">大肥凯</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/12/Vue组件基础：双向绑定的不同写法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Vue组件基础：双向绑定的不同写法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-12T14:20:00+08:00">
+                2018-07-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>自定义组件在项目中是常见的需求。在Vue项目中，定义一个可以双向绑定的组件时，需要处理好props与data的关系。</p>
+<p>举个简单例子：比如我需要定义一个SuperInput组件，将普通的input[type=text]标签封装一下再加上一些漂亮的样式。用户代码可以在页面中这样使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;super-input v-model=&quot;count&quot; /&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="分析关系"><a href="#分析关系" class="headerlink" title="分析关系"></a>分析关系</h2><p>文档树从外到内，需要关注三个角色：</p>
+<ul>
+<li>父页面（传递count）<ul>
+<li>SuperInput组件（接收count作为属性value）<ul>
+<li>input标签（双向绑定的最终目标）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>可以看到，因为双向绑定最终还是需要落实到input上实现，所以自定义组件实质上充当了父页面与input之间的媒介。编写这个媒介，一般有两种思路。</p>
+<h2 id="1-直接沿用上层数据"><a href="#1-直接沿用上层数据" class="headerlink" title="1. 直接沿用上层数据"></a>1. 直接沿用上层数据</h2><p>这里的关键是，在input上不要直接使用v-model。因为“value”接收父页面的数据，在组件这一层只是作为props存在，是不能手动赋值的。由于v-model语法糖的性质，可以拆开成value和@input：value展示“value”属性，而@input就直接把用户输入“反映”到上层（父页面）。代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class=&quot;super-input&quot;&gt;</span><br><span class="line">    &lt;input type=&quot;text&quot; :value=&quot;value&quot; @input=&quot;$emit(&apos;change&apos;, $event.target.value)&quot; /&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;super-input&apos;,</span><br><span class="line">  props: [&apos;value&apos;]</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<p>想想上面说的三者关系，发现这种思路本质上让自定义组件成了一个不折不扣的媒介：把父页面的数据传给下层input，再把下层input的输入实时反映给父页面；它自身基本没有做什么额外的工作，相当于父页面在模板中直接使用input。</p>
+<p>这种方法的缺点是：组件是没有状态的，而“无状态组件”基本是一些展示型组件，没有额外的功能，适用于比较简单的场景。</p>
+<h2 id="2-本地维护一个代替者"><a href="#2-本地维护一个代替者" class="headerlink" title="2. 本地维护一个代替者"></a>2. 本地维护一个代替者</h2><p>意思是在自定义组件这一层，维护一个本地数据（data）作为代替者，它用来与上层数据进行同步。思路可以分为以下几步：</p>
+<ul>
+<li>在组件这一层维护一个本地data，比如“localValue”，与从上层接收到的“value”进行实时同步；</li>
+<li>这个“localValue”可以在input标签上使用v-model；</li>
+<li>对“localValue”的修改要实时反映给上层。</li>
+</ul>
+<p>然后，既然它是个data，那么就可以对input使用v-model进行双向绑定。代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class=&quot;number-picker&quot;&gt;</span><br><span class="line">    &lt;input type=&quot;text&quot; v-model=&quot;localValue&quot; /&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;number-picker&apos;,</span><br><span class="line">  props: [&apos;value&apos;],</span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      localValue: null</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  watch: &#123;</span><br><span class="line">    value: &#123; // 实现本地数据与上层同步</span><br><span class="line">      immediate: true,</span><br><span class="line">      handler (newVal) &#123;</span><br><span class="line">        this.localValue = newVal</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    localValue: &#123; // 把对本地数据的修改反映给上层</span><br><span class="line">      handler (newVal) &#123;</span><br><span class="line">        this.$emit(&apos;input&apos;, newVal)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<p>这种方法也有一个小缺点：囿于watch的触发时机（newValue !== oldValue）：</p>
+<ul>
+<li>当localValue赋相同的值时，localValue的观察函数不会回调；</li>
+<li>当两次emit所携带的值相同时（即传给相同的值给上层），value的观察函数也不会被回调。因此在视图上组件并不会刷新。</li>
+</ul>
+<p>因此也只能应对常见的场景。对于需要更深度的控制的场景，是使用“localValue”的同时，不使用v-model而是使用value + @input。这样就可以在@input、甚至@focus、@blur等回调中实现对localValue更多的操作。</p>
+<h2 id="某个场景"><a href="#某个场景" class="headerlink" title="某个场景"></a>某个场景</h2><p>针对上面说到的“handler函数有时不会被回调”的问题这通常没有什么问题，因为没必要重渲染同一个值。但我见过一个场景，组件需要在input回调中对用户输入进行修改的，以限制用户只能输入0～100的一个分数：假如我输入一个比100大的数字，在input中会检测到并修改回100。单纯使用这种方法会出现一个问题：第一次输入101，会看到输入框的值被掰回“100”；但如果我继续键入一个1，那么最终会显示“1001”。</p>
+<p>这里需要说明的是，其实对于这两次“非法”输入，组件都把“localValue”修改成了100。第二次只是因为Vue没有对组件视图进行刷新，所以我们看到的是“1001”（这个“1001”是HTML原汁原味的显示，这时候@input还没回调）。这里的原因是：</p>
+<blockquote>
+<p>两次非法输入，最终都修改为“100”，所以连续两次把“100”传递给上层。如此一来，value的观察函数在第二次没有被回调。</p>
+</blockquote>
+<p>我尝试着在非法输入时也emit给上层，以使其回调两次。但我发现并没有效果，不知道是否因为合并成了一次emit（待研究Vue源码），还是别的原因。最终，我选择了：</p>
+<blockquote>
+<p>this.$forceUpdate()</p>
+</blockquote>
+<p>作为我的解决方案，强行让Vue刷新本组件。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Vue/" rel="tag"># Vue</a>
+          
+            <a href="/tags/双向绑定/" rel="tag"># 双向绑定</a>
+          
+            <a href="/tags/组件/" rel="tag"># 组件</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/21/Vue双向绑定的注意事项/" rel="next" title="Vue双向绑定的注意事项">
+                <i class="fa fa-chevron-left"></i> Vue双向绑定的注意事项
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">JK</p>
+              <p class="site-description motion-element" itemprop="description">分享技术心得</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">49</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#分析关系"><span class="nav-number">1.</span> <span class="nav-text">分析关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-直接沿用上层数据"><span class="nav-number">2.</span> <span class="nav-text">1. 直接沿用上层数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-本地维护一个代替者"><span class="nav-number">3.</span> <span class="nav-text">2. 本地维护一个代替者</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#某个场景"><span class="nav-number">4.</span> <span class="nav-text">某个场景</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">JK</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
