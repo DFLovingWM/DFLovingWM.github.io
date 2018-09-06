@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Vue,组件通信," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="组件化的前端时代中，组件间通信是经常要做的事情。Vue项目可以使用以下几种思路完成（与React相比，两者很相似，只是API和库不同）。 1. 父子组件：props与event首先，这里的“父子”关系体现在组件树中，而不是文档流中。 这是最常见的组件通信模式，俗称“props down, event up”，即向下传递属性、往上发射事件：父组件在模板中实例化子组件时，把自身的data传给子组件，然">
+<meta name="keywords" content="Vue,组件通信">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue组件通信">
+<meta property="og:url" content="http://yoursite.com/2018/05/05/Vue组件通信/index.html">
+<meta property="og:site_name" content="大肥凯">
+<meta property="og:description" content="组件化的前端时代中，组件间通信是经常要做的事情。Vue项目可以使用以下几种思路完成（与React相比，两者很相似，只是API和库不同）。 1. 父子组件：props与event首先，这里的“父子”关系体现在组件树中，而不是文档流中。 这是最常见的组件通信模式，俗称“props down, event up”，即向下传递属性、往上发射事件：父组件在模板中实例化子组件时，把自身的data传给子组件，然">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-07-13T09:48:27.605Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue组件通信">
+<meta name="twitter:description" content="组件化的前端时代中，组件间通信是经常要做的事情。Vue项目可以使用以下几种思路完成（与React相比，两者很相似，只是API和库不同）。 1. 父子组件：props与event首先，这里的“父子”关系体现在组件树中，而不是文档流中。 这是最常见的组件通信模式，俗称“props down, event up”，即向下传递属性、往上发射事件：父组件在模板中实例化子组件时，把自身的data传给子组件，然">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/05/Vue组件通信/"/>
+
+
+
+
+
+  <title>Vue组件通信 | 大肥凯</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">大肥凯</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/Vue组件通信/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Vue组件通信</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-05T00:00:00+08:00">
+                2018-05-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>组件化的前端时代中，组件间通信是经常要做的事情。Vue项目可以使用以下几种思路完成（与React相比，两者很相似，只是API和库不同）。</p>
+<h2 id="1-父子组件：props与event"><a href="#1-父子组件：props与event" class="headerlink" title="1. 父子组件：props与event"></a>1. 父子组件：props与event</h2><p>首先，这里的“父子”关系体现在组件树中，而不是文档流中。</p>
+<p>这是最常见的组件通信模式，俗称“props down, event up”，即向下传递属性、往上发射事件：父组件在模板中实例化子组件时，把自身的data传给子组件，然后使用v-on来监听来自子组件的事件；子组件接收数据作为自身的props，在适当的时候发射事件以间接对父组件进行回调。使用场景一般是双向绑定，常用v-model指令。BTW，在React中父子组件的通信则是“props down, also props up”，父组件通过props传入一个function供子组件直接回调。</p>
+<p>举个最常见的例子，页面使用“对话框”组件，传入一个show属性来控制对话框的打开与关闭：</p>
+<ul>
+<li>子组件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">// MyDialog.vue</span><br><span class="line"></span><br><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class=&quot;my-dialog&quot; v-show=&quot;show&quot;&gt;</span><br><span class="line">    Hello, I am a dialog.</span><br><span class="line">    &lt;button type=&quot;button&quot; @click=&quot;close&quot;&gt;关闭&lt;/button&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;my-dialog&apos;,</span><br><span class="line">  props: [&apos;show&apos;],</span><br><span class="line">  methods: &#123;</span><br><span class="line">    close (event) &#123;</span><br><span class="line">      // 因为控制本组件打开、关闭的变量在父组件中</span><br><span class="line">      // 所以子组件为了使其改变，只能发射事件通知父亲，并携带参数</span><br><span class="line">      this.$emit(&apos;change-visible&apos;, &#123;</span><br><span class="line">        value: false</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>父页面</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class=&quot;app&quot;&gt;</span><br><span class="line">    &lt;my-dialog</span><br><span class="line">      :show=&quot;showMyDialog&quot;</span><br><span class="line">      @change-visible=&quot;change&quot; /&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">import MyDialog from &apos;./MyDialog&apos;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;app&apos;,</span><br><span class="line">  components: &#123; MyDialog &#125;,</span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      showMyDialog: false // 控制变量</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    change (params) &#123;</span><br><span class="line">      this.showMyDialog = params.value</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<p>上面是随便举个例子，很多人应该知道，更好的写法是使用v-model或者.sync修饰符。比如用.sync，则子组件改成：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.$emit(<span class="string">'update:show'</span>, <span class="literal">false</span>)</span><br></pre></td></tr></table></figure>
+<p>而对应地，父组件改成：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;my-dialog :show.sync=&quot;showMyDialog&quot; /&gt;</span><br></pre></td></tr></table></figure>
+<p>另外，Vue中还提供一个特殊变量\$parent，指向父组件实例，但因为使用\$parent会让子组件依赖于父组件，耦合度高，组件复用性更低。</p>
+<h2 id="2-跨层级组件：provide、inject"><a href="#2-跨层级组件：provide、inject" class="headerlink" title="2. 跨层级组件：provide、inject"></a>2. 跨层级组件：provide、inject</h2><p>当子组件想要访问祖先组件通信时，可以通过Vue提供的provide-inject API，它称为“依赖注入”（当然，与Java的DI概念不一样），其工作方式是：祖先组件通过provide对象暴露出可供后代访问的属性/方法，任何一个后代组件则通过inject对象来选择要注入哪些属性/方法。严格来说，这并不算组件间通信，因为只能做到祖先传入后代（props down），而后代并不能修改祖先的这些数据。</p>
+<p>这类似于React中的Context，但同样会导致子组件可移植性很低。举个例子：</p>
+<ul>
+<li>祖先：Ancestor.vue</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  provide () &#123; <span class="comment">// 提供</span></span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      name: <span class="string">'祖先'</span>,</span><br><span class="line">      saySomething (something) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(something)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>后代：Descendant.vue</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  inject: [<span class="string">'name'</span>, <span class="string">'saySomething'</span>], <span class="comment">// 注入</span></span><br><span class="line">  methods: &#123;</span><br><span class="line">    close () &#123;</span><br><span class="line">      <span class="keyword">this</span>.saySomething(<span class="keyword">this</span>.tabName) <span class="comment">// 输出：'祖先'</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-无关系组件-事件总线：-emit与-on"><a href="#3-无关系组件-事件总线：-emit与-on" class="headerlink" title="3. 无关系组件/事件总线：\$emit与\$on"></a>3. 无关系组件/事件总线：\$emit与\$on</h2><p>事件总线非常全能，很多时候都能看到它的身影：Android有EventBus第三方库；而Vue也有实现了一个事件总线，就是（当然自己写一个也不难，关键是有这几个方法：注册、反注册、发射，这里就不详述啦）：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> eventBus = <span class="keyword">new</span> Vue() <span class="comment">// 也是个Vue实例</span></span><br></pre></td></tr></table></figure>
+<h3 id="3-1-举个例子"><a href="#3-1-举个例子" class="headerlink" title="3.1 举个例子"></a>3.1 举个例子</h3><p>【列表页】点击item跳转到【详情页】，假如这里可以编辑item的标题，那么再后退到【列表页】后，需要显示item的新的标题。其中，【列表页】是个缓存组件（使用keep-alive）</p>
+<h3 id="3-2-分析"><a href="#3-2-分析" class="headerlink" title="3.2 分析"></a>3.2 分析</h3><ol>
+<li>【列表页】内容的更新要依赖【详情页】，所以这里涉及到组件传参。</li>
+<li>vue-router的传参（params、query）只能出现在调用push/replace即跳转到新页面；但这里是后退按钮，而go/forward/back都无法携带参数（突然觉得Android的startActivityForResult真好）。</li>
+<li>在组件导航钩子beforeRouteLeave中强行使用push/replace跳转，会有死循环（push/replace的调用会重新走beforeRouteLeave，所以会导致无限循环调用）、页面错乱等问题。</li>
+<li>所以vue-router传参不能使用，只能更换别的组件通信的方式。可以考虑事件总线、Vuex。而考虑到只有这两个页面共同使用某些数据，可以不必大费周章使用Vuex。所以最终选择事件总线。</li>
+</ol>
+<h3 id="3-3-代码思路"><a href="#3-3-代码思路" class="headerlink" title="3.3 代码思路"></a>3.3 代码思路</h3><ol>
+<li>实例化一个EventBus，并且让所有组件都可以访问到（比如挂载到Vue.prototype上）：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Vue.prototype.$EventBus = <span class="keyword">new</span> Vue()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 或为了防止篡改就这样：</span></span><br><span class="line"><span class="keyword">const</span> eventBus = <span class="keyword">new</span> Vue()</span><br><span class="line"><span class="built_in">Object</span>.defineProperty(Vue.prototype, <span class="string">'$EventBus'</span>, &#123;</span><br><span class="line">  configurable: <span class="literal">false</span>,</span><br><span class="line">  enumerable: <span class="literal">false</span>,</span><br><span class="line">  get () &#123;</span><br><span class="line">    <span class="keyword">return</span> eventBus</span><br><span class="line">  &#125;,</span><br><span class="line">  set () &#123;</span><br><span class="line">    <span class="built_in">console</span>.error(<span class="string">'别覆盖掉啊'</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>【列表页】：注册/反注册事件总线，并且写好回调函数的逻辑：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  name: <span class="string">'list'</span>,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    updateItem (&#123; id, title, content &#125;) &#123; <span class="comment">// 最终回调</span></span><br><span class="line">      <span class="keyword">const</span> target = <span class="keyword">this</span>.items.find(<span class="function"><span class="params">item</span> =&gt;</span> item.id === id)</span><br><span class="line">      target.title = title</span><br><span class="line">      target.content = content</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  created () &#123;</span><br><span class="line">    <span class="keyword">this</span>.$EventBus.$on(<span class="string">'detail:list:updateItem'</span>, <span class="keyword">this</span>.updateItem)</span><br><span class="line">  &#125;,</span><br><span class="line">  beforeDestroy () &#123;</span><br><span class="line">    <span class="keyword">this</span>.$EventBus.$off(<span class="string">'detail:list:updateItem'</span>, <span class="keyword">this</span>.updateItem) <span class="comment">// 记得要反注册！否则内存泄漏了</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>【详情页】：在“后退”（beforeRouteLeave）时发射事件，间接回调【列表页】：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  name: <span class="string">'detail'</span>,</span><br><span class="line">  beforeRouteLeave (to, <span class="keyword">from</span>, next) &#123;</span><br><span class="line">    <span class="keyword">if</span> (to.name === <span class="string">'list'</span>) &#123;</span><br><span class="line">      <span class="keyword">this</span>.$EventBus.$emit(<span class="string">'detail:list:updateItem'</span>, currentDetail)</span><br><span class="line">    &#125;</span><br><span class="line">    next()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="全局SOT：Vuex"><a href="#全局SOT：Vuex" class="headerlink" title="全局SOT：Vuex"></a>全局SOT：Vuex</h2><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://cn.vuejs.org/v2/guide/components-edge-cases.html#%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5" target="_blank" rel="noopener">Vue：provide-inject</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Vue/" rel="tag"># Vue</a>
+          
+            <a href="/tags/组件通信/" rel="tag"># 组件通信</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/05/Vue_methods_computed_watch/" rel="next" title="Vue：比较methods|computed|watch">
+                <i class="fa fa-chevron-left"></i> Vue：比较methods|computed|watch
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/05/TODO_Throttle与Debounce/" rel="prev" title="Throttle（节流）与Debounce（防抖动）">
+                Throttle（节流）与Debounce（防抖动） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">JK</p>
+              <p class="site-description motion-element" itemprop="description">分享技术心得</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">58</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-父子组件：props与event"><span class="nav-number">1.</span> <span class="nav-text">1. 父子组件：props与event</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-跨层级组件：provide、inject"><span class="nav-number">2.</span> <span class="nav-text">2. 跨层级组件：provide、inject</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-无关系组件-事件总线：-emit与-on"><span class="nav-number">3.</span> <span class="nav-text">3. 无关系组件/事件总线：\$emit与\$on</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-举个例子"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 举个例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-分析"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-代码思路"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 代码思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#全局SOT：Vuex"><span class="nav-number">4.</span> <span class="nav-text">全局SOT：Vuex</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">JK</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="正则表达式,函数,match,exec," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本篇旨在总结正则表达式匹配的API。有些API在String原型上，而有些在RegExp原型上，使用的时候要注意。 重点在于几个知识点：  正则模式的“g”全局标志 正则模式的捕获组  1. String1.1 String.prototype.matchmatch返回的是匹配的信息（组）。具体结果会受到“g”和捕获的影响。  参数： 接受一个RegExp实例，默认参数为空字符串(‘’)。所以当参">
+<meta name="keywords" content="正则表达式,函数,match,exec">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS：字符串匹配正则的API">
+<meta property="og:url" content="http://yoursite.com/2018/09/05/JS：字符串匹配正则的API/index.html">
+<meta property="og:site_name" content="大肥凯">
+<meta property="og:description" content="本篇旨在总结正则表达式匹配的API。有些API在String原型上，而有些在RegExp原型上，使用的时候要注意。 重点在于几个知识点：  正则模式的“g”全局标志 正则模式的捕获组  1. String1.1 String.prototype.matchmatch返回的是匹配的信息（组）。具体结果会受到“g”和捕获的影响。  参数： 接受一个RegExp实例，默认参数为空字符串(‘’)。所以当参">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-09-05T04:31:58.066Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JS：字符串匹配正则的API">
+<meta name="twitter:description" content="本篇旨在总结正则表达式匹配的API。有些API在String原型上，而有些在RegExp原型上，使用的时候要注意。 重点在于几个知识点：  正则模式的“g”全局标志 正则模式的捕获组  1. String1.1 String.prototype.matchmatch返回的是匹配的信息（组）。具体结果会受到“g”和捕获的影响。  参数： 接受一个RegExp实例，默认参数为空字符串(‘’)。所以当参">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/09/05/JS：字符串匹配正则的API/"/>
+
+
+
+
+
+  <title>JS：字符串匹配正则的API | 大肥凯</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">大肥凯</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/05/JS：字符串匹配正则的API/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">JS：字符串匹配正则的API</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-05T10:48:37+08:00">
+                2018-09-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本篇旨在总结正则表达式匹配的API。有些API在String原型上，而有些在RegExp原型上，使用的时候要注意。</p>
+<p>重点在于几个知识点：</p>
+<ul>
+<li>正则模式的“g”全局标志</li>
+<li>正则模式的捕获组</li>
+</ul>
+<h2 id="1-String"><a href="#1-String" class="headerlink" title="1. String"></a>1. String</h2><h3 id="1-1-String-prototype-match"><a href="#1-1-String-prototype-match" class="headerlink" title="1.1 String.prototype.match"></a>1.1 String.prototype.match</h3><p>match返回的是匹配的信息（组）。具体结果会受到“g”和捕获的影响。</p>
+<ol>
+<li><p>参数：</p>
+<p>接受一个RegExp实例，默认参数为空字符串(‘’)。所以当参数为空(即undefined)时，认为能够匹配到下标0：</p>
+</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'hello'</span>.match();	<span class="comment">// [ '', index: 0, input: 'hello' ]</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>返回结果：</li>
+</ol>
+<ul>
+<li>如果模式中没有全局标志”g“，则匹配到第一个就返回，返回的结果是个“匹配项信息”（一个特殊数组，元素包括匹配的捕获组，还有”input”、”index”。接下来都暂且这样称呼）。</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'hello'</span>.match(<span class="regexp">/l/</span>);	<span class="comment">// [ 'l', index: 2, input: 'hello' ]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 存在捕获组时</span></span><br><span class="line"><span class="string">'hello1234'</span>.match(<span class="regexp">/([a-z]*)(\d&#123;3&#125;)/</span>)</span><br><span class="line"><span class="comment">// 结果：[ 'hello123', 'hello', '123', index: 0, input: 'hello1234' ]</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>如果有“g”，则返回所有匹配项组成的数组。每一个匹配项都是字符串，没有index和input等额外字段：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'hello'</span>.match(<span class="regexp">/l/g</span>);	<span class="comment">// [ 'l', 'l' ]</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>如果完全没有匹配，最终结果会返回null（而不是个空数组，这里要小心）：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'hello'</span>.match(<span class="regexp">/hi/</span>);	<span class="comment">// null</span></span><br></pre></td></tr></table></figure>
+<p>注意：当“g”和“捕获”同时存在时，match会全局寻找，并且每次匹配会忽略捕获，只返回匹配字串本身。即“g”会覆盖“捕获”。</p>
+<h3 id="1-2-String-prototype-search"><a href="#1-2-String-prototype-search" class="headerlink" title="1.2 String.prototype.search"></a>1.2 String.prototype.search</h3><p>search只返回第一次匹配的下标，可以看出其行为并不受“g”影响。</p>
+<p>search接收一个RegExp，返回一个Number：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'hello'</span>.search(<span class="regexp">/l/</span>);	<span class="comment">// 2</span></span><br><span class="line"></span><br><span class="line"><span class="string">'hello'</span>.search(<span class="regexp">/l/g</span>);	<span class="comment">// 2。不受“g”影响</span></span><br><span class="line"></span><br><span class="line"><span class="string">'hello'</span>.search(<span class="regexp">/la/</span>);	<span class="comment">// 无法匹配，则返回-1</span></span><br></pre></td></tr></table></figure>
+<h2 id="2-RegExp"><a href="#2-RegExp" class="headerlink" title="2. RegExp"></a>2. RegExp</h2><h3 id="2-1-RegExp-prototype-test"><a href="#2-1-RegExp-prototype-test" class="headerlink" title="2.1 RegExp.prototype.test"></a>2.1 RegExp.prototype.test</h3><p>test用来测试一个模式是否存在于某个字符串中，返回结果是true/false。它的行为受“g”影响，分两种情况：</p>
+<ul>
+<li>模式中有“g”时，由于是全局匹配，正则实例会维护上一次匹配到的位置(A)，下一次调用时会从位置(A+1)开始寻找；结束之后又会回到字符串的起始位置。举个例子会好理解一些：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str = <span class="string">'Hello world!'</span></span><br><span class="line"><span class="keyword">var</span> regexp = <span class="regexp">/o/g</span>	<span class="comment">// 有“g”</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )	<span class="comment">// true。从0开始，匹配下标为4</span></span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )	<span class="comment">// true。从5开始，匹配下标为7</span></span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )	<span class="comment">// false。从8开始（到结尾），无法匹配</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )	<span class="comment">// true。又重新从0开始匹配，匹配下标为4</span></span><br></pre></td></tr></table></figure>
+<p>换个例子，假如匹配项可能恰好就是字符串的末尾呢？</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str = <span class="string">'Hello wo'</span>	<span class="comment">// 结尾是"o"，可以匹配</span></span><br><span class="line"><span class="keyword">var</span> regexp = <span class="regexp">/o/g</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )	<span class="comment">// true。位置4</span></span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )	<span class="comment">// true。位置7</span></span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )	<span class="comment">// false。因为上一次返回true，所以继续往下寻找（结尾的后面），当然找不到</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )	<span class="comment">// 上一次返回false，所以这次从0开始匹配，匹配成功，位置4</span></span><br></pre></td></tr></table></figure>
+<p>可以看到，当正则实例匹配失败时，下一次才会从字符串的起始位置开始寻找。</p>
+<ul>
+<li>模式中没有“g”时，因为不是全局匹配，正则实例不会维护位置，所以其行为就是简单地测试字符串中是否存在这个模式。还是同样的例子（下面全部返回true，匹配到的都是下标为4的位置）：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str = <span class="string">'Hello world!'</span></span><br><span class="line"><span class="keyword">var</span> regexp = <span class="regexp">/o/</span>	<span class="comment">// 没有“g”</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )</span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )</span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )</span><br></pre></td></tr></table></figure>
+<p>###2.2 RegExp.prototype.exec</p>
+<p>exec同样受到“g”的影响，有记忆化行为。它的返回结果类似于String.prototype.match，但每次调用都只返回一个匹配项信息（有index、input的特殊数组），也支持捕获。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> str = <span class="string">'Hello wo'</span></span><br><span class="line"><span class="keyword">let</span> regexp = <span class="regexp">/(o)/g</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> matchItem</span><br><span class="line"><span class="keyword">let</span> matchItems = []</span><br><span class="line"><span class="keyword">let</span> lastIndex = []</span><br><span class="line"><span class="keyword">while</span> ( (matchItem = regexp.exec(str)) != <span class="literal">null</span> ) &#123;</span><br><span class="line">  matchItems.push( matchItem )</span><br><span class="line">  lastIndex.push( regexp.lastIndex )	<span class="comment">// regexp的记忆信息中，lastIndex表示下一次寻找的开始位置</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="string">`</span></span><br><span class="line"><span class="string">matchItems =&gt;</span></span><br><span class="line"><span class="string">[ [ 'o', index: 4, input: 'Hello world!' ],</span></span><br><span class="line"><span class="string">  [ 'o', index: 7, input: 'Hello world!' ] ]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">lastIndex =&gt; [ 5, 8 ]</span></span><br><span class="line"><span class="string">`</span></span><br></pre></td></tr></table></figure>
+<p>其实，正则实例的lastIndex属性，就充分说明了其寻找的过程，跟上面test函数部分我的描述差不多。</p>
+<h2 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结"></a>3. 总结</h2><p>这几个函数返回的信息量不同，从小到大依次是：</p>
+<ol>
+<li>RegExp.prototype.test：返回boolean，表示某次寻找“是否成功”</li>
+<li>String.prototype.search：返回number，表示首次匹配到的“下标”</li>
+<li>String.prototype.match：返回数组/null，表示首次匹配的匹配信息/所有匹配的字串</li>
+<li>RegExp.prototype.exec：返回数组/null，表示某次匹配的匹配信息</li>
+</ol>
+<h2 id="4-参考"><a href="#4-参考" class="headerlink" title="4. 参考"></a>4. 参考</h2><p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test" target="_blank" rel="noopener">RegExp.prototype.test</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/正则表达式/" rel="tag"># 正则表达式</a>
+          
+            <a href="/tags/函数/" rel="tag"># 函数</a>
+          
+            <a href="/tags/match/" rel="tag"># match</a>
+          
+            <a href="/tags/exec/" rel="tag"># exec</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/02/题目：ES6 let声明的循环变量/" rel="next" title="题目：ES6 let声明的循环变量">
+                <i class="fa fa-chevron-left"></i> 题目：ES6 let声明的循环变量
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/05/JS：slice、substr、substring的区别/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">JK</p>
+              <p class="site-description motion-element" itemprop="description">分享技术心得</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">58</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-String"><span class="nav-number">1.</span> <span class="nav-text">1. String</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-String-prototype-match"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 String.prototype.match</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-String-prototype-search"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 String.prototype.search</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-RegExp"><span class="nav-number">2.</span> <span class="nav-text">2. RegExp</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-RegExp-prototype-test"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 RegExp.prototype.test</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-总结"><span class="nav-number">3.</span> <span class="nav-text">3. 总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-参考"><span class="nav-number">4.</span> <span class="nav-text">4. 参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">JK</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -233,6 +233,449 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/05/JS：slice、substr、substring的区别/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/05/JS：slice、substr、substring的区别/" itemprop="url">Untitled</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-05T12:32:05+08:00">
+                2018-09-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>字符串函数：</p>
+<ul>
+<li>String.prototype.slice</li>
+<li>String.prototype.substr</li>
+<li>String.prototype.substring</li>
+</ul>
+<p>数组函数：</p>
+<ul>
+<li>Array.prototype.slice</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/05/JS：字符串匹配正则的API/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/05/JS：字符串匹配正则的API/" itemprop="url">JS：字符串匹配正则的API</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-05T10:48:37+08:00">
+                2018-09-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>本篇旨在总结正则表达式匹配的API。有些API在String原型上，而有些在RegExp原型上，使用的时候要注意。</p>
+<p>重点在于几个知识点：</p>
+<ul>
+<li>正则模式的“g”全局标志</li>
+<li>正则模式的捕获组</li>
+</ul>
+<h2 id="1-String"><a href="#1-String" class="headerlink" title="1. String"></a>1. String</h2><h3 id="1-1-String-prototype-match"><a href="#1-1-String-prototype-match" class="headerlink" title="1.1 String.prototype.match"></a>1.1 String.prototype.match</h3><p>match返回的是匹配的信息（组）。具体结果会受到“g”和捕获的影响。</p>
+<ol>
+<li><p>参数：</p>
+<p>接受一个RegExp实例，默认参数为空字符串(‘’)。所以当参数为空(即undefined)时，认为能够匹配到下标0：</p>
+</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'hello'</span>.match();	<span class="comment">// [ '', index: 0, input: 'hello' ]</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>返回结果：</li>
+</ol>
+<ul>
+<li>如果模式中没有全局标志”g“，则匹配到第一个就返回，返回的结果是个“匹配项信息”（一个特殊数组，元素包括匹配的捕获组，还有”input”、”index”。接下来都暂且这样称呼）。</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'hello'</span>.match(<span class="regexp">/l/</span>);	<span class="comment">// [ 'l', index: 2, input: 'hello' ]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 存在捕获组时</span></span><br><span class="line"><span class="string">'hello1234'</span>.match(<span class="regexp">/([a-z]*)(\d&#123;3&#125;)/</span>)</span><br><span class="line"><span class="comment">// 结果：[ 'hello123', 'hello', '123', index: 0, input: 'hello1234' ]</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>如果有“g”，则返回所有匹配项组成的数组。每一个匹配项都是字符串，没有index和input等额外字段：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'hello'</span>.match(<span class="regexp">/l/g</span>);	<span class="comment">// [ 'l', 'l' ]</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>如果完全没有匹配，最终结果会返回null（而不是个空数组，这里要小心）：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'hello'</span>.match(<span class="regexp">/hi/</span>);	<span class="comment">// null</span></span><br></pre></td></tr></table></figure>
+<p>注意：当“g”和“捕获”同时存在时，match会全局寻找，并且每次匹配会忽略捕获，只返回匹配字串本身。即“g”会覆盖“捕获”。</p>
+<h3 id="1-2-String-prototype-search"><a href="#1-2-String-prototype-search" class="headerlink" title="1.2 String.prototype.search"></a>1.2 String.prototype.search</h3><p>search只返回第一次匹配的下标，可以看出其行为并不受“g”影响。</p>
+<p>search接收一个RegExp，返回一个Number：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'hello'</span>.search(<span class="regexp">/l/</span>);	<span class="comment">// 2</span></span><br><span class="line"></span><br><span class="line"><span class="string">'hello'</span>.search(<span class="regexp">/l/g</span>);	<span class="comment">// 2。不受“g”影响</span></span><br><span class="line"></span><br><span class="line"><span class="string">'hello'</span>.search(<span class="regexp">/la/</span>);	<span class="comment">// 无法匹配，则返回-1</span></span><br></pre></td></tr></table></figure>
+<h2 id="2-RegExp"><a href="#2-RegExp" class="headerlink" title="2. RegExp"></a>2. RegExp</h2><h3 id="2-1-RegExp-prototype-test"><a href="#2-1-RegExp-prototype-test" class="headerlink" title="2.1 RegExp.prototype.test"></a>2.1 RegExp.prototype.test</h3><p>test用来测试一个模式是否存在于某个字符串中，返回结果是true/false。它的行为受“g”影响，分两种情况：</p>
+<ul>
+<li>模式中有“g”时，由于是全局匹配，正则实例会维护上一次匹配到的位置(A)，下一次调用时会从位置(A+1)开始寻找；结束之后又会回到字符串的起始位置。举个例子会好理解一些：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str = <span class="string">'Hello world!'</span></span><br><span class="line"><span class="keyword">var</span> regexp = <span class="regexp">/o/g</span>	<span class="comment">// 有“g”</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )	<span class="comment">// true。从0开始，匹配下标为4</span></span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )	<span class="comment">// true。从5开始，匹配下标为7</span></span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )	<span class="comment">// false。从8开始（到结尾），无法匹配</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )	<span class="comment">// true。又重新从0开始匹配，匹配下标为4</span></span><br></pre></td></tr></table></figure>
+<p>换个例子，假如匹配项可能恰好就是字符串的末尾呢？</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str = <span class="string">'Hello wo'</span>	<span class="comment">// 结尾是"o"，可以匹配</span></span><br><span class="line"><span class="keyword">var</span> regexp = <span class="regexp">/o/g</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )	<span class="comment">// true。位置4</span></span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )	<span class="comment">// true。位置7</span></span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )	<span class="comment">// false。因为上一次返回true，所以继续往下寻找（结尾的后面），当然找不到</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )	<span class="comment">// 上一次返回false，所以这次从0开始匹配，匹配成功，位置4</span></span><br></pre></td></tr></table></figure>
+<p>可以看到，当正则实例匹配失败时，下一次才会从字符串的起始位置开始寻找。</p>
+<ul>
+<li>模式中没有“g”时，因为不是全局匹配，正则实例不会维护位置，所以其行为就是简单地测试字符串中是否存在这个模式。还是同样的例子（下面全部返回true，匹配到的都是下标为4的位置）：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str = <span class="string">'Hello world!'</span></span><br><span class="line"><span class="keyword">var</span> regexp = <span class="regexp">/o/</span>	<span class="comment">// 没有“g”</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )</span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )</span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log( regexp.test(str) )</span><br></pre></td></tr></table></figure>
+<p>###2.2 RegExp.prototype.exec</p>
+<p>exec同样受到“g”的影响，有记忆化行为。它的返回结果类似于String.prototype.match，但每次调用都只返回一个匹配项信息（有index、input的特殊数组），也支持捕获。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> str = <span class="string">'Hello wo'</span></span><br><span class="line"><span class="keyword">let</span> regexp = <span class="regexp">/(o)/g</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> matchItem</span><br><span class="line"><span class="keyword">let</span> matchItems = []</span><br><span class="line"><span class="keyword">let</span> lastIndex = []</span><br><span class="line"><span class="keyword">while</span> ( (matchItem = regexp.exec(str)) != <span class="literal">null</span> ) &#123;</span><br><span class="line">  matchItems.push( matchItem )</span><br><span class="line">  lastIndex.push( regexp.lastIndex )	<span class="comment">// regexp的记忆信息中，lastIndex表示下一次寻找的开始位置</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="string">`</span></span><br><span class="line"><span class="string">matchItems =&gt;</span></span><br><span class="line"><span class="string">[ [ 'o', index: 4, input: 'Hello world!' ],</span></span><br><span class="line"><span class="string">  [ 'o', index: 7, input: 'Hello world!' ] ]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">lastIndex =&gt; [ 5, 8 ]</span></span><br><span class="line"><span class="string">`</span></span><br></pre></td></tr></table></figure>
+<p>其实，正则实例的lastIndex属性，就充分说明了其寻找的过程，跟上面test函数部分我的描述差不多。</p>
+<h2 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结"></a>3. 总结</h2><p>这几个函数返回的信息量不同，从小到大依次是：</p>
+<ol>
+<li>RegExp.prototype.test：返回boolean，表示某次寻找“是否成功”</li>
+<li>String.prototype.search：返回number，表示首次匹配到的“下标”</li>
+<li>String.prototype.match：返回数组/null，表示首次匹配的匹配信息/所有匹配的字串</li>
+<li>RegExp.prototype.exec：返回数组/null，表示某次匹配的匹配信息</li>
+</ol>
+<h2 id="4-参考"><a href="#4-参考" class="headerlink" title="4. 参考"></a>4. 参考</h2><p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test" target="_blank" rel="noopener">RegExp.prototype.test</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/02/题目：ES6 let声明的循环变量/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/02/题目：ES6 let声明的循环变量/" itemprop="url">题目：ES6 let声明的循环变量</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-02T14:00:00+08:00">
+                2018-09-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h2><p>以下代码中，setTimeout会log出什么？</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (</span><br><span class="line">	<span class="keyword">let</span> i = <span class="function">(<span class="params"> setTimeout((</span>) =&gt;</span> &#123; <span class="built_in">console</span>.log(i); &#125;), <span class="number">0</span> );</span><br><span class="line">    i &lt; <span class="number">2</span>;</span><br><span class="line">    ++i</span><br><span class="line">) &#123;</span><br><span class="line">    ++i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>考察了对ES6的let关键字在for循环中的作用机制。</p>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><ul>
+<li><p>对于使用let声明的循环变量，每次循环都是一个独立的局部作用域（lexical scope）。我们可以认为是<u>每次循环、判断语句进行之前，都有一个全新的变量i（next i）诞生，它的值为上一次循环结束时i（last i）的值</u>。相比之下，var声明的循环变量，在整个循环的过程中，只存在唯一一个，每次循环共享一个i。</p>
+</li>
+<li><p>for中的第一部分即初始化语句，独立于每次循环之外，又是一个新的作用域。</p>
+</li>
+</ul>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><ol>
+<li>首先根据逗号表达式，i的初始值是0，但是setTimeout也往事件队列里推进了一个异步输出任务。</li>
+<li>然后，根据上述原理所说的，for循环的初始化部分算作一个独立的作用域，与所有循环无关。所以在这个作用域里，i是0。那么轮到异步任务被主线程执行时，i还是0。所以答案，即最终结果输出的是0。</li>
+<li>然后才开始循环，而每一轮循环，都相当于创建了一个新的i，与第2步所说的i无关了。</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><p>原视频（Youtube）：<a href="https://www.youtube.com/watch?v=Nzokr6Boeaw&amp;list=PLNYkxOF6rcIAKIQFsNbV0JDws_G_bnNo9" target="_blank" rel="noopener">JavaScript for-loops are… complicated</a></p>
+</li>
+<li><p>方应杭老师的视频解说：<a href="https://zhuanlan.zhihu.com/p/42566352" target="_blank" rel="noopener">分析HTTP203出的一个JS题目</a></p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/12/Vue组件基础：双向绑定的不同写法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1086,7 +1529,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/11/KeepAlive组件/" itemprop="url">keep-alive组件</a></h1>
+                <a class="post-title-link" href="/2018/06/11/KeepAlive组件/" itemprop="url">keep-alive：组件级缓存</a></h1>
         
 
         <div class="post-meta">
@@ -1144,7 +1587,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;keep-alive&gt;</span><br><span class="line">	&lt;router-view /&gt;</span><br><span class="line">&lt;/keep-alive&gt;</span><br></pre></td></tr></table></figure>
 <p>如此一来，每一个在router-view中渲染的组件，都会被缓存起来。</p>
 <p>如果只想渲染某一些页面/组件，可以使用keep-alive组件的include/exclude属性。include属性表示要缓存的组件名（即组件定义时的name属性），接收的类型为string、RegExp或string数组；exclude属性有着相反的作用，匹配到的组件不会被缓存。假如可能出现在同一router-view的N个页面中，我只想缓存列表页和详情页，那么可以这样写：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;keep-alive :include=&quot;[&apos;ListView&apos;, &apos;DetailView&apos;]&quot;&gt;</span><br><span class="line">	&lt;router-view /&gt;</span><br><span class="line">&lt;/keep-alive&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;keep-alive :include=&quot;[&apos;ListView&apos;, &apos;DetailView&apos;]&quot;&gt;</span><br><span class="line">  &lt;router-view /&gt;</span><br><span class="line">&lt;/keep-alive&gt;</span><br></pre></td></tr></table></figure>
 <h2 id="实现条件缓存：全局的include数组"><a href="#实现条件缓存：全局的include数组" class="headerlink" title="实现条件缓存：全局的include数组"></a>实现条件缓存：全局的include数组</h2><p>上面include的写法不是常用的，因为它固定了哪几个页面缓存或不缓存，假如有下面这个场景：</p>
 <ul>
 <li>现有页面：首页（A）、列表页（B）、详情页（C），一般可以从：A-&gt;B-&gt;C；</li>
@@ -1155,22 +1598,36 @@
 <ol>
 <li>在Vuex中定义一个全局的缓存数组，待传给include：</li>
 </ol>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// global.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">	namespaced: <span class="literal">true</span>,</span><br><span class="line">    state: &#123;</span><br><span class="line">        keepAliveComponents: [] <span class="comment">// 缓存数组</span></span><br><span class="line">    &#125;,</span><br><span class="line">    mutations: &#123;</span><br><span class="line">        keepAlive (state, component) &#123;</span><br><span class="line">            <span class="comment">// 注：防止重复添加（当然也可以使用Set）</span></span><br><span class="line">            !state.keepAliveComponents.includes(component) &amp;&amp; </span><br><span class="line">                state.keepAliveComponents.push(component)</span><br><span class="line">        &#125;,</span><br><span class="line">        noKeepAlive (state, component) &#123;</span><br><span class="line">            <span class="keyword">const</span> index = state.keepAliveComponents.indexOf(component)</span><br><span class="line">            index !== <span class="number">-1</span> &amp;&amp;</span><br><span class="line">                state.keepAliveComponents.splice(index, <span class="number">1</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// global.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  namespaced: <span class="literal">true</span>,</span><br><span class="line">  state: &#123;</span><br><span class="line">    keepAliveComponents: [] <span class="comment">// 缓存数组</span></span><br><span class="line">  &#125;,</span><br><span class="line">  mutations: &#123;</span><br><span class="line">    keepAlive (state, component) &#123;</span><br><span class="line">      <span class="comment">// 注：防止重复添加（当然也可以使用Set）</span></span><br><span class="line">      !state.keepAliveComponents.includes(component) &amp;&amp; </span><br><span class="line">        state.keepAliveComponents.push(component)</span><br><span class="line">    &#125;,</span><br><span class="line">    noKeepAlive (state, component) &#123;</span><br><span class="line">      <span class="keyword">const</span> index = state.keepAliveComponents.indexOf(component)</span><br><span class="line">      index !== <span class="number">-1</span> &amp;&amp;</span><br><span class="line">        state.keepAliveComponents.splice(index, <span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol start="2">
 <li>在父页面中定义keep-alive，并传入全局的缓存数组：</li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// App.vue</span><br><span class="line"></span><br><span class="line">&lt;div class=&quot;app&quot;&gt;</span><br><span class="line">    &lt;!--传入include数组--&gt;</span><br><span class="line">    &lt;keep-alive :include=&quot;keepAliveComponents&quot;&gt;</span><br><span class="line">    	&lt;router-view&gt;&lt;/router-view&gt;</span><br><span class="line">    &lt;/keep-alive&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">	computed: &#123;</span><br><span class="line">        ...mapState(&#123;</span><br><span class="line">			keepAliveComponents: state =&gt; state.global.keepAliveComponents</span><br><span class="line">        &#125;)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// App.vue</span><br><span class="line"></span><br><span class="line">&lt;div class=&quot;app&quot;&gt;</span><br><span class="line">  &lt;!--传入include数组--&gt;</span><br><span class="line">  &lt;keep-alive :include=&quot;keepAliveComponents&quot;&gt;</span><br><span class="line">    &lt;router-view&gt;&lt;/router-view&gt;</span><br><span class="line">  &lt;/keep-alive&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  computed: &#123;</span><br><span class="line">    ...mapState(&#123;</span><br><span class="line">      keepAliveComponents: state =&gt; state.global.keepAliveComponents</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol start="3">
 <li>缓存：在路由配置页中，约定使用meta属性keepAlive，值为true表示组件需要缓存。在全局路由钩子beforeEach中对该属性进行处理，这样一来，每次进入该组件，都进行缓存：</li>
 </ol>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> router = <span class="keyword">new</span> Router(&#123;</span><br><span class="line">    routes: [</span><br><span class="line">        &#123;</span><br><span class="line">            path: <span class="string">'/A/B'</span>,</span><br><span class="line">            name: <span class="string">'B'</span>,</span><br><span class="line">            component: B,</span><br><span class="line">            meta: &#123;</span><br><span class="line">                title: <span class="string">'B页面'</span>,</span><br><span class="line">                keepAlive: <span class="literal">true</span> <span class="comment">// 这里指定B组件的缓存性</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">router.beforeEach(<span class="function">(<span class="params">to, <span class="keyword">from</span>, next</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 在路由全局钩子beforeEach中，根据keepAlive属性，统一设置页面的缓存性</span></span><br><span class="line">    <span class="comment">// 作用是每次进入该组件，就将它缓存</span></span><br><span class="line">    <span class="keyword">if</span> (to.meta.keepAlive) &#123;</span><br><span class="line">        store.commit(<span class="string">'global/keepAlive'</span>, to.name)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>4、取消缓存的时机：对缓存组件使用路由的组件层钩子beforeRouteLeave。因为B-&gt;A-&gt;B时不需要缓存B，所以可以认为：当B的下一个页面不是C时取消B的缓存，那么下次进入B组件时B就是全新的：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">    name: <span class="string">'B'</span>,</span><br><span class="line">    </span><br><span class="line">    created () &#123;</span><br><span class="line">        <span class="comment">// ...设置滚动条在最顶部</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    beforeRouteLeave (to, <span class="keyword">from</span>, next) &#123;</span><br><span class="line">        <span class="comment">// 如果下一个页面不是详情页（C），则取消列表页（B）的缓存</span></span><br><span class="line">        <span class="keyword">if</span> (to.name !== <span class="string">'C'</span>) &#123;</span><br><span class="line">            <span class="keyword">this</span>.$store.commit(<span class="string">'global/noKeepAlive'</span>, <span class="keyword">from</span>.name)</span><br><span class="line">        &#125;</span><br><span class="line">        next()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> router = <span class="keyword">new</span> Router(&#123;</span><br><span class="line">  routes: [</span><br><span class="line">    &#123;</span><br><span class="line">      path: <span class="string">'/A/B'</span>,</span><br><span class="line">      name: <span class="string">'B'</span>,</span><br><span class="line">      component: B,</span><br><span class="line">      meta: &#123;</span><br><span class="line">        title: <span class="string">'B页面'</span>,</span><br><span class="line">        keepAlive: <span class="literal">true</span> <span class="comment">// 这里指定B组件的缓存性</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">router.beforeEach(<span class="function">(<span class="params">to, <span class="keyword">from</span>, next</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 在路由全局钩子beforeEach中，根据keepAlive属性，统一设置页面的缓存性</span></span><br><span class="line">  <span class="comment">// 作用是每次进入该组件，就将它缓存</span></span><br><span class="line">  <span class="keyword">if</span> (to.meta.keepAlive) &#123;</span><br><span class="line">    store.commit(<span class="string">'global/keepAlive'</span>, to.name)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>取消缓存的时机：对缓存组件使用路由的组件层钩子beforeRouteLeave。因为B-&gt;A-&gt;B时不需要缓存B，所以可以认为：当B的下一个页面不是C时取消B的缓存，那么下次进入B组件时B就是全新的：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  name: <span class="string">'B'</span>,</span><br><span class="line">  created () &#123;</span><br><span class="line">      <span class="comment">// ...设置滚动条在最顶部</span></span><br><span class="line">  &#125;,</span><br><span class="line">  beforeRouteLeave (to, <span class="keyword">from</span>, next) &#123;</span><br><span class="line">    <span class="comment">// 如果下一个页面不是详情页（C），则取消列表页（B）的缓存</span></span><br><span class="line">    <span class="keyword">if</span> (to.name !== <span class="string">'C'</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.$store.commit(<span class="string">'global/noKeepAlive'</span>, <span class="keyword">from</span>.name)</span><br><span class="line">    &#125;</span><br><span class="line">    next()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>因为B的条件缓存，是B自己的职责，所以最好把该业务逻辑写在B的内部，而不是A中，这样不至于让组件之间的跳转关系变得混乱。</p>
+<ol start="5">
+<li>一个需要注意的细节：因为keep-alive组件的include数组操作的对象是组件名、而不是路由名，因此我们定义每一个组件时，都要显式声明name属性，否则缓存不起作用。而且，一个显式的name对Vue devtools有提示作用。</li>
+</ol>
 <h2 id="另一种方式？"><a href="#另一种方式？" class="headerlink" title="另一种方式？"></a>另一种方式？</h2><p>网上看到实现条件缓存的另一种方式很类似，但它是在父组件中，使用两个router-view并进行条件渲染：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// App.vue</span><br><span class="line"></span><br><span class="line">&lt;div class=&quot;app&quot;&gt;</span><br><span class="line">    &lt;keep-alive&gt;</span><br><span class="line">    	&lt;router-view v-if=&quot;$route.meta.keepAlive&quot;&gt;&lt;/router-view&gt;</span><br><span class="line">    &lt;/keep-alive&gt;</span><br><span class="line">    &lt;router-view v-if=&quot;!$route.meta.keepAlive&quot;&gt;&lt;/router-view&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// App.vue</span><br><span class="line"></span><br><span class="line">&lt;div class=&quot;app&quot;&gt;</span><br><span class="line">    &lt;keep-alive&gt;</span><br><span class="line">      &lt;router-view v-if=&quot;$route.meta.keepAlive&quot;&gt;&lt;/router-view&gt;</span><br><span class="line">    &lt;/keep-alive&gt;</span><br><span class="line">    &lt;router-view v-if=&quot;!$route.meta.keepAlive&quot;&gt;&lt;/router-view&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
 <p>在GitHub的issue中（见参考链接）有一些争议，本人也还没有比较全面的验证过，所以也暂不知道效果如何。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Vuex作为官方路由库，是数据的缓存；而keep-alive作为功能型组件，实现了对组件的缓存。使用Vuex管理keep-alive的include数组，是一个不错的实现条件缓存的思路。</p>
+<h2 id="Q-amp-A"><a href="#Q-amp-A" class="headerlink" title="Q&amp;A"></a>Q&amp;A</h2><ol>
+<li><p>Q：组件名已经加入全局include数组了，为什么页面还是没有缓存到？</p>
+</li>
+</ol>
+<p>A：如果按照上面的思路来做就没有问题，注意第5点，即很有可能你忘记给组件声明一个name属性了。</p>
+<ol start="2">
+<li><p>Q：组件能够缓存，但是滚动条并没有缓存、比如还是会回到顶部？</p>
+</li>
+</ol>
+<p>A：滚动条这个问题跟组件的HTML结构有关。浅显而言，keep-alive功能缓存的是父元素相对于组件的scrollTop，所以如果你的组件/页面设置了height:100%、滚动条在组件内部的，看到的滚动条就是没有缓存的。当然，关于这个，还有待进入源码深究，给自己留个坑吧。</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li>文档</li>
 </ul>
@@ -1185,407 +1642,6 @@
 <li>讨论</li>
 </ul>
 <p><a href="https://github.com/vuejs/vue-router/issues/811" target="_blank" rel="noopener">https://github.com/vuejs/vue-router/issues/811</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/06/保持原型链的深克隆/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JK">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="大肥凯">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/06/保持原型链的深克隆/" itemprop="url">保持原型链的深克隆</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-06T16:03:38+08:00">
-                2018-06-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>如果用原生JS实现深克隆，可能一些人能够想到使用这个“奇技淫巧”：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> srcObj = &#123; <span class="attr">name</span>: <span class="string">'Bob'</span> &#125;</span><br><span class="line"><span class="keyword">var</span> destObj = <span class="built_in">JSON</span>.parse( <span class="built_in">JSON</span>.stringify( srcObj ) )</span><br></pre></td></tr></table></figure>
-<p>这个技巧在多数时候能够满足需求，但其实它有很多缺点，比如：忽略undefined；不能拷贝NaN，会变成null；忽略函数等等。</p>
-<p>最重要的是，它也会<u>忽略原型链上的属性</u>。那能否实现一个既是deep、同时又保持原型链（即继承关系）的克隆呢？答案是可以的，其实只是把两个独立的功能结合起来就可以了。即：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getClone</span> (<span class="params">srcObj</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> _deepClone( _augmentedClone( srcObj ) )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>下面我们可以实现一下这个deepClone（负责深克隆）和augmentedClone（负责继承）。</p>
-<h2 id="深克隆"><a href="#深克隆" class="headerlink" title="深克隆"></a>深克隆</h2><p>若自己实现深克隆，特别需要注意的无非两个：</p>
-<ul>
-<li>递归（终止条件）</li>
-<li>属性值的类型的判断</li>
-</ul>
-<p>下面是我实现的一个粗略版本，应该有很多细节上的错误，欢迎指正：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_deepClone</span> (<span class="params">srcObj</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> deepCopy</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> srcObj === <span class="string">'object'</span> &amp;&amp; srcObj !== <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="comment">// 如果当前值是对象，就递归地拷贝</span></span><br><span class="line">    deepCopy = <span class="built_in">Array</span>.isArray(srcObj) ? [] : &#123;&#125; <span class="comment">// 可能是数组</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> key <span class="keyword">in</span> srcObj) &#123;</span><br><span class="line">      deepCopy[key] = _deepClone( srcObj[key] ) </span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 否则，就直接赋值</span></span><br><span class="line">    deepCopy = srcObj</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> deepCopy</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="保持原型链"><a href="#保持原型链" class="headerlink" title="保持原型链"></a>保持原型链</h2><p>保持原型链，即让克隆出来的新对象与目标一样，在同一条原型链上，有共同的祖先。其中一种思路是让新对象“继承”目标类：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_augmentedClone</span> (<span class="params">srcObj</span>) </span>&#123;</span><br><span class="line">	<span class="comment">// 取得目标原型</span></span><br><span class="line">	<span class="keyword">var</span> srcPrototype = <span class="built_in">Object</span>.getPrototypeOf(srcObj)</span><br><span class="line">	<span class="comment">// 继承目标原型、并且合并目标的属性</span></span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">Object</span>.assign( <span class="built_in">Object</span>.create(srcPrototype), srcObj )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>其中的关键是Object.create(proto)的使用，它返回的是一个令proto成为其原型的新对象，这时候就继承了祖先的所有属性。然后，再使用Object.assign(obj1, obj2)，让它拷贝目标对象自身的属性。不过需要注意的是Object.assign属于浅拷贝，所以才需要结合上面的深拷贝。</p>
-<h2 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h2><p>我们可以举个继承的例子，稍稍验证一下。对于ES5继承，我喜欢举Student继承Person的例子：</p>
-<ul>
-<li>Person类：</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person</span> (<span class="params">id</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">this</span>.id = id</span><br><span class="line">	<span class="keyword">this</span>.friends = []</span><br><span class="line">&#125;</span><br><span class="line">Person.prototype.sayId = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">`My id is <span class="subst">$&#123;<span class="keyword">this</span>.id&#125;</span>`</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>Student类：</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Student</span> (<span class="params">id, classId</span>) </span>&#123;</span><br><span class="line">	Person.call(<span class="keyword">this</span>, id)</span><br><span class="line">	<span class="keyword">this</span>.classId = classId</span><br><span class="line">	<span class="keyword">this</span>.teachers = []</span><br><span class="line">&#125;</span><br><span class="line">Student.prototype = <span class="built_in">Object</span>.create(Person.prototype)</span><br><span class="line">Student.prototype.sayClassId = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">`I am in class <span class="subst">$&#123;<span class="keyword">this</span>.classId&#125;</span>`</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>然后验证代码可以长这样：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 目标对象</span></span><br><span class="line"><span class="keyword">var</span> alice = <span class="keyword">new</span> Student(<span class="string">'Alice'</span>, <span class="string">'100'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 克隆出的新对象</span></span><br><span class="line"><span class="keyword">var</span> anotherAlice = getClone(alice)</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log( anotherAlice.friends === alice.friends )   <span class="comment">// 期望值：'false'</span></span><br><span class="line"><span class="built_in">console</span>.log( anotherAlice.teachers === alice.teachers ) <span class="comment">// 期望值：'false'</span></span><br><span class="line"><span class="built_in">console</span>.log( anotherAlice.sayId )	                    <span class="comment">// 期望值：不是'undefined'</span></span><br><span class="line"><span class="built_in">console</span>.log( anotherAlice.sayClassId )	                <span class="comment">// 期望值：不是'undefined'</span></span><br></pre></td></tr></table></figure>
-<p>说明：若克隆成功的话：</p>
-<ul>
-<li>friends、teachers是引用类型，经过拷贝后，两者的地址不应该相等，所以期望返回false</li>
-<li>sayId、sayClassId是祖先上的属性，两者都能够继承到新对象上，所以期望不返回undefined</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/28/Vuex使用场合/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JK">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="大肥凯">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/28/Vuex使用场合/" itemprop="url">Vuex使用场合</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-28T21:21:21+08:00">
-                2018-05-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/24/移动端调试/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JK">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="大肥凯">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/24/移动端调试/" itemprop="url">移动端调试</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-24T09:34:00+08:00">
-                2018-05-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>移动端调试的方式有以下几种：</p>
-<ul>
-<li>Chrome DevTools</li>
-<li>Mac Safari + iOS Safari</li>
-<li>weinre（Web Inspector Remote）</li>
-<li>vConsole</li>
-<li>抓包工具：Charles（Mac）/Fiddler（Win）</li>
-<li>ngrok</li>
-<li>微信开发者工具</li>
-<li>TBS：安卓x5内核</li>
-</ul>
-<p>// To be continued…</p>
 
           
         
@@ -1671,7 +1727,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1684,7 +1740,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">49</span>
+                  <span class="site-state-item-count">58</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>
