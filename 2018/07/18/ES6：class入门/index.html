@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="class作为ES6最耀眼的特性，让JS的OOP更通俗、易用。 几个重要概念与写法说到class，重要的概念无非是：  类 变量成员 实例、静态变量 公有、私有变量   方法成员 实例、静态方法 公有、私有方法    从一个Person类的例子中理解： 123456789101112131415161718192021class Person &amp;#123; // 1    name = &apos;Hell">
+<meta name="keywords" content="Web前端">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大肥凯">
+<meta property="og:url" content="http://yoursite.com/2018/07/18/ES6：class入门/index.html">
+<meta property="og:site_name" content="大肥凯">
+<meta property="og:description" content="class作为ES6最耀眼的特性，让JS的OOP更通俗、易用。 几个重要概念与写法说到class，重要的概念无非是：  类 变量成员 实例、静态变量 公有、私有变量   方法成员 实例、静态方法 公有、私有方法    从一个Person类的例子中理解： 123456789101112131415161718192021class Person &amp;#123; // 1    name = &apos;Hell">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-08-20T02:07:35.989Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="大肥凯">
+<meta name="twitter:description" content="class作为ES6最耀眼的特性，让JS的OOP更通俗、易用。 几个重要概念与写法说到class，重要的概念无非是：  类 变量成员 实例、静态变量 公有、私有变量   方法成员 实例、静态方法 公有、私有方法    从一个Person类的例子中理解： 123456789101112131415161718192021class Person &amp;#123; // 1    name = &apos;Hell">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/07/18/ES6：class入门/"/>
+
+
+
+
+
+  <title> | 大肥凯</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">大肥凯</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/18/ES6：class入门/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-18T16:55:37+08:00">
+                2018-07-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>class作为ES6最耀眼的特性，让JS的OOP更通俗、易用。</p>
+<h2 id="几个重要概念与写法"><a href="#几个重要概念与写法" class="headerlink" title="几个重要概念与写法"></a>几个重要概念与写法</h2><p>说到class，重要的概念无非是：</p>
+<ul>
+<li>类</li>
+<li>变量成员<ul>
+<li>实例、静态变量</li>
+<li>公有、私有变量</li>
+</ul>
+</li>
+<li>方法成员<ul>
+<li>实例、静态方法</li>
+<li>公有、私有方法</li>
+</ul>
+</li>
+</ul>
+<p>从一个Person类的例子中理解：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123; <span class="comment">// 1</span></span><br><span class="line">    name = <span class="string">'Hello'</span></span><br><span class="line">    <span class="keyword">constructor</span> () &#123; <span class="comment">// 2</span></span><br><span class="line">        <span class="keyword">this</span>.id = Person.generateId() <span class="comment">// 5</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    showId () &#123; <span class="comment">// 3</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">`My id is: <span class="subst">$&#123;<span class="keyword">this</span>.id&#125;</span>`</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">static</span> generateId () &#123; <span class="comment">// 4</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.nextId++</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">Person.nextId = <span class="number">0</span> <span class="comment">// 6</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p = <span class="keyword">new</span> Person()</span><br><span class="line">p.showId()</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p2 = <span class="keyword">new</span> Person()</span><br><span class="line">p2.showId()</span><br></pre></td></tr></table></figure>
+<p>理解：</p>
+<ol>
+<li>Person类，其实是一个<u>ES5函数（构造器）</u>。有函数表达式，同理也有“类表达式”，比如：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Person = <span class="class"><span class="keyword">class</span> <span class="title">TmpPerson</span> </span>&#123; ... &#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>constructor：实例化时调用的一个特殊方法，<u>本质上就是Person自身</u>：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log( Person === Person.prototype.constructor ) <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<p>实例化时，一定要用new关键字，否则会报错：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Person()	<span class="comment">// OK</span></span><br><span class="line"><span class="keyword">new</span> Person		<span class="comment">// OK</span></span><br><span class="line"></span><br><span class="line">Person() <span class="comment">// Uncaught TypeError: Class constructor Person cannot be invoked without 'new'</span></span><br></pre></td></tr></table></figure>
+<p>另外，ES5的构造函数没有限制一定要使用new，因为可以把构造函数当普通函数调用。如果需要，可以通过ES6提供的new.target来确定用户代码是否使用了new来实例化。比如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person</span> (<span class="params">id</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">new</span>.target === Person) &#123;	<span class="comment">// new.target指向new后面的构造函数</span></span><br><span class="line">        <span class="keyword">this</span>.id = id</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;	<span class="comment">// 如果没有new，则new.target为undefined</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'必须使用new对Person实例化'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>“实例”方法：Person类中的“实例”方法，是<u>定义在Person.prototype即原型上</u>（之所以这里打了双引号，是因为它并不是实例方法，而是“原型方法”）。所以实例化一个p时，p也可以调用showId方法，这里存在一个在原型链上寻找成员的过程。另外，实例调用方法的时候，内部的this指向实例本身。可以打印出来看看：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log( Person.prototype.showId ) <span class="comment">// 'f showId () &#123; ... &#125;'</span></span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>静态方法：方法前有static关键字的，是<u>定义在Person上</u>。内部的this指向Person。</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log( Person.generateId )</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>实例属性：</li>
+</ol>
+<ul>
+<li>写法1：写在方法内部，其实是动态添加到实例上：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DetailPage</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span> () &#123;</span><br><span class="line">        <span class="keyword">this</span>.state = &#123;</span><br><span class="line">            number: <span class="number">0</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>写法2：（更贴近习惯）写在方法外。注意，虽然写在类中，但并不是定义在原型上，可以看作是实例属性定义的语法糖。React中我们就经常这样定义组件state：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DetailPage</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    state = &#123;</span><br><span class="line">        number: <span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> detailPage = <span class="keyword">new</span> DetailPage()</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log( detailPage.state )	<span class="comment">// &#123; number: 0 &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log( DetailPage.prototype.state ) <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure>
+<ol start="6">
+<li>静态属性：关于静态属性需要定义在类外面的原因，阮一峰前辈在《ECMAScript 6 入门》一书中说到：</li>
+</ol>
+<blockquote>
+<p> ES6 明确规定，Class 内部只有静态方法，没有静态属性。</p>
+</blockquote>
+<ol start="7">
+<li>私有性：无论是变量还是方法，一般是公有；若想要保证其私有性，可以对属性名利用Symbol，然后写在模块内、类定义外，这样外部就访问不到了。举另外一个例子：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> age = <span class="built_in">Symbol</span>(<span class="string">'age'</span>) <span class="comment">// 如果使用Symbol.for的话，外部还是有低概率猜到。所以用Symbol()</span></span><br><span class="line"><span class="keyword">const</span> getAge = <span class="built_in">Symbol</span>(<span class="string">'getAge'</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Girl</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span> () &#123;</span><br><span class="line">        <span class="keyword">this</span>[age] = <span class="string">'secret'</span> <span class="comment">// 外部访问不到[age]变量</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    [getAge] () &#123;	<span class="comment">// 外部访问不到[getAge]方法</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>[age]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/12/Vue组件基础：双向绑定的不同写法/" rel="next" title="Vue组件基础：双向绑定的不同写法">
+                <i class="fa fa-chevron-left"></i> Vue组件基础：双向绑定的不同写法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/05/Iterable：可迭代对象/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">JK</p>
+              <p class="site-description motion-element" itemprop="description">分享技术心得</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">58</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#几个重要概念与写法"><span class="nav-number">1.</span> <span class="nav-text">几个重要概念与写法</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">JK</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

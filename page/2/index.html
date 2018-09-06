@@ -233,6 +233,305 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/11/Webpack中require图片的路径问题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/11/Webpack中require图片的路径问题/" itemprop="url">Webpack中require图片路径问题</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-11T10:44:01+08:00">
+                2018-06-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/11/KeepAlive组件/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/11/KeepAlive组件/" itemprop="url">keep-alive：组件级缓存</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-11T09:13:26+08:00">
+                2018-06-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="页面缓存"><a href="#页面缓存" class="headerlink" title="页面缓存"></a>页面缓存</h2><p>在Vue构建的单页面应用（SPA）中，路由模块一般使用vue-router。vue-router不保存被切换组件的状态，它进行push或者replace时，旧组件会被销毁，而新组件会被新建，走一遍完整的生命周期。</p>
+<p>但有时候，我们有一些需求，比如跳转到详情页面时，需要保持列表页的滚动条的深度，等返回的时候依然在这个位置，这样可以提高用户体验。在Vue中，对于这种“页面缓存”的需求，我们可以使用keep-alive组件来解决这个需求。</p>
+<h2 id="使用方式"><a href="#使用方式" class="headerlink" title="使用方式"></a>使用方式</h2><p>keep-alive是个抽象组件（或称为功能型组件），实际上不会被渲染在DOM树中。它的作用是在内存中缓存组件（不让组件销毁），等到下次再渲染的时候，还会保持其中的所有状态，并且会触发activated钩子函数。因为缓存的需要通常出现在页面切换时，所以常与router-view一起出现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;keep-alive&gt;</span><br><span class="line">	&lt;router-view /&gt;</span><br><span class="line">&lt;/keep-alive&gt;</span><br></pre></td></tr></table></figure>
+<p>如此一来，每一个在router-view中渲染的组件，都会被缓存起来。</p>
+<p>如果只想渲染某一些页面/组件，可以使用keep-alive组件的include/exclude属性。include属性表示要缓存的组件名（即组件定义时的name属性），接收的类型为string、RegExp或string数组；exclude属性有着相反的作用，匹配到的组件不会被缓存。假如可能出现在同一router-view的N个页面中，我只想缓存列表页和详情页，那么可以这样写：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;keep-alive :include=&quot;[&apos;ListView&apos;, &apos;DetailView&apos;]&quot;&gt;</span><br><span class="line">  &lt;router-view /&gt;</span><br><span class="line">&lt;/keep-alive&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="实现条件缓存：全局的include数组"><a href="#实现条件缓存：全局的include数组" class="headerlink" title="实现条件缓存：全局的include数组"></a>实现条件缓存：全局的include数组</h2><p>上面include的写法不是常用的，因为它固定了哪几个页面缓存或不缓存，假如有下面这个场景：</p>
+<ul>
+<li>现有页面：首页（A）、列表页（B）、详情页（C），一般可以从：A-&gt;B-&gt;C；</li>
+<li>B到C再返回B时，B要保持列表滚动的距离；</li>
+<li>B返回A再进入B时，B不需要保持状态，是全新的。</li>
+</ul>
+<p>很明显，这个例子中，B是“条件缓存”的，C-&gt;B时保持缓存，A-&gt;B时放弃缓存。其实解决方案也不难，只需要将B动态地从include数组中增加/删除就行了。具体步骤是：</p>
+<ol>
+<li>在Vuex中定义一个全局的缓存数组，待传给include：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// global.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  namespaced: <span class="literal">true</span>,</span><br><span class="line">  state: &#123;</span><br><span class="line">    keepAliveComponents: [] <span class="comment">// 缓存数组</span></span><br><span class="line">  &#125;,</span><br><span class="line">  mutations: &#123;</span><br><span class="line">    keepAlive (state, component) &#123;</span><br><span class="line">      <span class="comment">// 注：防止重复添加（当然也可以使用Set）</span></span><br><span class="line">      !state.keepAliveComponents.includes(component) &amp;&amp; </span><br><span class="line">        state.keepAliveComponents.push(component)</span><br><span class="line">    &#125;,</span><br><span class="line">    noKeepAlive (state, component) &#123;</span><br><span class="line">      <span class="keyword">const</span> index = state.keepAliveComponents.indexOf(component)</span><br><span class="line">      index !== <span class="number">-1</span> &amp;&amp;</span><br><span class="line">        state.keepAliveComponents.splice(index, <span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>在父页面中定义keep-alive，并传入全局的缓存数组：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// App.vue</span><br><span class="line"></span><br><span class="line">&lt;div class=&quot;app&quot;&gt;</span><br><span class="line">  &lt;!--传入include数组--&gt;</span><br><span class="line">  &lt;keep-alive :include=&quot;keepAliveComponents&quot;&gt;</span><br><span class="line">    &lt;router-view&gt;&lt;/router-view&gt;</span><br><span class="line">  &lt;/keep-alive&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  computed: &#123;</span><br><span class="line">    ...mapState(&#123;</span><br><span class="line">      keepAliveComponents: state =&gt; state.global.keepAliveComponents</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>缓存：在路由配置页中，约定使用meta属性keepAlive，值为true表示组件需要缓存。在全局路由钩子beforeEach中对该属性进行处理，这样一来，每次进入该组件，都进行缓存：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> router = <span class="keyword">new</span> Router(&#123;</span><br><span class="line">  routes: [</span><br><span class="line">    &#123;</span><br><span class="line">      path: <span class="string">'/A/B'</span>,</span><br><span class="line">      name: <span class="string">'B'</span>,</span><br><span class="line">      component: B,</span><br><span class="line">      meta: &#123;</span><br><span class="line">        title: <span class="string">'B页面'</span>,</span><br><span class="line">        keepAlive: <span class="literal">true</span> <span class="comment">// 这里指定B组件的缓存性</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">router.beforeEach(<span class="function">(<span class="params">to, <span class="keyword">from</span>, next</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 在路由全局钩子beforeEach中，根据keepAlive属性，统一设置页面的缓存性</span></span><br><span class="line">  <span class="comment">// 作用是每次进入该组件，就将它缓存</span></span><br><span class="line">  <span class="keyword">if</span> (to.meta.keepAlive) &#123;</span><br><span class="line">    store.commit(<span class="string">'global/keepAlive'</span>, to.name)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>取消缓存的时机：对缓存组件使用路由的组件层钩子beforeRouteLeave。因为B-&gt;A-&gt;B时不需要缓存B，所以可以认为：当B的下一个页面不是C时取消B的缓存，那么下次进入B组件时B就是全新的：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  name: <span class="string">'B'</span>,</span><br><span class="line">  created () &#123;</span><br><span class="line">      <span class="comment">// ...设置滚动条在最顶部</span></span><br><span class="line">  &#125;,</span><br><span class="line">  beforeRouteLeave (to, <span class="keyword">from</span>, next) &#123;</span><br><span class="line">    <span class="comment">// 如果下一个页面不是详情页（C），则取消列表页（B）的缓存</span></span><br><span class="line">    <span class="keyword">if</span> (to.name !== <span class="string">'C'</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.$store.commit(<span class="string">'global/noKeepAlive'</span>, <span class="keyword">from</span>.name)</span><br><span class="line">    &#125;</span><br><span class="line">    next()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为B的条件缓存，是B自己的职责，所以最好把该业务逻辑写在B的内部，而不是A中，这样不至于让组件之间的跳转关系变得混乱。</p>
+<ol start="5">
+<li>一个需要注意的细节：因为keep-alive组件的include数组操作的对象是组件名、而不是路由名，因此我们定义每一个组件时，都要显式声明name属性，否则缓存不起作用。而且，一个显式的name对Vue devtools有提示作用。</li>
+</ol>
+<h2 id="另一种方式？"><a href="#另一种方式？" class="headerlink" title="另一种方式？"></a>另一种方式？</h2><p>网上看到实现条件缓存的另一种方式很类似，但它是在父组件中，使用两个router-view并进行条件渲染：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// App.vue</span><br><span class="line"></span><br><span class="line">&lt;div class=&quot;app&quot;&gt;</span><br><span class="line">    &lt;keep-alive&gt;</span><br><span class="line">      &lt;router-view v-if=&quot;$route.meta.keepAlive&quot;&gt;&lt;/router-view&gt;</span><br><span class="line">    &lt;/keep-alive&gt;</span><br><span class="line">    &lt;router-view v-if=&quot;!$route.meta.keepAlive&quot;&gt;&lt;/router-view&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+<p>在GitHub的issue中（见参考链接）有一些争议，本人也还没有比较全面的验证过，所以也暂不知道效果如何。</p>
+<h2 id="Q-amp-A"><a href="#Q-amp-A" class="headerlink" title="Q&amp;A"></a>Q&amp;A</h2><ol>
+<li><p>Q：组件名已经加入全局include数组了，为什么页面还是没有缓存到？</p>
+</li>
+</ol>
+<p>A：如果按照上面的思路来做就没有问题，注意第5点，即很有可能你忘记给组件声明一个name属性了。</p>
+<ol start="2">
+<li><p>Q：组件能够缓存，但是滚动条并没有缓存、比如还是会回到顶部？</p>
+</li>
+</ol>
+<p>A：滚动条这个问题跟组件的HTML结构有关。浅显而言，keep-alive功能缓存的是父元素相对于组件的scrollTop，所以如果你的组件/页面设置了height:100%、滚动条在组件内部的，看到的滚动条就是没有缓存的。当然，关于这个，还有待进入源码深究，给自己留个坑吧。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>文档</li>
+</ul>
+<p><a href="https://cn.vuejs.org/v2/guide/components-dynamic-async.html#%E5%9C%A8%E5%8A%A8%E6%80%81%E7%BB%84%E4%BB%B6%E4%B8%8A%E4%BD%BF%E7%94%A8-keep-alive" target="_blank" rel="noopener">在动态组件上使用-keep-alive</a></p>
+<p><a href="https://cn.vuejs.org/v2/api/#keep-alive" target="_blank" rel="noopener">API：keep-alive</a></p>
+<ul>
+<li>应用</li>
+</ul>
+<p><a href="https://www.jianshu.com/p/0b0222954483" target="_blank" rel="noopener">vue-router 之 keep-alive</a></p>
+<p><a href="https://juejin.im/post/5a69894a518825733b0f12f2" target="_blank" rel="noopener">vue实现前进刷新，后退不刷新</a></p>
+<ul>
+<li>讨论</li>
+</ul>
+<p><a href="https://github.com/vuejs/vue-router/issues/811" target="_blank" rel="noopener">https://github.com/vuejs/vue-router/issues/811</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/06/保持原型链的深克隆/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -801,7 +1100,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/TODO_Throttle与Debounce/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/TODO_HTML元素的位置属性/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="JK">
@@ -820,7 +1119,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/05/05/TODO_Throttle与Debounce/" itemprop="url">Throttle（节流）与Debounce（防抖动）</a></h1>
+                <a class="post-title-link" href="/2018/05/05/TODO_HTML元素的位置属性/" itemprop="url">HTML元素的位置属性</a></h1>
         
 
         <div class="post-meta">
@@ -872,34 +1171,35 @@
       
         
           
-            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>​    DOM API提供了许多基于事件监听的回调函数，我们可以赋值（或追加）自己的操作，比如点击事件：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> app = <span class="built_in">document</span>.getElementById(<span class="string">'app'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// DOM0 API</span></span><br><span class="line">app.onclick = <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 用户交互逻辑</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// DOM2 API</span></span><br><span class="line">app.addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 用户交互逻辑</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>​    像click这样的事件，它设计成用户每点击一次，就回调一次。而另外有些事件是频繁回调的，比如：onresize（窗口大小改变事件）、onscroll（滚动事件）、ontouchmove（移动端触摸移动事件）等：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">'resize'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'resize'</span>);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>​    这样，用户对浏览器窗口进行放缩的时候，控制台就会不断打印“resize”；可能缩放一点点，就会打印出几十个，说明resize事件回调的频率还是很高的。如果我们这里不是简单地打印字符串，而是一些耗时操作，那么JS主线程就会出现类似于“阻塞”的现象，表现为用户界面卡顿，不能很快响应之后的操作了。</p>
-<p>​    用户是无法对DOM事件回调的频率进行更改的，所以我们只能限制用户交互部分的逻辑发生的频率。而这时候，节流、防抖动就可以派上用场了。它们一般来说会（利用闭包）设计成高阶函数，返回一个新的用户函数，并且在内部限制了频率；至于怎么限制，则有很多种实现方式。总体上，我们期望的样子是（拿throttle来说）：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> myCallback = <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'resize'</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">myCallback = throttle(myCallback, <span class="number">150</span>); <span class="comment">// 参数‘150’是限制‘myCallback’的触发间隔</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">'resize'</span>, myCallback);</span><br></pre></td></tr></table></figure>
-<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="Debounce：防抖动"><a href="#Debounce：防抖动" class="headerlink" title="Debounce：防抖动"></a>Debounce：防抖动</h3><p>​    防抖动最显著的特点是，把某个时间段内的多次操作合为一次回调，并且取的是最后的那一次操作。而且：</p>
+            <h2 id="offset"><a href="#offset" class="headerlink" title="offset-*"></a>offset-*</h2><p>获取偏移量，参照物是“offsetParent”：</p>
 <ul>
-<li>当频繁操作时，一次都不会回调；<ul>
-<li>当结束频繁操作时，会在${wait}时间后发生一次回调。</li>
+<li>offsetParent：最近的“定位”（position属性不等于static）的祖先元素（MDN的描述是“closest positioned containing element”）。x`</li>
+<li>offsetTop／offsetLeft：相对于offsetParent的top／left的距离（像素数）。</li>
+<li>offsetWidth／offsetHeight：</li>
 </ul>
-</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Function</span>.prototype.debounce = <span class="function"><span class="keyword">function</span> (<span class="params">wait = <span class="number">100</span></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">const</span> func = <span class="keyword">this</span>;</span><br><span class="line">	<span class="keyword">let</span> timerId = <span class="literal">null</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (timerId) &#123;</span><br><span class="line">			<span class="comment">// 如果已经存在一个定时器，就先取消掉，稍后重新设一个</span></span><br><span class="line">			clearTimeout(timerId);</span><br><span class="line">		&#125;</span><br><span class="line">		timerId = setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">			func.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">		&#125;, wait);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Throttle：节流"><a href="#Throttle：节流" class="headerlink" title="Throttle：节流"></a>Throttle：节流</h3><p>​    节流的特点是，控制前后两次操作的时间间隔。并且：</p>
+<p>该属性有以下特点：</p>
+<ol>
+<li>偏移量是“静态”的，是初始状态下的元素间的相对距离，之后也不会随滚动而变化。</li>
+<li>根据offsetParent的定义可知：对于某个元素，当它的position=absolute时，offsetTop／offsetLeft与CSS中的top／left相对应。</li>
+</ol>
+<h2 id="scroll"><a href="#scroll" class="headerlink" title="scroll-*"></a>scroll-*</h2><p>获取滚动量。HTML中产生滚动的条件是：</p>
+<ol>
+<li>子元素的高度／宽度大于父元素；</li>
+<li>父元素的overflow属性为scroll。</li>
+</ol>
+<p>比如说一个垂直滚动，就可以看作是：高度有限的父元素（局部viewport）在一个很高的子元素中上下移动，所以scrollTop表示的是父元素的top相对于子元素的top的距离，所以我们获取竖直滚动距离时，会这样做：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> scrollTop = child.scrollTop; <span class="comment">// 错</span></span><br><span class="line"><span class="keyword">var</span> scrollTop = parent.scrollTop; <span class="comment">// 对</span></span><br></pre></td></tr></table></figure>
+<p>它也有类似的集合：</p>
 <ul>
-<li>当频繁操作时，每 ${wait}时间发生一次回调；</li>
-<li>当结束频繁操作时，也是一样，看是否满足${wait}间隔。</li>
+<li>scrollTop／scrollLeft：父元素的top相对于子元素的top的距离。</li>
+<li>scrollWidth／scrollHeight：padding盒子的度，包括在overflow=[scroll|hidden]下折叠的部分，不包括滚动条。</li>
 </ul>
-<p>实现方式（1）：记录上一次回调的时间戳，然后每次想要回调时，检查是否满足{wait}时间间隔：如果大于${wait}，就触发，并更新时间戳；否则不触发。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 记录每次触发的时间戳</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="built_in">Function</span>.prototype.throttle = <span class="function"><span class="keyword">function</span> (<span class="params">wait = <span class="number">100</span></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">const</span> func = <span class="keyword">this</span>;</span><br><span class="line">	<span class="keyword">let</span> lastTriggerAt = <span class="number">0</span>; <span class="comment">// 上一次进行用户交互的时间点。初始值为0是为了第一次一定可以执行</span></span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">let</span> currentTime = <span class="built_in">Date</span>.now();</span><br><span class="line">		<span class="keyword">if</span> (currentTime - lastTriggerAt &gt; wait) &#123;</span><br><span class="line">			<span class="comment">// 满足最小间隔，进行</span></span><br><span class="line">			func.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">			<span class="comment">// 更新时间点</span></span><br><span class="line">			lastTriggerAt = currentTime;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>实现方式（2）：每次触发都设一个定时器（延后回调），当想要再次触发时检查是否已经存在有定时器：如果存在，就忽略；否则就设定一个定时器。不过同时延后回调也是一个小小的缺点。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 设定每次触发的定时器</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="built_in">Function</span>.prototype.throttle = <span class="function"><span class="keyword">function</span> (<span class="params">wait = <span class="number">100</span></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">const</span> func = <span class="keyword">this</span>;</span><br><span class="line">	<span class="keyword">let</span> timerId = <span class="literal">null</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (timerId) &#123; <span class="comment">// 如果已经有定时器在进行，就不管这次操作</span></span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 延时执行</span></span><br><span class="line">		timerId = setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">			<span class="comment">// 执行</span></span><br><span class="line">			func.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">			<span class="comment">// 清空定时器</span></span><br><span class="line">			clearTimeout(timerId);</span><br><span class="line">			timerId = <span class="literal">null</span>;</span><br><span class="line">		&#125;, wait);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://css-tricks.com/debouncing-throttling-explained-examples/" target="_blank" rel="noopener">Debouncing and Throttling Explained Through Examples | CSS-Tricks</a></p>
-<p>曾探《JavaScript设计模式与开发实践》：Chapter3.2.4 | 高阶函数的其他应用 | 3.函数节流</p>
-<p><a href="https://keelii.github.io/2016/06/11/javascript-throttle/?hmsr=toutiao.io&amp;utm_medium=toutiao.io&amp;utm_source=toutiao.io" target="_blank" rel="noopener">JavaScript 节流函数 Throttle 详解</a></p>
-
+<p>BTW，onscroll函数也是绑定在parent上，而不是child上。</p>
+<h2 id="element-getBoundingClientRect"><a href="#element-getBoundingClientRect" class="headerlink" title="element.getBoundingClientRect()"></a>element.getBoundingClientRect()</h2><p>获取一个对象，表示当前元素相对于viewport的位置信息。该对象含有top、left等属性。与scroll-*类似，都是在滚动的过程中不断变化着的。常见的用途是在“图片懒加载”（lazyload）中判断元素是否可见。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> rect = element.getBoundingClientRect();</span><br><span class="line"><span class="built_in">console</span>.log(rect);</span><br></pre></td></tr></table></figure>
+<p>随便找个结果：</p>
+<p><img src="/var/folders/xy/2t85m_ts1rq990rd9n_3b_z80000gp/T/abnerworks.Typora/image-20180419165236440.png" alt="image-20180419165236440"></p>
+<h1 id="client"><a href="#client" class="headerlink" title="client-*"></a>client-*</h1>
           
         
       
@@ -1287,153 +1587,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/TODO_HTML元素的位置属性/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JK">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="大肥凯">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/05/TODO_HTML元素的位置属性/" itemprop="url">HTML元素的位置属性</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-05T00:00:00+08:00">
-                2018-05-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="offset"><a href="#offset" class="headerlink" title="offset-*"></a>offset-*</h2><p>获取偏移量，参照物是“offsetParent”：</p>
-<ul>
-<li>offsetParent：最近的“定位”（position属性不等于static）的祖先元素（MDN的描述是“closest positioned containing element”）。x`</li>
-<li>offsetTop／offsetLeft：相对于offsetParent的top／left的距离（像素数）。</li>
-<li>offsetWidth／offsetHeight：</li>
-</ul>
-<p>该属性有以下特点：</p>
-<ol>
-<li>偏移量是“静态”的，是初始状态下的元素间的相对距离，之后也不会随滚动而变化。</li>
-<li>根据offsetParent的定义可知：对于某个元素，当它的position=absolute时，offsetTop／offsetLeft与CSS中的top／left相对应。</li>
-</ol>
-<h2 id="scroll"><a href="#scroll" class="headerlink" title="scroll-*"></a>scroll-*</h2><p>获取滚动量。HTML中产生滚动的条件是：</p>
-<ol>
-<li>子元素的高度／宽度大于父元素；</li>
-<li>父元素的overflow属性为scroll。</li>
-</ol>
-<p>比如说一个垂直滚动，就可以看作是：高度有限的父元素（局部viewport）在一个很高的子元素中上下移动，所以scrollTop表示的是父元素的top相对于子元素的top的距离，所以我们获取竖直滚动距离时，会这样做：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> scrollTop = child.scrollTop; <span class="comment">// 错</span></span><br><span class="line"><span class="keyword">var</span> scrollTop = parent.scrollTop; <span class="comment">// 对</span></span><br></pre></td></tr></table></figure>
-<p>它也有类似的集合：</p>
-<ul>
-<li>scrollTop／scrollLeft：父元素的top相对于子元素的top的距离。</li>
-<li>scrollWidth／scrollHeight：padding盒子的度，包括在overflow=[scroll|hidden]下折叠的部分，不包括滚动条。</li>
-</ul>
-<p>BTW，onscroll函数也是绑定在parent上，而不是child上。</p>
-<h2 id="element-getBoundingClientRect"><a href="#element-getBoundingClientRect" class="headerlink" title="element.getBoundingClientRect()"></a>element.getBoundingClientRect()</h2><p>获取一个对象，表示当前元素相对于viewport的位置信息。该对象含有top、left等属性。与scroll-*类似，都是在滚动的过程中不断变化着的。常见的用途是在“图片懒加载”（lazyload）中判断元素是否可见。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> rect = element.getBoundingClientRect();</span><br><span class="line"><span class="built_in">console</span>.log(rect);</span><br></pre></td></tr></table></figure>
-<p>随便找个结果：</p>
-<p><img src="/var/folders/xy/2t85m_ts1rq990rd9n_3b_z80000gp/T/abnerworks.Typora/image-20180419165236440.png" alt="image-20180419165236440"></p>
-<h1 id="client"><a href="#client" class="headerlink" title="client-*"></a>client-*</h1>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/JS快速创建数组/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1546,128 +1699,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/TODO_NPM全局路径/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JK">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="大肥凯">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/05/TODO_NPM全局路径/" itemprop="url">NPM全局路径</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-05T00:00:00+08:00">
-                2018-05-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><img src="/var/folders/xy/2t85m_ts1rq990rd9n_3b_z80000gp/T/abnerworks.Typora/image-20180424165732930.png" alt="image-20180424165732930"></p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.npmjs.com.cn/files/folders/" target="_blank" rel="noopener">folders | npm 中文文档</a></p>
-<p><a href="https://www.npmjs.com.cn/misc/config/#global" target="_blank" rel="noopener">config | npm 中文文档</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1718,7 +1749,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-count">26</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

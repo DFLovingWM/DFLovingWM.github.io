@@ -676,6 +676,401 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/05/Iterable：可迭代对象/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/05/Iterable：可迭代对象/" itemprop="url">Untitled</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-05T20:05:03+08:00">
+                2018-08-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>感谢<a href="http://es6katas.org/" target="_blank" rel="noopener">ES6 Kata</a>，它让我觉得，是时候对Iterator、Generator、Iterable身上的知识点作出总结了。</p>
+<h2 id="1-前置知识"><a href="#1-前置知识" class="headerlink" title="1. 前置知识"></a>1. 前置知识</h2><p>首先要知道，Iterator（迭代器）与Generator（生成器）是有密切关系的。</p>
+<h3 id="1-1-迭代器"><a href="#1-1-迭代器" class="headerlink" title="1.1 迭代器"></a>1.1 迭代器</h3><p>对于Iterator知识体系，可以参考<a href="https://babeljs.io/docs/en/learn/#iterators-forof" target="_blank" rel="noopener">Babel | Learning ES6 | Iterators + For…of</a>：</p>
+<ol>
+<li>IteratorResult，表示迭代器的结果。有done（表示是否完结）与value（表示当前值）两个属性：</li>
+</ol>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> IteratorResult &#123;</span><br><span class="line">    done: <span class="built_in">boolean</span>;</span><br><span class="line">    value: <span class="built_in">any</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>Iterator，表示迭代器。有next方法，调用后返回一个迭代器结果：</li>
+</ol>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Iterator &#123;</span><br><span class="line">    next(): IteratorResult;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>Iterable，表示可迭代对象。其特点是key为[Symbol.iterator]是一个方法，调用后返回一个迭代器：</li>
+</ol>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Iterable &#123;</span><br><span class="line">    [Symbol.iterator](): Iterator;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="1-2-生成器"><a href="#1-2-生成器" class="headerlink" title="1.2 生成器"></a>1.2 生成器</h3><p>在ES6 Generator/yield中还有一个概念很类似，称为Generator Function：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> * <span class="title">g</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'hello'</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'world'</span></span><br><span class="line">    <span class="comment">// return undefined	// 没有显式return时，其实隐含了这一句。对应的done才为true</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> f = g()</span><br><span class="line">f.next()	<span class="comment">// &#123; done: false, value: 'hello' &#125;</span></span><br><span class="line">f.next()	<span class="comment">// &#123; done: false, value: 'world' &#125;</span></span><br><span class="line">f.next()	<span class="comment">// &#123; done: true, value: undefined &#125;</span></span><br></pre></td></tr></table></figure>
+<p>上述例子中，g是一个Generator Function，调用后生成一个生成器f，其结构可以表示为以下接口（可以看出来，Generator与Iterator其实可以说是一样的）：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Generator &#123;</span><br><span class="line">    next(value?: <span class="built_in">any</span>): IteratorResult; <span class="comment">// value可选，是Generator特有的传参功能</span></span><br><span class="line">    <span class="keyword">throw</span>(exception: <span class="built_in">any</span>);	<span class="comment">// 产生异常</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而Generator Function在形式上虽然有个”*”号，但其函数形状可以定义为：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> GeneratorFunction &#123;</span><br><span class="line">    (): Generator;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-可迭代对象的常见场景"><a href="#2-可迭代对象的常见场景" class="headerlink" title="2. 可迭代对象的常见场景"></a>2. 可迭代对象的常见场景</h2><p>下面介绍几种与Iterable密切相关的方法，并探讨方法内部的大概实现（对Iterable的影响），以加深对相关知识的记忆。它们分别是：</p>
+<ul>
+<li>Array.from</li>
+<li>for…of</li>
+<li>[…obj]</li>
+<li>Array实例的keys、values、entries方法</li>
+<li>解构</li>
+</ul>
+<p>因为在讨论迭代对象时，它们是类似的，所以只详述第一种情况：Array.from，其它的可能会一笔带过。</p>
+<h3 id="2-1-Array-from"><a href="#2-1-Array-from" class="headerlink" title="2.1 Array.from()"></a>2.1 Array.from()</h3><p>作用是把某种对象初始化/转换为一个数组。而其作用的对象，我们一般都可以想到：普通数组、类数组对象、Map、Set……但这样记忆不够系统性。其实，Array.from的作用者可以总结为：</p>
+<ul>
+<li>Array-like Object：具有length属性的对象，常见的比如DOM的NodeList、HTMLCollection接口；或者自己写的一个具有length属性的普通对象。注意，原来是“空slot/占位符”的元素会被转化成undefined。举个简单例子：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arrayLikeObject = &#123;</span><br><span class="line">	length: <span class="number">3</span>,</span><br><span class="line">	<span class="number">0</span>: <span class="string">'hello'</span>,</span><br><span class="line">	<span class="number">2</span>: <span class="string">'world'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">Array</span>.from(arrayLikeObject)	<span class="comment">// ["hello", undefined, "world"]</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>Iterator/Generator：需要注意，Array.from方法会使该Iterator/Generator发生改变，内部指针走到了尽头。拿最开始那个例子看：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> * <span class="title">generatorFunction</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'hello'</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'world'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> generator = generatorFunction() <span class="comment">// 定义了一个生成器</span></span><br><span class="line"><span class="built_in">Array</span>.from(generator)	<span class="comment">// 将生成器转换为数组得到：['hello', 'world']</span></span><br><span class="line"></span><br><span class="line">generator.next()	<span class="comment">// (第一次)调用next时，却得到：&#123; done: true, value: undefined &#125;</span></span><br><span class="line"><span class="built_in">Array</span>.from(generator)	<span class="comment">// []</span></span><br></pre></td></tr></table></figure>
+<p>可以看到，Array.from作用于迭代器时，其实会循环调用迭代器的next方法直到其内部指针完结。所以之后调用next时，发现该迭代器已经“没用”了。所以这里有点危险。</p>
+<ul>
+<li>Iterable：首先调用[Symbol.iterator]方法得到迭代器，之后的步骤类似于上述Iterator。有很多对象类型都属于可迭代的，比如：<ul>
+<li>Array：相当于返回一个shallow copy</li>
+<li>String：其实String本来就可以看作是“char”数组，也相当于调用了string.split(‘’)</li>
+<li>Map/WeakMap：返回一个二维数组，每个元素是[key, value]</li>
+<li>Set/WeakSet</li>
+<li>……（暂时想不到了）</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Array</span>.from([<span class="string">'hello'</span>, <span class="string">'world'</span>])	<span class="comment">// ["hello", "world"]</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.from(<span class="string">'hello'</span>)	<span class="comment">// ["h", "e", "l", "l", "o"]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> map = <span class="keyword">new</span> <span class="built_in">Map</span>()</span><br><span class="line">map.set(<span class="string">'name'</span>, <span class="string">'Alice'</span>)</span><br><span class="line">map.set(<span class="string">'age'</span>, <span class="number">10</span>)</span><br><span class="line"><span class="built_in">Array</span>.from(map)	<span class="comment">// [ ["name", "Alice"], ["age", 10] ]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> set = <span class="keyword">new</span> <span class="built_in">Set</span>()</span><br><span class="line">set.add(<span class="string">'name'</span>)</span><br><span class="line">set.add(<span class="string">'age'</span>)</span><br><span class="line"><span class="built_in">Array</span>.from(set)	<span class="comment">// ["name", "age"]</span></span><br></pre></td></tr></table></figure>
+<p>返回什么东西，当然是取决于[Symbol.iterator]方法是怎么实现的。</p>
+<h3 id="2-2-for…of"><a href="#2-2-for…of" class="headerlink" title="2.2 for…of"></a>2.2 for…of</h3><p>遍历（可以看作是以数组的方式对某对象进行遍历，所以可能隐含一个转换为数组的过程）。作用对象包括：</p>
+<ul>
+<li>Iterator</li>
+<li>Iterable</li>
+</ul>
+<p>注意事项与Array.from一样。</p>
+<p>对于Iterable，举个例子，我们可以自定义一个Iterable：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> someIterableObject = &#123;</span><br><span class="line">    *[<span class="built_in">Symbol</span>.iterator] () &#123;</span><br><span class="line">        <span class="keyword">yield</span> <span class="string">'A'</span></span><br><span class="line">    	<span class="keyword">yield</span> <span class="string">'B'</span></span><br><span class="line">    	<span class="keyword">yield</span> <span class="string">'C'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> item <span class="keyword">of</span> someIterableObject) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(item)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出结果：</span></span><br><span class="line"><span class="comment">// A</span></span><br><span class="line"><span class="comment">// B</span></span><br><span class="line"><span class="comment">// C</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-3-Array实例的keys、values、entries方法"><a href="#2-3-Array实例的keys、values、entries方法" class="headerlink" title="2.3 Array实例的keys、values、entries方法"></a>2.3 Array实例的keys、values、entries方法</h3><p>3个方法都返回一个Iterator，内部指针分别指向数组的下标、值、键值对。可以用作对数组不同方式的遍历：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> minions = [<span class="string">'Kevin'</span>, <span class="string">'Stewart'</span>, <span class="string">'Bob'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">// 遍历下标</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> index <span class="keyword">of</span> minions.keys()) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(index)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 输出结果：</span></span><br><span class="line"><span class="comment">// 0</span></span><br><span class="line"><span class="comment">// 1</span></span><br><span class="line"><span class="comment">// 2</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 遍历值</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> value <span class="keyword">of</span> minions.values()) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(value)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 输出结果：</span></span><br><span class="line"><span class="comment">// Kevin</span></span><br><span class="line"><span class="comment">// Stewart</span></span><br><span class="line"><span class="comment">// Bob</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 遍历KV对</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> [key, value] <span class="keyword">of</span> minions.entries()) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;key&#125;</span> =&gt; <span class="subst">$&#123;value&#125;</span>`</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 输出结果：</span></span><br><span class="line"><span class="comment">// 0 =&gt; Kevin</span></span><br><span class="line"><span class="comment">// 1 =&gt; Stewart</span></span><br><span class="line"><span class="comment">// 2 =&gt; Bob</span></span><br></pre></td></tr></table></figure>
+<p>需要注意，要与Object类上3个同名（但是静态）方法进行区别：</p>
+<ul>
+<li>Object.keys()</li>
+<li>Object.values()</li>
+<li>Object.entries()</li>
+</ul>
+<p>区别在于：首先，此三者主要作用是对Object实例进行遍历，而因为Array.prototype继承于Object.prototype，所以当然也可以用于遍历Array实例；其次，它们的返回值不是Iterator，而都是数组：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> minions = [<span class="string">'Kevin'</span>, <span class="string">'Stewart'</span>, <span class="string">'Bob'</span>]</span><br><span class="line"><span class="built_in">Object</span>.entries(minions) <span class="comment">// [ ["0", "Kevin"], ["1", "Stewart"], ["2", "Bob"] ]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> minionGroup = &#123;</span><br><span class="line">    clever: <span class="string">'Kevin'</span>,</span><br><span class="line">    romantic: <span class="string">'Stewart'</span>,</span><br><span class="line">    lucky: <span class="string">'Bob'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> [key, value] <span class="keyword">of</span> <span class="built_in">Object</span>.entries(minionGroup)) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;key&#125;</span> =&gt; <span class="subst">$&#123;value&#125;</span>`</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 输出结果：</span></span><br><span class="line"><span class="comment">// clever =&gt; Kevin</span></span><br><span class="line"><span class="comment">// romantic =&gt; Stewart</span></span><br><span class="line"><span class="comment">// lucky =&gt; Bob</span></span><br></pre></td></tr></table></figure>
+<p>一句话总结：Array的3个实例方法用于数组遍历；Object的3个静态方法用于对象遍历（如没有配置[Symbol.iterator]，对象本身是不可迭代/遍历的）。</p>
+<h3 id="2-4-解构：-…obj"><a href="#2-4-解构：-…obj" class="headerlink" title="2.4 解构：[…obj]"></a>2.4 解构：[…obj]</h3><p>…(rest参数)的作用是“打散”一个对象，但其通常与[]一起使用，用来将Object转换成一个Array：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[...obj]</span><br></pre></td></tr></table></figure>
+<p>需要注意，该Object依然需要满足以下条件之一：</p>
+<ul>
+<li>Iterator</li>
+<li>Iterable</li>
+</ul>
+<p>举个例子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">    name: <span class="string">'Gru'</span>,</span><br><span class="line">    age: <span class="string">'unknown'</span></span><br><span class="line">&#125;</span><br><span class="line">[...obj] <span class="comment">// 报错：Uncaught TypeError: obj is not iterable</span></span><br><span class="line">[...Object.values(obj)] <span class="comment">// 输出：['Gru', 'unknown']</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-5-“反”解构"><a href="#2-5-“反”解构" class="headerlink" title="2.5 “反”解构"></a>2.5 “反”解构</h3><p>直接看一个例子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> [...arr] = <span class="string">'minions'</span></span><br><span class="line"><span class="built_in">console</span>.log(arr) <span class="comment">// ['m', 'i', 'n', 'i', 'o', 'n', 's']</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">    name: <span class="string">'Gru'</span>,</span><br><span class="line">    age: <span class="string">'unknown'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> [...arr2] = <span class="built_in">Object</span>.values(obj)</span><br><span class="line"><span class="built_in">console</span>.log(arr2) <span class="comment">// ["Gru", "unknown"]</span></span><br></pre></td></tr></table></figure>
+<p>作为2.4的逆向过程，其实作用是类似的，所以也没什么好说的了。</p>
+<h2 id="3-String与Array互相转化（“茴”的N种写法）"><a href="#3-String与Array互相转化（“茴”的N种写法）" class="headerlink" title="3. String与Array互相转化（“茴”的N种写法）"></a>3. String与Array互相转化（“茴”的N种写法）</h2><p>这是个很小的话题了，但也可以总结一下：</p>
+<ol>
+<li>String转为Array（字符数组）：不止是string.split()，还有：<ul>
+<li>array = Array.from(string)</li>
+<li>array = […string]</li>
+<li>[…array] = string</li>
+</ul>
+</li>
+<li>Array转为String：除了array.join()，还有：<ul>
+<li>呃，不考虑需求的情况下，还是使用join吧。上面的都不大方便。</li>
+</ul>
+</li>
+</ol>
+<h2 id="4-后语"><a href="#4-后语" class="headerlink" title="4. 后语"></a>4. 后语</h2><p>最后，推荐一个学习ES6的好网站：<a href="http://es6katas.org/" target="_blank" rel="noopener">ES6 Katas</a>。它以TDD(test-driven development)即“测试驱动开发”的方式，让我们通过修改其中每一个测试案例的数据/行为，来达到学习、巩固ES6的目的。同时，非常感谢它对我的启发，向后看总会使人更好地前行。</p>
+<h2 id="5-参考"><a href="#5-参考" class="headerlink" title="5. 参考"></a>5. 参考</h2><p><a href="https://babeljs.io/docs/en/learn/#generators" target="_blank" rel="noopener">ES6：Generator</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/18/ES6：class入门/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/18/ES6：class入门/" itemprop="url">Untitled</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-18T16:55:37+08:00">
+                2018-07-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>class作为ES6最耀眼的特性，让JS的OOP更通俗、易用。</p>
+<h2 id="几个重要概念与写法"><a href="#几个重要概念与写法" class="headerlink" title="几个重要概念与写法"></a>几个重要概念与写法</h2><p>说到class，重要的概念无非是：</p>
+<ul>
+<li>类</li>
+<li>变量成员<ul>
+<li>实例、静态变量</li>
+<li>公有、私有变量</li>
+</ul>
+</li>
+<li>方法成员<ul>
+<li>实例、静态方法</li>
+<li>公有、私有方法</li>
+</ul>
+</li>
+</ul>
+<p>从一个Person类的例子中理解：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123; <span class="comment">// 1</span></span><br><span class="line">    name = <span class="string">'Hello'</span></span><br><span class="line">    <span class="keyword">constructor</span> () &#123; <span class="comment">// 2</span></span><br><span class="line">        <span class="keyword">this</span>.id = Person.generateId() <span class="comment">// 5</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    showId () &#123; <span class="comment">// 3</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">`My id is: <span class="subst">$&#123;<span class="keyword">this</span>.id&#125;</span>`</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">static</span> generateId () &#123; <span class="comment">// 4</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.nextId++</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">Person.nextId = <span class="number">0</span> <span class="comment">// 6</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p = <span class="keyword">new</span> Person()</span><br><span class="line">p.showId()</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p2 = <span class="keyword">new</span> Person()</span><br><span class="line">p2.showId()</span><br></pre></td></tr></table></figure>
+<p>理解：</p>
+<ol>
+<li>Person类，其实是一个<u>ES5函数（构造器）</u>。有函数表达式，同理也有“类表达式”，比如：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Person = <span class="class"><span class="keyword">class</span> <span class="title">TmpPerson</span> </span>&#123; ... &#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>constructor：实例化时调用的一个特殊方法，<u>本质上就是Person自身</u>：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log( Person === Person.prototype.constructor ) <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<p>实例化时，一定要用new关键字，否则会报错：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Person()	<span class="comment">// OK</span></span><br><span class="line"><span class="keyword">new</span> Person		<span class="comment">// OK</span></span><br><span class="line"></span><br><span class="line">Person() <span class="comment">// Uncaught TypeError: Class constructor Person cannot be invoked without 'new'</span></span><br></pre></td></tr></table></figure>
+<p>另外，ES5的构造函数没有限制一定要使用new，因为可以把构造函数当普通函数调用。如果需要，可以通过ES6提供的new.target来确定用户代码是否使用了new来实例化。比如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person</span> (<span class="params">id</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">new</span>.target === Person) &#123;	<span class="comment">// new.target指向new后面的构造函数</span></span><br><span class="line">        <span class="keyword">this</span>.id = id</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;	<span class="comment">// 如果没有new，则new.target为undefined</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'必须使用new对Person实例化'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>“实例”方法：Person类中的“实例”方法，是<u>定义在Person.prototype即原型上</u>（之所以这里打了双引号，是因为它并不是实例方法，而是“原型方法”）。所以实例化一个p时，p也可以调用showId方法，这里存在一个在原型链上寻找成员的过程。另外，实例调用方法的时候，内部的this指向实例本身。可以打印出来看看：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log( Person.prototype.showId ) <span class="comment">// 'f showId () &#123; ... &#125;'</span></span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>静态方法：方法前有static关键字的，是<u>定义在Person上</u>。内部的this指向Person。</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log( Person.generateId )</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>实例属性：</li>
+</ol>
+<ul>
+<li>写法1：写在方法内部，其实是动态添加到实例上：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DetailPage</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span> () &#123;</span><br><span class="line">        <span class="keyword">this</span>.state = &#123;</span><br><span class="line">            number: <span class="number">0</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>写法2：（更贴近习惯）写在方法外。注意，虽然写在类中，但并不是定义在原型上，可以看作是实例属性定义的语法糖。React中我们就经常这样定义组件state：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DetailPage</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    state = &#123;</span><br><span class="line">        number: <span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> detailPage = <span class="keyword">new</span> DetailPage()</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log( detailPage.state )	<span class="comment">// &#123; number: 0 &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log( DetailPage.prototype.state ) <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure>
+<ol start="6">
+<li>静态属性：关于静态属性需要定义在类外面的原因，阮一峰前辈在《ECMAScript 6 入门》一书中说到：</li>
+</ol>
+<blockquote>
+<p> ES6 明确规定，Class 内部只有静态方法，没有静态属性。</p>
+</blockquote>
+<ol start="7">
+<li>私有性：无论是变量还是方法，一般是公有；若想要保证其私有性，可以对属性名利用Symbol，然后写在模块内、类定义外，这样外部就访问不到了。举另外一个例子：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> age = <span class="built_in">Symbol</span>(<span class="string">'age'</span>) <span class="comment">// 如果使用Symbol.for的话，外部还是有低概率猜到。所以用Symbol()</span></span><br><span class="line"><span class="keyword">const</span> getAge = <span class="built_in">Symbol</span>(<span class="string">'getAge'</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Girl</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span> () &#123;</span><br><span class="line">        <span class="keyword">this</span>[age] = <span class="string">'secret'</span> <span class="comment">// 外部访问不到[age]变量</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    [getAge] () &#123;	<span class="comment">// 外部访问不到[getAge]方法</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>[age]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/12/Vue组件基础：双向绑定的不同写法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1378,305 +1773,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/11/Webpack中require图片的路径问题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JK">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="大肥凯">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/11/Webpack中require图片的路径问题/" itemprop="url">Webpack中require图片路径问题</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-11T10:44:01+08:00">
-                2018-06-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/11/KeepAlive组件/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JK">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="大肥凯">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/11/KeepAlive组件/" itemprop="url">keep-alive：组件级缓存</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-11T09:13:26+08:00">
-                2018-06-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="页面缓存"><a href="#页面缓存" class="headerlink" title="页面缓存"></a>页面缓存</h2><p>在Vue构建的单页面应用（SPA）中，路由模块一般使用vue-router。vue-router不保存被切换组件的状态，它进行push或者replace时，旧组件会被销毁，而新组件会被新建，走一遍完整的生命周期。</p>
-<p>但有时候，我们有一些需求，比如跳转到详情页面时，需要保持列表页的滚动条的深度，等返回的时候依然在这个位置，这样可以提高用户体验。在Vue中，对于这种“页面缓存”的需求，我们可以使用keep-alive组件来解决这个需求。</p>
-<h2 id="使用方式"><a href="#使用方式" class="headerlink" title="使用方式"></a>使用方式</h2><p>keep-alive是个抽象组件（或称为功能型组件），实际上不会被渲染在DOM树中。它的作用是在内存中缓存组件（不让组件销毁），等到下次再渲染的时候，还会保持其中的所有状态，并且会触发activated钩子函数。因为缓存的需要通常出现在页面切换时，所以常与router-view一起出现：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;keep-alive&gt;</span><br><span class="line">	&lt;router-view /&gt;</span><br><span class="line">&lt;/keep-alive&gt;</span><br></pre></td></tr></table></figure>
-<p>如此一来，每一个在router-view中渲染的组件，都会被缓存起来。</p>
-<p>如果只想渲染某一些页面/组件，可以使用keep-alive组件的include/exclude属性。include属性表示要缓存的组件名（即组件定义时的name属性），接收的类型为string、RegExp或string数组；exclude属性有着相反的作用，匹配到的组件不会被缓存。假如可能出现在同一router-view的N个页面中，我只想缓存列表页和详情页，那么可以这样写：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;keep-alive :include=&quot;[&apos;ListView&apos;, &apos;DetailView&apos;]&quot;&gt;</span><br><span class="line">  &lt;router-view /&gt;</span><br><span class="line">&lt;/keep-alive&gt;</span><br></pre></td></tr></table></figure>
-<h2 id="实现条件缓存：全局的include数组"><a href="#实现条件缓存：全局的include数组" class="headerlink" title="实现条件缓存：全局的include数组"></a>实现条件缓存：全局的include数组</h2><p>上面include的写法不是常用的，因为它固定了哪几个页面缓存或不缓存，假如有下面这个场景：</p>
-<ul>
-<li>现有页面：首页（A）、列表页（B）、详情页（C），一般可以从：A-&gt;B-&gt;C；</li>
-<li>B到C再返回B时，B要保持列表滚动的距离；</li>
-<li>B返回A再进入B时，B不需要保持状态，是全新的。</li>
-</ul>
-<p>很明显，这个例子中，B是“条件缓存”的，C-&gt;B时保持缓存，A-&gt;B时放弃缓存。其实解决方案也不难，只需要将B动态地从include数组中增加/删除就行了。具体步骤是：</p>
-<ol>
-<li>在Vuex中定义一个全局的缓存数组，待传给include：</li>
-</ol>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// global.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  namespaced: <span class="literal">true</span>,</span><br><span class="line">  state: &#123;</span><br><span class="line">    keepAliveComponents: [] <span class="comment">// 缓存数组</span></span><br><span class="line">  &#125;,</span><br><span class="line">  mutations: &#123;</span><br><span class="line">    keepAlive (state, component) &#123;</span><br><span class="line">      <span class="comment">// 注：防止重复添加（当然也可以使用Set）</span></span><br><span class="line">      !state.keepAliveComponents.includes(component) &amp;&amp; </span><br><span class="line">        state.keepAliveComponents.push(component)</span><br><span class="line">    &#125;,</span><br><span class="line">    noKeepAlive (state, component) &#123;</span><br><span class="line">      <span class="keyword">const</span> index = state.keepAliveComponents.indexOf(component)</span><br><span class="line">      index !== <span class="number">-1</span> &amp;&amp;</span><br><span class="line">        state.keepAliveComponents.splice(index, <span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol start="2">
-<li>在父页面中定义keep-alive，并传入全局的缓存数组：</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// App.vue</span><br><span class="line"></span><br><span class="line">&lt;div class=&quot;app&quot;&gt;</span><br><span class="line">  &lt;!--传入include数组--&gt;</span><br><span class="line">  &lt;keep-alive :include=&quot;keepAliveComponents&quot;&gt;</span><br><span class="line">    &lt;router-view&gt;&lt;/router-view&gt;</span><br><span class="line">  &lt;/keep-alive&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  computed: &#123;</span><br><span class="line">    ...mapState(&#123;</span><br><span class="line">      keepAliveComponents: state =&gt; state.global.keepAliveComponents</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol start="3">
-<li>缓存：在路由配置页中，约定使用meta属性keepAlive，值为true表示组件需要缓存。在全局路由钩子beforeEach中对该属性进行处理，这样一来，每次进入该组件，都进行缓存：</li>
-</ol>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> router = <span class="keyword">new</span> Router(&#123;</span><br><span class="line">  routes: [</span><br><span class="line">    &#123;</span><br><span class="line">      path: <span class="string">'/A/B'</span>,</span><br><span class="line">      name: <span class="string">'B'</span>,</span><br><span class="line">      component: B,</span><br><span class="line">      meta: &#123;</span><br><span class="line">        title: <span class="string">'B页面'</span>,</span><br><span class="line">        keepAlive: <span class="literal">true</span> <span class="comment">// 这里指定B组件的缓存性</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">router.beforeEach(<span class="function">(<span class="params">to, <span class="keyword">from</span>, next</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 在路由全局钩子beforeEach中，根据keepAlive属性，统一设置页面的缓存性</span></span><br><span class="line">  <span class="comment">// 作用是每次进入该组件，就将它缓存</span></span><br><span class="line">  <span class="keyword">if</span> (to.meta.keepAlive) &#123;</span><br><span class="line">    store.commit(<span class="string">'global/keepAlive'</span>, to.name)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<ol start="4">
-<li>取消缓存的时机：对缓存组件使用路由的组件层钩子beforeRouteLeave。因为B-&gt;A-&gt;B时不需要缓存B，所以可以认为：当B的下一个页面不是C时取消B的缓存，那么下次进入B组件时B就是全新的：</li>
-</ol>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  name: <span class="string">'B'</span>,</span><br><span class="line">  created () &#123;</span><br><span class="line">      <span class="comment">// ...设置滚动条在最顶部</span></span><br><span class="line">  &#125;,</span><br><span class="line">  beforeRouteLeave (to, <span class="keyword">from</span>, next) &#123;</span><br><span class="line">    <span class="comment">// 如果下一个页面不是详情页（C），则取消列表页（B）的缓存</span></span><br><span class="line">    <span class="keyword">if</span> (to.name !== <span class="string">'C'</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.$store.commit(<span class="string">'global/noKeepAlive'</span>, <span class="keyword">from</span>.name)</span><br><span class="line">    &#125;</span><br><span class="line">    next()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>因为B的条件缓存，是B自己的职责，所以最好把该业务逻辑写在B的内部，而不是A中，这样不至于让组件之间的跳转关系变得混乱。</p>
-<ol start="5">
-<li>一个需要注意的细节：因为keep-alive组件的include数组操作的对象是组件名、而不是路由名，因此我们定义每一个组件时，都要显式声明name属性，否则缓存不起作用。而且，一个显式的name对Vue devtools有提示作用。</li>
-</ol>
-<h2 id="另一种方式？"><a href="#另一种方式？" class="headerlink" title="另一种方式？"></a>另一种方式？</h2><p>网上看到实现条件缓存的另一种方式很类似，但它是在父组件中，使用两个router-view并进行条件渲染：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// App.vue</span><br><span class="line"></span><br><span class="line">&lt;div class=&quot;app&quot;&gt;</span><br><span class="line">    &lt;keep-alive&gt;</span><br><span class="line">      &lt;router-view v-if=&quot;$route.meta.keepAlive&quot;&gt;&lt;/router-view&gt;</span><br><span class="line">    &lt;/keep-alive&gt;</span><br><span class="line">    &lt;router-view v-if=&quot;!$route.meta.keepAlive&quot;&gt;&lt;/router-view&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
-<p>在GitHub的issue中（见参考链接）有一些争议，本人也还没有比较全面的验证过，所以也暂不知道效果如何。</p>
-<h2 id="Q-amp-A"><a href="#Q-amp-A" class="headerlink" title="Q&amp;A"></a>Q&amp;A</h2><ol>
-<li><p>Q：组件名已经加入全局include数组了，为什么页面还是没有缓存到？</p>
-</li>
-</ol>
-<p>A：如果按照上面的思路来做就没有问题，注意第5点，即很有可能你忘记给组件声明一个name属性了。</p>
-<ol start="2">
-<li><p>Q：组件能够缓存，但是滚动条并没有缓存、比如还是会回到顶部？</p>
-</li>
-</ol>
-<p>A：滚动条这个问题跟组件的HTML结构有关。浅显而言，keep-alive功能缓存的是父元素相对于组件的scrollTop，所以如果你的组件/页面设置了height:100%、滚动条在组件内部的，看到的滚动条就是没有缓存的。当然，关于这个，还有待进入源码深究，给自己留个坑吧。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li>文档</li>
-</ul>
-<p><a href="https://cn.vuejs.org/v2/guide/components-dynamic-async.html#%E5%9C%A8%E5%8A%A8%E6%80%81%E7%BB%84%E4%BB%B6%E4%B8%8A%E4%BD%BF%E7%94%A8-keep-alive" target="_blank" rel="noopener">在动态组件上使用-keep-alive</a></p>
-<p><a href="https://cn.vuejs.org/v2/api/#keep-alive" target="_blank" rel="noopener">API：keep-alive</a></p>
-<ul>
-<li>应用</li>
-</ul>
-<p><a href="https://www.jianshu.com/p/0b0222954483" target="_blank" rel="noopener">vue-router 之 keep-alive</a></p>
-<p><a href="https://juejin.im/post/5a69894a518825733b0f12f2" target="_blank" rel="noopener">vue实现前进刷新，后退不刷新</a></p>
-<ul>
-<li>讨论</li>
-</ul>
-<p><a href="https://github.com/vuejs/vue-router/issues/811" target="_blank" rel="noopener">https://github.com/vuejs/vue-router/issues/811</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1727,7 +1823,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-count">26</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
