@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="Vue的基本思想是“数据驱动视图”，即只要更新数据，框架就会帮我们更新依赖该数据的那些视图，从而在View层（模板）达到“声明式”的编程方式，而不是像jQuery那种命令式的。 但是，并不是所有数据都能触发“重渲染”（re-render）。我们需要把能够引发re-render的数据写在Vue实例／组件的data属性中，因为在Vue源码中，框架只对data对象（递归地）进行“数据劫持”。现实中，有几">
+<meta name="description" content="Vue的基本思想是“数据驱动视图”，即只要更新数据，框架就会帮我们更新依赖该数据的那些视图，从而在View层（模板）达到“声明式”的编程方式，而不是像jQuery那种命令式的。 但是，并不是所有数据都能触发“重渲染”（re-render）。我们需要把能够引发re-render的数据写在Vue实例／组件的data属性中，因为在Vue源码中，框架只对data对象（递归地）进行“数据劫持”。 所以，正确">
 <meta name="keywords" content="Vue,响应式,重渲染">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Vue响应式">
-<meta property="og:url" content="http://yoursite.com/2018/05/05/Vue响应式/index.html">
+<meta property="og:title" content="Vue：正确地使用响应式">
+<meta property="og:url" content="http://yoursite.com/2018/05/05/Vue：正确地使用响应式/index.html">
 <meta property="og:site_name" content="大肥凯">
-<meta property="og:description" content="Vue的基本思想是“数据驱动视图”，即只要更新数据，框架就会帮我们更新依赖该数据的那些视图，从而在View层（模板）达到“声明式”的编程方式，而不是像jQuery那种命令式的。 但是，并不是所有数据都能触发“重渲染”（re-render）。我们需要把能够引发re-render的数据写在Vue实例／组件的data属性中，因为在Vue源码中，框架只对data对象（递归地）进行“数据劫持”。现实中，有几">
+<meta property="og:description" content="Vue的基本思想是“数据驱动视图”，即只要更新数据，框架就会帮我们更新依赖该数据的那些视图，从而在View层（模板）达到“声明式”的编程方式，而不是像jQuery那种命令式的。 但是，并不是所有数据都能触发“重渲染”（re-render）。我们需要把能够引发re-render的数据写在Vue实例／组件的data属性中，因为在Vue源码中，框架只对data对象（递归地）进行“数据劫持”。 所以，正确">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-09-02T07:58:05.804Z">
+<meta property="og:updated_time" content="2018-09-07T01:14:10.686Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Vue响应式">
-<meta name="twitter:description" content="Vue的基本思想是“数据驱动视图”，即只要更新数据，框架就会帮我们更新依赖该数据的那些视图，从而在View层（模板）达到“声明式”的编程方式，而不是像jQuery那种命令式的。 但是，并不是所有数据都能触发“重渲染”（re-render）。我们需要把能够引发re-render的数据写在Vue实例／组件的data属性中，因为在Vue源码中，框架只对data对象（递归地）进行“数据劫持”。现实中，有几">
+<meta name="twitter:title" content="Vue：正确地使用响应式">
+<meta name="twitter:description" content="Vue的基本思想是“数据驱动视图”，即只要更新数据，框架就会帮我们更新依赖该数据的那些视图，从而在View层（模板）达到“声明式”的编程方式，而不是像jQuery那种命令式的。 但是，并不是所有数据都能触发“重渲染”（re-render）。我们需要把能够引发re-render的数据写在Vue实例／组件的data属性中，因为在Vue源码中，框架只对data对象（递归地）进行“数据劫持”。 所以，正确">
 
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/05/05/Vue响应式/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/05/05/Vue：正确地使用响应式/"/>
 
 
 
 
 
-  <title>Vue响应式 | 大肥凯</title>
+  <title>Vue：正确地使用响应式 | 大肥凯</title>
   
 
 
@@ -233,7 +233,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/Vue响应式/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/Vue：正确地使用响应式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="JK">
@@ -250,7 +250,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Vue响应式</h1>
+          <h1 class="post-title" itemprop="name headline">Vue：正确地使用响应式</h1>
         
 
         <div class="post-meta">
@@ -301,7 +301,8 @@
 
       
         <p>Vue的基本思想是“数据驱动视图”，即只要更新数据，框架就会帮我们更新依赖该数据的那些视图，从而在View层（模板）达到“声明式”的编程方式，而不是像jQuery那种命令式的。</p>
-<p>但是，并不是所有数据都能触发“重渲染”（re-render）。我们需要把能够引发re-render的数据写在Vue实例／组件的data属性中，因为在Vue源码中，框架只对data对象（递归地）进行“数据劫持”。现实中，有几种情况需要我们注意。</p>
+<p>但是，并不是所有数据都能触发“重渲染”（re-render）。我们需要把能够引发re-render的数据写在Vue实例／组件的data属性中，因为在Vue源码中，框架只对data对象（递归地）进行“数据劫持”。</p>
+<p>所以，正确地使用Vue的响应式知识，才能预期触发重渲染。</p>
 <h2 id="1-基础知识：data属性"><a href="#1-基础知识：data属性" class="headerlink" title="1. 基础知识：data属性"></a>1. 基础知识：data属性</h2><p>有一个原则就是：把所有需要响应的属性都事先写到data中，暂时不需要的一开始可以初始化为null。因为，Vue不会对新添加的属性进行数据劫持。比如：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> vm = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    data: &#123;</span><br><span class="line">        name: <span class="string">'JK'</span> <span class="comment">// name属性是响应式的</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">vm.nickname = <span class="string">'Fat K'</span>; <span class="comment">// 这里新增的nickname属性不是响应式的</span></span><br><span class="line">vm.nickname = <span class="string">'Fat Fat K'</span>; <span class="comment">// 再改变也不会引发re-render</span></span><br></pre></td></tr></table></figure>
 <p>执行了上述代码后，vm中也只有name的getter、setter（说明对name属性进行了数据劫持），而没有nickname的getter／setter。</p>
@@ -393,8 +394,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/05/05/Vue组件通信/" rel="next" title="Vue组件通信">
-                <i class="fa fa-chevron-left"></i> Vue组件通信
+              <a href="/2018/05/05/TODO_HTML元素的位置属性/" rel="next" title="HTML元素的位置属性">
+                <i class="fa fa-chevron-left"></i> HTML元素的位置属性
               </a>
             
           </div>
@@ -403,8 +404,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/05/05/清除浮动/" rel="prev" title="清除浮动的几种思路">
-                清除浮动的几种思路 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/05/10/从Dialog理解v-model/" rel="prev" title="Vue：从Dialog理解v-model">
+                Vue：从Dialog理解v-model <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -495,7 +496,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">58</span>
+                  <span class="site-state-item-count">60</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>

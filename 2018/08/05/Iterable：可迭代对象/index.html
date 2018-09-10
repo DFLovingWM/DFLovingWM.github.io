@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="感谢ES6 Kata，它让我觉得，是时候对Iterator、Generator、Iterable身上的知识点作出总结了。 1. 前置知识首先要知道，Iterator（迭代器）与Generator（生成器）是有密切关系的。 1.1 迭代器对于Iterator知识体系，可以参考Babel | Learning ES6 | Iterators + For…of：  IteratorResult，表示迭代">
+<meta name="description" content="感谢ES6 Kata，它让我觉得是时候对Iterator、Generator、Iterable等知识点作出总结了。 1. 前置知识首先要知道Iterator（迭代器）与Generator（生成器）这两个概念。迭代器和生成器，都是nextable（有next方法的对象）。 1.1 迭代器对于Iterator知识体系，可以参考Babel | Learning ES6 | Iterators + For">
 <meta name="keywords" content="Web前端">
 <meta property="og:type" content="article">
 <meta property="og:title" content="大肥凯">
 <meta property="og:url" content="http://yoursite.com/2018/08/05/Iterable：可迭代对象/index.html">
 <meta property="og:site_name" content="大肥凯">
-<meta property="og:description" content="感谢ES6 Kata，它让我觉得，是时候对Iterator、Generator、Iterable身上的知识点作出总结了。 1. 前置知识首先要知道，Iterator（迭代器）与Generator（生成器）是有密切关系的。 1.1 迭代器对于Iterator知识体系，可以参考Babel | Learning ES6 | Iterators + For…of：  IteratorResult，表示迭代">
+<meta property="og:description" content="感谢ES6 Kata，它让我觉得是时候对Iterator、Generator、Iterable等知识点作出总结了。 1. 前置知识首先要知道Iterator（迭代器）与Generator（生成器）这两个概念。迭代器和生成器，都是nextable（有next方法的对象）。 1.1 迭代器对于Iterator知识体系，可以参考Babel | Learning ES6 | Iterators + For">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-08-06T01:44:03.856Z">
+<meta property="og:updated_time" content="2018-09-09T07:17:08.096Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="大肥凯">
-<meta name="twitter:description" content="感谢ES6 Kata，它让我觉得，是时候对Iterator、Generator、Iterable身上的知识点作出总结了。 1. 前置知识首先要知道，Iterator（迭代器）与Generator（生成器）是有密切关系的。 1.1 迭代器对于Iterator知识体系，可以参考Babel | Learning ES6 | Iterators + For…of：  IteratorResult，表示迭代">
+<meta name="twitter:description" content="感谢ES6 Kata，它让我觉得是时候对Iterator、Generator、Iterable等知识点作出总结了。 1. 前置知识首先要知道Iterator（迭代器）与Generator（生成器）这两个概念。迭代器和生成器，都是nextable（有next方法的对象）。 1.1 迭代器对于Iterator知识体系，可以参考Babel | Learning ES6 | Iterators + For">
 
 
 
@@ -300,8 +300,8 @@
       
 
       
-        <p>感谢<a href="http://es6katas.org/" target="_blank" rel="noopener">ES6 Kata</a>，它让我觉得，是时候对Iterator、Generator、Iterable身上的知识点作出总结了。</p>
-<h2 id="1-前置知识"><a href="#1-前置知识" class="headerlink" title="1. 前置知识"></a>1. 前置知识</h2><p>首先要知道，Iterator（迭代器）与Generator（生成器）是有密切关系的。</p>
+        <p>感谢<a href="http://es6katas.org/" target="_blank" rel="noopener">ES6 Kata</a>，它让我觉得是时候对Iterator、Generator、Iterable等知识点作出总结了。</p>
+<h2 id="1-前置知识"><a href="#1-前置知识" class="headerlink" title="1. 前置知识"></a>1. 前置知识</h2><p>首先要知道Iterator（迭代器）与Generator（生成器）这两个概念。迭代器和生成器，都是nextable（有next方法的对象）。</p>
 <h3 id="1-1-迭代器"><a href="#1-1-迭代器" class="headerlink" title="1.1 迭代器"></a>1.1 迭代器</h3><p>对于Iterator知识体系，可以参考<a href="https://babeljs.io/docs/en/learn/#iterators-forof" target="_blank" rel="noopener">Babel | Learning ES6 | Iterators + For…of</a>：</p>
 <ol>
 <li>IteratorResult，表示迭代器的结果。有done（表示是否完结）与value（表示当前值）两个属性：</li>
@@ -315,11 +315,11 @@
 <li>Iterable，表示可迭代对象。其特点是key为[Symbol.iterator]是一个方法，调用后返回一个迭代器：</li>
 </ol>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Iterable &#123;</span><br><span class="line">    [Symbol.iterator](): Iterator;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="1-2-生成器"><a href="#1-2-生成器" class="headerlink" title="1.2 生成器"></a>1.2 生成器</h3><p>在ES6 Generator/yield中还有一个概念很类似，称为Generator Function：</p>
+<h3 id="1-2-生成器"><a href="#1-2-生成器" class="headerlink" title="1.2 生成器"></a>1.2 生成器</h3><p>说生成器之间，先说一个概念“Generator Function”（生成器函数）：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> * <span class="title">g</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'hello'</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'world'</span></span><br><span class="line">    <span class="comment">// return undefined	// 没有显式return时，其实隐含了这一句。对应的done才为true</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> f = g()</span><br><span class="line">f.next()	<span class="comment">// &#123; done: false, value: 'hello' &#125;</span></span><br><span class="line">f.next()	<span class="comment">// &#123; done: false, value: 'world' &#125;</span></span><br><span class="line">f.next()	<span class="comment">// &#123; done: true, value: undefined &#125;</span></span><br></pre></td></tr></table></figure>
-<p>上述例子中，g是一个Generator Function，调用后生成一个生成器f，其结构可以表示为以下接口（可以看出来，Generator与Iterator其实可以说是一样的）：</p>
+<p>上述例子中，g是一个Generator Function，调用后返回一个生成器f，其对象形状可以表示为：</p>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Generator &#123;</span><br><span class="line">    next(value?: <span class="built_in">any</span>): IteratorResult; <span class="comment">// value可选，是Generator特有的传参功能</span></span><br><span class="line">    <span class="keyword">throw</span>(exception: <span class="built_in">any</span>);	<span class="comment">// 产生异常</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>而Generator Function在形式上虽然有个”*”号，但其函数形状可以定义为：</p>
+<p>而Generator Function在形式上虽然有个”*”号，但它是个内部可以使用yield关键字的特殊函数，其函数形状可以定义为：</p>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> GeneratorFunction &#123;</span><br><span class="line">    (): Generator;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="2-可迭代对象的常见场景"><a href="#2-可迭代对象的常见场景" class="headerlink" title="2. 可迭代对象的常见场景"></a>2. 可迭代对象的常见场景</h2><p>下面介绍几种与Iterable密切相关的方法，并探讨方法内部的大概实现（对Iterable的影响），以加深对相关知识的记忆。它们分别是：</p>
 <ul>
@@ -396,7 +396,7 @@
 </ul>
 </li>
 </ol>
-<h2 id="4-后语"><a href="#4-后语" class="headerlink" title="4. 后语"></a>4. 后语</h2><p>最后，推荐一个学习ES6的好网站：<a href="http://es6katas.org/" target="_blank" rel="noopener">ES6 Katas</a>。它以TDD(test-driven development)即“测试驱动开发”的方式，让我们通过修改其中每一个测试案例的数据/行为，来达到学习、巩固ES6的目的。同时，非常感谢它对我的启发，向后看总会使人更好地前行。</p>
+<h2 id="4-后语"><a href="#4-后语" class="headerlink" title="4. 后语"></a>4. 后语</h2><p>最后，推荐一个学习ES6的好网站：<a href="http://es6katas.org/" target="_blank" rel="noopener">ES6 Katas</a>。它以TDD(test-driven development)即“测试驱动开发”的方式，让我们通过修改其中每一个测试案例的数据/行为，来达到学习、巩固ES6的目的。同时，非常感谢它对我的启发，向后看总会让人更好地前行。</p>
 <h2 id="5-参考"><a href="#5-参考" class="headerlink" title="5. 参考"></a>5. 参考</h2><p><a href="https://babeljs.io/docs/en/learn/#generators" target="_blank" rel="noopener">ES6：Generator</a></p>
 
       
@@ -524,7 +524,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">58</span>
+                  <span class="site-state-item-count">60</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>
