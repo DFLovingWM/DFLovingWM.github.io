@@ -82,14 +82,14 @@
 <meta name="description" content="自定义组件在项目中是常见的需求。在Vue项目中，定义/封装一个具有双向绑定特性的组件时，需要处理好props与data的关系。 举个简单例子，现在需要定义一个SuperInput组件，将普通的input[type=text]标签封装一下再加上一些漂亮的样式。用户代码可以在页面中这样使用： 1&amp;lt;super-input v-model=&amp;quot;count&amp;quot; /&amp;gt; 分析关系文档">
 <meta name="keywords" content="Vue,双向绑定,组件">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Vue：双向绑定的不同写法">
-<meta property="og:url" content="http://yoursite.com/2018/07/12/Vue：双向绑定的不同写法/index.html">
+<meta property="og:title" content="Vue：组件双向绑定的两种方式">
+<meta property="og:url" content="http://yoursite.com/2018/07/12/Vue：组件双向绑定的两种方式/index.html">
 <meta property="og:site_name" content="大肥凯">
 <meta property="og:description" content="自定义组件在项目中是常见的需求。在Vue项目中，定义/封装一个具有双向绑定特性的组件时，需要处理好props与data的关系。 举个简单例子，现在需要定义一个SuperInput组件，将普通的input[type=text]标签封装一下再加上一些漂亮的样式。用户代码可以在页面中这样使用： 1&amp;lt;super-input v-model=&amp;quot;count&amp;quot; /&amp;gt; 分析关系文档">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-09-07T01:15:30.650Z">
+<meta property="og:updated_time" content="2018-09-26T07:47:27.596Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Vue：双向绑定的不同写法">
+<meta name="twitter:title" content="Vue：组件双向绑定的两种方式">
 <meta name="twitter:description" content="自定义组件在项目中是常见的需求。在Vue项目中，定义/封装一个具有双向绑定特性的组件时，需要处理好props与data的关系。 举个简单例子，现在需要定义一个SuperInput组件，将普通的input[type=text]标签封装一下再加上一些漂亮的样式。用户代码可以在页面中这样使用： 1&amp;lt;super-input v-model=&amp;quot;count&amp;quot; /&amp;gt; 分析关系文档">
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/07/12/Vue：双向绑定的不同写法/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/07/12/Vue：组件双向绑定的两种方式/"/>
 
 
 
 
 
-  <title>Vue：双向绑定的不同写法 | 大肥凯</title>
+  <title>Vue：组件双向绑定的两种方式 | 大肥凯</title>
   
 
 
@@ -233,7 +233,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/12/Vue：双向绑定的不同写法/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/12/Vue：组件双向绑定的两种方式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="JK">
@@ -250,7 +250,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Vue：双向绑定的不同写法</h1>
+          <h1 class="post-title" itemprop="name headline">Vue：组件双向绑定的两种方式</h1>
         
 
         <div class="post-meta">
@@ -331,7 +331,7 @@
 <li>当localValue赋相同的值时，localValue的观察函数不会回调；</li>
 <li>当两次emit所携带的值相同时（即传给相同的值给上层），value的观察函数也不会被回调。因此在视图上组件并不会刷新。</li>
 </ul>
-<p>因此也只能应对常见的场景。对于需要更深度的控制的场景，是使用“localValue”的同时，不使用v-model而是使用value + @input。这样就可以在@input、甚至@focus、@blur等回调中实现对localValue更多的操作。</p>
+<p>因此也只能应对常见的场景。同时，因为localValue相当于value的副本，所以一定要在watch中控制好两者的同步，否则一个变了、另一个却没有跟着变。对于需要更深度的控制的场景，是使用“localValue”的同时，不使用v-model而是使用value + @input。这样就可以在@input、甚至@focus、@blur等回调中实现对localValue更多的操作。</p>
 <h2 id="某个场景"><a href="#某个场景" class="headerlink" title="某个场景"></a>某个场景</h2><p>针对上面说到的“handler函数有时不会被回调”的问题这通常没有什么问题，因为没必要重渲染同一个值。但我见过一个场景，组件需要在input回调中对用户输入进行修改的，以限制用户只能输入0～100的一个分数：假如我输入一个比100大的数字，在input中会检测到并修改回100。单纯使用这种方法会出现一个问题：第一次输入101，会看到输入框的值被掰回“100”；但如果我继续键入一个1，那么最终会显示“1001”。</p>
 <p>这里需要说明的是，其实对于这两次“非法”输入，组件都把“localValue”修改成了100。第二次只是因为Vue没有对组件视图进行刷新，所以我们看到的是“1001”（这个“1001”是HTML原汁原味的显示，这时候@input还没回调）。这里的原因是：</p>
 <blockquote>
@@ -465,7 +465,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -478,7 +478,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">60</span>
+                  <span class="site-state-item-count">63</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>

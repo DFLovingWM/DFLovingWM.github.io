@@ -233,6 +233,456 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/11/JS：异步编程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/11/JS：异步编程/" itemprop="url">Untitled</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-11T08:56:34+08:00">
+                2018-10-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>代码：/实验代码/async/…</p>
+<ul>
+<li>callback hell<ul>
+<li>缺点</li>
+</ul>
+</li>
+<li>Promise<ul>
+<li>链式调用与API</li>
+<li>实现一个Promise</li>
+</ul>
+</li>
+<li><p>Generator（与Generator Function）</p>
+<ul>
+<li>对yield/return的理解；传参(next、return、throw)与返回值</li>
+<li>异常处理</li>
+<li>需要手写执行器，保持异步调用方式的一致性（thunk、Promise）<ul>
+<li>co</li>
+</ul>
+</li>
+<li>异步任务控制流</li>
+<li>实现一个co模块（用generator模拟async/await）</li>
+</ul>
+</li>
+<li><p>async/await</p>
+<ul>
+<li>理解async函数：Generator语法糖，但更规范：本质上是resolve了内部所有Promise的一个大Promise</li>
+<li>异常处理</li>
+<li>异步任务控制流，尤其对于循环</li>
+<li>模拟实现一个async/await（利用Generator）（同上）</li>
+<li>直接调用最外层Promise就可以执行。但若想取其返回值，需要then/再嵌套一层async function，@std/esm实现了在普通函数中直接使用await。</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/29/JS：数组去重/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/29/JS：数组去重/" itemprop="url">数组去重</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-29T21:45:00+08:00">
+                2018-09-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>数组去重，关键在于怎么去判断两个值/对象是否“重复”。想要实现一个去重函数，可以分为两种情况去探究：</p>
+<ul>
+<li>所有元素都为基本类型</li>
+<li>存在对象类型</li>
+</ul>
+<h2 id="1-基本类型"><a href="#1-基本类型" class="headerlink" title="1. 基本类型"></a>1. 基本类型</h2><h3 id="1-1-利用Set实现"><a href="#1-1-利用Set实现" class="headerlink" title="1.1 利用Set实现"></a>1.1 利用Set实现</h3><p>对于基本类型，我们一般认为全等(===)即重复。实现基本类型数组的去重很简单(这里有一道<a href="http://scriptoj.mangojuice.top/problems/89" target="_blank" rel="noopener">题目</a>)，可以利用ES6的Set，因为一个集合内元素是不重复的：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> unique = <span class="function">(<span class="params">arr</span>) =&gt;</span> <span class="built_in">Array</span>.from(<span class="keyword">new</span> <span class="built_in">Set</span>(arr))</span><br></pre></td></tr></table></figure>
+<h3 id="1-2-利用indexOf-lastIndexOf实现"><a href="#1-2-利用indexOf-lastIndexOf实现" class="headerlink" title="1.2 利用indexOf/lastIndexOf实现"></a>1.2 利用indexOf/lastIndexOf实现</h3><p>第二种方法，是使用indexOf/lastIndexOf。关键是只取第一次出现的元素，这样就算有重复的也被过滤掉了：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> unique = <span class="function">(<span class="params">arr</span>) =&gt;</span> arr.filter(<span class="function">(<span class="params">item, index, array</span>) =&gt;</span> array.indexOf(item) === index)</span><br></pre></td></tr></table></figure>
+<h2 id="2-对象类型"><a href="#2-对象类型" class="headerlink" title="2. 对象类型"></a>2. 对象类型</h2><p>如何判断两个对象是否重复？这要取决于具体的业务场景。有时候我们认为两个对象地址相等即重复，更多时候我们认为id相等即重复……因为重复的标准并不确定，所以当我们实现一个去重函数的时候，需要把不确定的部分作为回调函数交给用户代码去定义。</p>
+<h3 id="2-1-基础函数"><a href="#2-1-基础函数" class="headerlink" title="2.1 基础函数"></a>2.1 基础函数</h3><p>我们可以先定义一个底层方法，作为去重的基础函数。算法思路很简单、直接，就是维护一个不重复的数组arr，每次要加入新元素A之前，先让A与arr中的每一个元素相比较，如果都不重复，才把A加进去。具体代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 去重</span></span><br><span class="line"><span class="comment"> * @param &#123;array&#125; array 数组</span></span><br><span class="line"><span class="comment"> * @param &#123;function&lt;boolean&gt;&#125; dupPredicate 回调函数，判断两者“重复”的依据</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_unique</span> (<span class="params">array, dupPredicate</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> uniqueArray = []</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> nextElement <span class="keyword">of</span> array) &#123;</span><br><span class="line">    <span class="keyword">let</span> canPush = <span class="literal">true</span></span><br><span class="line">    <span class="comment">// 跟新数组的每一个元素比较</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> element <span class="keyword">of</span> uniqueArray) &#123;</span><br><span class="line">      <span class="keyword">if</span> (dupPredicate(element, nextElement)) &#123;</span><br><span class="line">        <span class="comment">// 一旦发现有相同的，就不能加入新数组了</span></span><br><span class="line">        canPush = <span class="literal">false</span></span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 都不相同，就加入</span></span><br><span class="line">    <span class="keyword">if</span> (canPush) &#123;</span><br><span class="line">      uniqueArray.push(nextElement)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> uniqueArray</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-2-应用函数"><a href="#2-2-应用函数" class="headerlink" title="2.2 应用函数"></a>2.2 应用函数</h3><p>然后，基于这个函数，我们可以实现：</p>
+<ul>
+<li>基本类型的去重：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">uniq</span> (<span class="params">array</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> _unique(array, (val1, val2) =&gt; val1 === val2)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>对象类型，基于某个字段全等的去重：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">uniqBy</span> (<span class="params">array, path</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> _unique(array, (obj1, obj2) =&gt; get(obj1, path) === get(obj2, path))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 辅助函数，用来取对象树的某个(任意深层的)属性</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">get</span> (<span class="params">obj, path</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> result = obj <span class="comment">// 从顶层开始</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> field <span class="keyword">of</span> path.split(<span class="string">'.'</span>)) &#123;</span><br><span class="line">    <span class="keyword">if</span> (result === <span class="literal">undefined</span> || result === <span class="literal">null</span>) &#123;</span><br><span class="line">      <span class="keyword">break</span></span><br><span class="line">    &#125;</span><br><span class="line">    result = result[field] <span class="comment">// 不断深入</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>对象类型，用户自定义“重复”的标准，其实就是_unique函数本身：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> uniqWith = _unique</span><br></pre></td></tr></table></figure>
+<h3 id="2-3-Lodash"><a href="#2-3-Lodash" class="headerlink" title="2.3 Lodash"></a>2.3 Lodash</h3><p>之所以命名为uniq、uniqBy、uniqWith，是因为在Lodash中存在有这三个函数，它们的作用与上述一致，只是具体实现方法不同。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/18/JS：判断类型/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/18/JS：判断类型/" itemprop="url">JS：判断类型</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-18T09:03:00+08:00">
+                2018-09-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="1-方法"><a href="#1-方法" class="headerlink" title="1. 方法"></a>1. 方法</h2><h3 id="1-1-typeof"><a href="#1-1-typeof" class="headerlink" title="1.1 typeof"></a>1.1 typeof</h3><h3 id="1-2-instanceof"><a href="#1-2-instanceof" class="headerlink" title="1.2 instanceof"></a>1.2 instanceof</h3><h3 id="1-3-toString"><a href="#1-3-toString" class="headerlink" title="1.3 toString"></a>1.3 toString</h3><h3 id="1-4-constructor-name"><a href="#1-4-constructor-name" class="headerlink" title="1.4 constructor.name"></a>1.4 constructor.name</h3><h3 id="1-5-总结"><a href="#1-5-总结" class="headerlink" title="1.5 总结"></a>1.5 总结</h3><table>
+<thead>
+<tr>
+<th></th>
+<th>typeof</th>
+<th>instanceof</th>
+<th>toString</th>
+<th>constructor.name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>6种基本类型</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Object及其衍生类型</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>自定义类型</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-实现"><a href="#2-实现" class="headerlink" title="2. 实现"></a>2. 实现</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> type = <span class="function">(<span class="params">x</span>) =&gt;</span> &#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/06/JS：数组flatten/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -516,7 +966,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/05/JS：字符串匹配正则的API/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/05/JS：正则匹配API/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="JK">
@@ -535,7 +985,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/09/05/JS：字符串匹配正则的API/" itemprop="url">JS：字符串匹配正则的API</a></h1>
+                <a class="post-title-link" href="/2018/09/05/JS：正则匹配API/" itemprop="url">JS：匹配正则API</a></h1>
         
 
         <div class="post-meta">
@@ -1134,7 +1584,7 @@
 </li>
 </ul>
 <p>从一个Person类的例子中理解：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123; <span class="comment">// 1</span></span><br><span class="line">    name = <span class="string">'Hello'</span></span><br><span class="line">    <span class="keyword">constructor</span> () &#123; <span class="comment">// 2</span></span><br><span class="line">        <span class="keyword">this</span>.id = Person.generateId() <span class="comment">// 5</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    showId () &#123; <span class="comment">// 3</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">`My id is: <span class="subst">$&#123;<span class="keyword">this</span>.id&#125;</span>`</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">static</span> generateId () &#123; <span class="comment">// 4</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.nextId++</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">Person.nextId = <span class="number">0</span> <span class="comment">// 6</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p = <span class="keyword">new</span> Person()</span><br><span class="line">p.showId()</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p2 = <span class="keyword">new</span> Person()</span><br><span class="line">p2.showId()</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123; <span class="comment">// 1</span></span><br><span class="line">    name = <span class="string">'Hello'</span></span><br><span class="line">	_age = <span class="number">10</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">constructor</span> () &#123; <span class="comment">// 2</span></span><br><span class="line">        <span class="keyword">this</span>.id = Person.generateId() <span class="comment">// 5</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    showId () &#123; <span class="comment">// 3</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">`My id is: <span class="subst">$&#123;<span class="keyword">this</span>.id&#125;</span>`</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">static</span> generateId () &#123; <span class="comment">// 4</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.nextId++</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	get age () &#123; <span class="keyword">return</span> <span class="keyword">this</span>._age &#125; <span class="comment">// 8</span></span><br><span class="line">	set age (val) &#123; </span><br><span class="line">        <span class="keyword">if</span> (val &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Age must be a positive integer!'</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>._age = val</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">Person.nextId = <span class="number">0</span> <span class="comment">// 6</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p = <span class="keyword">new</span> Person()</span><br><span class="line">p.showId()</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p2 = <span class="keyword">new</span> Person()</span><br><span class="line">p2.showId()</span><br></pre></td></tr></table></figure>
 <p>理解：</p>
 <ol>
 <li>Person类，其实是一个<u>ES5函数（构造器）</u>。有函数表达式，同理也有“类表达式”，比如：</li>
@@ -1177,6 +1627,9 @@
 <li>私有性：无论是变量还是方法，一般是公有；若想要保证其私有性，可以对属性名利用Symbol，然后写在模块内、类定义外，这样外部就访问不到了。举另外一个例子：</li>
 </ol>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> age = <span class="built_in">Symbol</span>(<span class="string">'age'</span>) <span class="comment">// 如果使用Symbol.for的话，外部还是有低概率猜到。所以用Symbol()</span></span><br><span class="line"><span class="keyword">const</span> getAge = <span class="built_in">Symbol</span>(<span class="string">'getAge'</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Girl</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span> () &#123;</span><br><span class="line">        <span class="keyword">this</span>[age] = <span class="string">'secret'</span> <span class="comment">// 外部访问不到[age]变量</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    [getAge] () &#123;	<span class="comment">// 外部访问不到[getAge]方法</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>[age]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="8">
+<li>get/set：实际上是定义在了实例的属性的descriptor上。</li>
+</ol>
 
           
         
@@ -1225,7 +1678,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/12/Vue：双向绑定的不同写法/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/12/Vue：组件双向绑定的两种方式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="JK">
@@ -1244,7 +1697,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/07/12/Vue：双向绑定的不同写法/" itemprop="url">Vue：双向绑定的不同写法</a></h1>
+                <a class="post-title-link" href="/2018/07/12/Vue：组件双向绑定的两种方式/" itemprop="url">Vue：组件双向绑定的两种方式</a></h1>
         
 
         <div class="post-meta">
@@ -1327,7 +1780,7 @@
 <li>当localValue赋相同的值时，localValue的观察函数不会回调；</li>
 <li>当两次emit所携带的值相同时（即传给相同的值给上层），value的观察函数也不会被回调。因此在视图上组件并不会刷新。</li>
 </ul>
-<p>因此也只能应对常见的场景。对于需要更深度的控制的场景，是使用“localValue”的同时，不使用v-model而是使用value + @input。这样就可以在@input、甚至@focus、@blur等回调中实现对localValue更多的操作。</p>
+<p>因此也只能应对常见的场景。同时，因为localValue相当于value的副本，所以一定要在watch中控制好两者的同步，否则一个变了、另一个却没有跟着变。对于需要更深度的控制的场景，是使用“localValue”的同时，不使用v-model而是使用value + @input。这样就可以在@input、甚至@focus、@blur等回调中实现对localValue更多的操作。</p>
 <h2 id="某个场景"><a href="#某个场景" class="headerlink" title="某个场景"></a>某个场景</h2><p>针对上面说到的“handler函数有时不会被回调”的问题这通常没有什么问题，因为没必要重渲染同一个值。但我见过一个场景，组件需要在input回调中对用户输入进行修改的，以限制用户只能输入0～100的一个分数：假如我输入一个比100大的数字，在input中会检测到并修改回100。单纯使用这种方法会出现一个问题：第一次输入101，会看到输入框的值被掰回“100”；但如果我继续键入一个1，那么最终会显示“1001”。</p>
 <p>这里需要说明的是，其实对于这两次“非法”输入，组件都把“localValue”修改成了100。第二次只是因为Vue没有对组件视图进行刷新，所以我们看到的是“1001”（这个“1001”是HTML原汁原味的显示，这时候@input还没回调）。这里的原因是：</p>
 <blockquote>
@@ -1338,441 +1791,6 @@
 <p>this.$forceUpdate()</p>
 </blockquote>
 <p>作为我的解决方案，强行让Vue刷新本组件。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/21/Vue：使用双向绑定的注意事项/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JK">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="大肥凯">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/21/Vue：使用双向绑定的注意事项/" itemprop="url">Vue：使用双向绑定的注意事项</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-21T16:00:00+08:00">
-                2018-06-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Vue的v-model指令允许一个input标签能够在展示数据的同时供用户进行修改，这就是双向绑定。但在以下场景中，修改（这里说的“修改”指赋值以及mutate）数据并不允许太直接：</p>
-<ul>
-<li>组件props：不允许修改。</li>
-<li>Vuex：（严格模式下）只能通过mutations“间接”修改，不能直接mutate。</li>
-</ul>
-<p>所以直接进行双向绑定是不可行的了，得用上一定的技巧。</p>
-<h2 id="组件props"><a href="#组件props" class="headerlink" title="组件props"></a>组件props</h2><p>组件的props接收父组件传进来的数据，充当“媒介”角色，它不能直接修改。那这种情况下，怎么进行双向绑定呢？</p>
-<p>假设现在有一个页面（App）；还有一个组件（SimpleForm），该组件封装了一个简单的form，这个form包含了许多双向绑定的input标签。而App初始化SimpleForm时，传递一个对象给它，供用户在SimpleForm组件中修改。先看父页面：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// App.vue</span><br><span class="line"></span><br><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div id=&quot;app&quot;&gt;</span><br><span class="line">    &lt;!-- 传递页面的form对象。</span><br><span class="line">		 使用了.sync关键字意味着需要在自组件中触发【update:Xxx】事件。 --&gt;</span><br><span class="line">    &lt;simple-form :formData.sync=&quot;form&quot;&gt;&lt;/simple-form&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">import SimpleForm from &apos;./components/SimpleForm.vue&apos;</span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;app&apos;,</span><br><span class="line">  components: &#123;</span><br><span class="line">    SimpleForm</span><br><span class="line">  &#125;,</span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      form: &#123;</span><br><span class="line">        name: &apos;default&apos;,</span><br><span class="line">        age: 10</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
-<p>则子组件有以下几种实现方式，来规避对该props的直接修改：</p>
-<ul>
-<li>不使用v-model：因为语法糖【v-model】 = 【:value】 + 【@input】。在双向绑定中，前者负责展示，则直接展示props；后者负责修改但不能直接修改props，而是发射一个事件通知父页面修改传进来的数据：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">// Simple.vue（version 1）</span><br><span class="line"></span><br><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class=&quot;simple-form&quot;&gt;</span><br><span class="line">    &lt;label&gt;</span><br><span class="line">      姓名：</span><br><span class="line">      &lt;input type=&quot;text&quot; :value=&quot;formData.name&quot; @input=&quot;mutate(&apos;name&apos;, $event.target.value)&quot;&gt;</span><br><span class="line">    &lt;/label&gt;</span><br><span class="line">    &lt;label&gt;</span><br><span class="line">      年龄：</span><br><span class="line">      &lt;input type=&quot;number&quot; :value=&quot;formData.age&quot; @input=&quot;mutate(&apos;age&apos;, $event.target.value)&quot;&gt;</span><br><span class="line">    &lt;/label&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">import &#123; cloneDeep &#125; from &apos;lodash&apos;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;simple-form&apos;,</span><br><span class="line">  props: [&apos;formData&apos;], // formData表示接收到的外部数据</span><br><span class="line">  methods: &#123;</span><br><span class="line">    mutate (key, value) &#123;</span><br><span class="line">      // 构造一个完整的formData</span><br><span class="line">      const newForm = Object.assign(&#123;&#125;, this.formData, &#123;</span><br><span class="line">        [key]: value</span><br><span class="line">      &#125;)</span><br><span class="line">      </span><br><span class="line">      // 提醒父页面修改数据，然后再一次传递进来</span><br><span class="line">      this.$emit(&apos;update:formData&apos;, newForm)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>构造代替者：（记传进来的props为A）既然不能直接对A进行双向绑定，那就将A进行深拷贝得到B，B作为本组件的data，双向绑定就在B上进行；同时要将B的更改也同步到父组件中。看代码：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">// SimpleForm.vue（version 2）</span><br><span class="line"></span><br><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class=&quot;simple-form&quot;&gt;</span><br><span class="line">    &lt;label&gt;姓名：&lt;input type=&quot;text&quot; v-model=&quot;localFormData.name&quot;&gt;&lt;/label&gt;</span><br><span class="line">    &lt;label&gt;年龄：&lt;input type=&quot;number&quot; v-model=&quot;localFormData.age&quot;&gt;&lt;/label&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">import &#123; cloneDeep &#125; from &apos;lodash&apos;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;simple-form&apos;,</span><br><span class="line">  props: [&apos;formData&apos;], // formData表示接收到的外部数据</span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      localFormData: cloneDeep(this.formData) // 维护一个本地的状态，代替formData来供input修改</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  watch: &#123;</span><br><span class="line">    localFormData: &#123;</span><br><span class="line">      deep: true,</span><br><span class="line">      handler (newVal, oldVal) &#123;</span><br><span class="line">        this.$emit(&apos;update:formData&apos;, newVal) // 每次修改本地状态，都同步到父组件中</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
-<p>其实上面两种方法也适用于被传递的数据是基本类型的场景，只不过更简单。读者可以自己举个例子，多多思考一下。</p>
-<h2 id="Vuex"><a href="#Vuex" class="headerlink" title="Vuex"></a>Vuex</h2><p>如果Vuex初始化时设置了strict=true，即开启了严格模式，则所有对state的更改都必须通过mutations，否则会抛出错误：</p>
-<blockquote>
-<p>Do not mutate vuex store state outside mutation handlers.</p>
-</blockquote>
-<p>所以当我们需要对从Vuex中获取的数据进行双向绑定的时候，就需要注意了。如果是对象类型，则有以下深拷贝的方法，思路也很简单：Vuex下传到组件后，有一次深拷贝；组件修改了需要上传到Vuex后，又一次深拷贝。与上面的第二种方法类似，只不过这里每次修改都需要深拷贝，大大增加了成本，不是个好方法。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div id=&quot;app&quot;&gt;</span><br><span class="line">    &lt;div class=&quot;form&quot;&gt;</span><br><span class="line">      &lt;label&gt;姓名：&lt;input type=&quot;text&quot; v-model=&quot;localUserInfo.name&quot;&gt;&lt;/label&gt;</span><br><span class="line">      &lt;label&gt;年龄：&lt;input type=&quot;number&quot; v-model=&quot;localUserInfo.age&quot;&gt;&lt;/label&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">import &#123; mapState &#125; from &apos;vuex&apos;</span><br><span class="line">import &#123; cloneDeep &#125; from &apos;lodash&apos;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;app&apos;,</span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      // 本地数据是Vuex数据的一份深拷贝，实现对Vuex数据的保护</span><br><span class="line">      localUserInfo: cloneDeep(this.$store.state.user.userInfo)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  watch: &#123;</span><br><span class="line">    // 把本地数据每一次的mutate都上传到Vuex</span><br><span class="line">    localUserInfo: &#123;</span><br><span class="line">      deep: true,</span><br><span class="line">      handler (newVal) &#123;</span><br><span class="line">        this.$store.commit(&apos;user/setUserInfo&apos;, cloneDeep(newVal))</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
-<p>官方文档也指出，在这种情况下，唯一比较好的方法就是将对象的每一个字段进行双向绑定。写法上是麻烦了一些，尤其是在input很多的情况下。但是有一些类似于“vuex-map-field”的库可以帮我们进行代码简化，这里就不详述了。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li>高度相关</li>
-</ul>
-<p><a href="http://shzhangji.com/cnblogs/2018/04/18/form-handling-in-vuex-strict-mode/" target="_blank" rel="noopener">Vuex 严格模式下的表单处理</a></p>
-<ul>
-<li>文档</li>
-</ul>
-<p><a href="https://vuex.vuejs.org/zh/guide/forms.html" target="_blank" rel="noopener">Vuex：表单处理</a></p>
-<ul>
-<li>略相关</li>
-</ul>
-<p><a href="https://github.com/Mcbai/Blog/issues/13" target="_blank" rel="noopener">Vue表单类的父子组件数据传递</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/13/一道CSS面试题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JK">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="大肥凯">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/13/一道CSS面试题/" itemprop="url">一道CSS面试题</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-13T16:45:15+08:00">
-                2018-06-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>来自牛客网的一道CSS题目：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"width:400px; height:200px;"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">span</span> <span class="attr">style</span>=<span class="string">"float:left; width:auto; height:100%;"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">i</span> <span class="attr">style</span>=<span class="string">"position:absolute; float:left; width:100px; height:50px;"</span>&gt;</span>hello<span class="tag">&lt;/<span class="name">i</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>答案：宽高是0 * 200px。</p>
-<p>思路：</p>
-<ul>
-<li>width：auto等于没说。因为float为left导致span的display为block，因为本来是inline元素所以行为类似于inline-block元素，故width可以生效，且由其内容决定。内容为i，i同时有position与float，则position=absolute优先，脱离文档流，所以最终得到width=0。</li>
-<li>height：100%，因没有position，所以相对于直接父元素的height，即：200px。</li>
-</ul>
-<p>涉及考点：</p>
-<ul>
-<li>float的设置：会使元素具有类似于inline-block的行为，可以设置width、height、padding、margin等。所以span元素虽然本来是inline，但此时是inline-block，设置width、height是有效的。</li>
-<li>width/height/padding/margin设置为百分比：相对的是“参照元素”的width。而什么是“参照元素”？这分为两种情况（约定“定位元素”：指position不为static的元素）：<ul>
-<li>当子元素没有定位时，参照元素是其直接父元素。所以题目中span设置了height为100%，是相对于直接父元素即最外层的div的height即200px。</li>
-<li>当子元素有定位时，参照元素是最近的定位的父元素（一直找到viewport。注意是viewport，不是body，因为body也被当作普通的元素：如果没有定位，就不会相对于body）。</li>
-</ul>
-</li>
-<li>position：设置为absolute/fixed会使元素脱离文档流，从而使父元素塌陷。题目中的i是绝对定位，故使span塌陷。</li>
-<li>width为auto时：width的默认值就是auto，相当于不设置。当元素为：<ul>
-<li>块级元素时，宽度为：父元素宽度 - 左margin - 右margin。注意它与width: 100%的区别（这里暂不详述）。</li>
-<li>行内元素时，宽度默认包含住content（子元素）。所以题目中span的宽度为子元素宽度，而由于i不在文档流中，相当于没有子元素，于是width为0。</li>
-</ul>
-</li>
-<li>position与float互斥（优先级）：同时出现时，以position为准。所以i的float: left其实是不生效的，去掉也可以，真正使span塌陷的是它的position: absolute。</li>
-</ul>
-<p>拓展知识：</p>
-<ol>
-<li>position、display、float三者的取值会相互影响：</li>
-</ol>
-<ul>
-<li>position=absolute|fixed时：display=block，float=none，两者再设置也无效。</li>
-<li>float!=none时：display为block，再设置也无效；但position可以设置。</li>
-<li>display=none时：position与float再设置也无效。但display!=none时，可以设置position与float。</li>
-</ul>
-<p>故可以认为存在优先级：position &gt; float &gt; display。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.nowcoder.com/questionTerminal/8c6c959221d84380804a0c5cd96ba888" target="_blank" rel="noopener">问题：span标签的width和height分别为多少？</a></p>
-<p><a href="https://blog.csdn.net/qq_35809245/article/details/54233662" target="_blank" rel="noopener">css height width padding margin 百分比取值的基准问题</a></p>
-<p><a href="https://www.cnblogs.com/rubylouvre/archive/2012/01/18/2325443.html" target="_blank" rel="noopener">透彻理解块级元素的宽度</a></p>
-<p><a href="http://zccst.iteye.com/blog/2193102" target="_blank" rel="noopener">display,position和float之间的关系</a></p>
-<p><a href="https://juejin.im/post/5b0bc994f265da092918d421" target="_blank" rel="noopener">你知道我们平时在CSS中写的%都是相对于谁吗？</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/12/HTTP缓存/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JK">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="大肥凯">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/12/HTTP缓存/" itemprop="url">HTTP缓存</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-12T10:42:47+08:00">
-                2018-06-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://stackoverflow.com/questions/4574912/css-content-generation-before-or-after-input-elements" target="_blank" rel="noopener">html - CSS content generation before or after ‘input’ elements - Stack Overflow</a><br><a href="https://stackoverflow.com/questions/18400493/custom-checkboxes-failing-on-firefox" target="_blank" rel="noopener">css3 - Custom Checkboxes Failing on Firefox - Stack Overflow</a><br><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Replaced_element" target="_blank" rel="noopener">Replaced element - CSS | MDN</a></p>
 
           
         
@@ -1858,7 +1876,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1871,7 +1889,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">60</span>
+                  <span class="site-state-item-count">63</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>

@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="class作为ES6最耀眼的特性，让JS的OOP更通俗、易用。 几个重要概念与写法说到class，重要的概念无非是：  类 变量成员 实例、静态变量 公有、私有变量   方法成员 实例、静态方法 公有、私有方法    从一个Person类的例子中理解： 123456789101112131415161718192021class Person &amp;#123; // 1    name = &apos;Hell">
+<meta name="description" content="class作为ES6最耀眼的特性，让JS的OOP更通俗、易用。 几个重要概念与写法说到class，重要的概念无非是：  类 变量成员 实例、静态变量 公有、私有变量   方法成员 实例、静态方法 公有、私有方法    从一个Person类的例子中理解： 12345678910111213141516171819202122232425262728293031class Person &amp;#123;">
 <meta name="keywords" content="Web前端">
 <meta property="og:type" content="article">
 <meta property="og:title" content="大肥凯">
 <meta property="og:url" content="http://yoursite.com/2018/07/18/ES6：class入门/index.html">
 <meta property="og:site_name" content="大肥凯">
-<meta property="og:description" content="class作为ES6最耀眼的特性，让JS的OOP更通俗、易用。 几个重要概念与写法说到class，重要的概念无非是：  类 变量成员 实例、静态变量 公有、私有变量   方法成员 实例、静态方法 公有、私有方法    从一个Person类的例子中理解： 123456789101112131415161718192021class Person &amp;#123; // 1    name = &apos;Hell">
+<meta property="og:description" content="class作为ES6最耀眼的特性，让JS的OOP更通俗、易用。 几个重要概念与写法说到class，重要的概念无非是：  类 变量成员 实例、静态变量 公有、私有变量   方法成员 实例、静态方法 公有、私有方法    从一个Person类的例子中理解： 12345678910111213141516171819202122232425262728293031class Person &amp;#123;">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-08-20T02:07:35.989Z">
+<meta property="og:updated_time" content="2018-09-15T05:29:57.674Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="大肥凯">
-<meta name="twitter:description" content="class作为ES6最耀眼的特性，让JS的OOP更通俗、易用。 几个重要概念与写法说到class，重要的概念无非是：  类 变量成员 实例、静态变量 公有、私有变量   方法成员 实例、静态方法 公有、私有方法    从一个Person类的例子中理解： 123456789101112131415161718192021class Person &amp;#123; // 1    name = &apos;Hell">
+<meta name="twitter:description" content="class作为ES6最耀眼的特性，让JS的OOP更通俗、易用。 几个重要概念与写法说到class，重要的概念无非是：  类 变量成员 实例、静态变量 公有、私有变量   方法成员 实例、静态方法 公有、私有方法    从一个Person类的例子中理解： 12345678910111213141516171819202122232425262728293031class Person &amp;#123;">
 
 
 
@@ -316,7 +316,7 @@
 </li>
 </ul>
 <p>从一个Person类的例子中理解：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123; <span class="comment">// 1</span></span><br><span class="line">    name = <span class="string">'Hello'</span></span><br><span class="line">    <span class="keyword">constructor</span> () &#123; <span class="comment">// 2</span></span><br><span class="line">        <span class="keyword">this</span>.id = Person.generateId() <span class="comment">// 5</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    showId () &#123; <span class="comment">// 3</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">`My id is: <span class="subst">$&#123;<span class="keyword">this</span>.id&#125;</span>`</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">static</span> generateId () &#123; <span class="comment">// 4</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.nextId++</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">Person.nextId = <span class="number">0</span> <span class="comment">// 6</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p = <span class="keyword">new</span> Person()</span><br><span class="line">p.showId()</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p2 = <span class="keyword">new</span> Person()</span><br><span class="line">p2.showId()</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123; <span class="comment">// 1</span></span><br><span class="line">    name = <span class="string">'Hello'</span></span><br><span class="line">	_age = <span class="number">10</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">constructor</span> () &#123; <span class="comment">// 2</span></span><br><span class="line">        <span class="keyword">this</span>.id = Person.generateId() <span class="comment">// 5</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    showId () &#123; <span class="comment">// 3</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">`My id is: <span class="subst">$&#123;<span class="keyword">this</span>.id&#125;</span>`</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">static</span> generateId () &#123; <span class="comment">// 4</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.nextId++</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	get age () &#123; <span class="keyword">return</span> <span class="keyword">this</span>._age &#125; <span class="comment">// 8</span></span><br><span class="line">	set age (val) &#123; </span><br><span class="line">        <span class="keyword">if</span> (val &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Age must be a positive integer!'</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>._age = val</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">Person.nextId = <span class="number">0</span> <span class="comment">// 6</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p = <span class="keyword">new</span> Person()</span><br><span class="line">p.showId()</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p2 = <span class="keyword">new</span> Person()</span><br><span class="line">p2.showId()</span><br></pre></td></tr></table></figure>
 <p>理解：</p>
 <ol>
 <li>Person类，其实是一个<u>ES5函数（构造器）</u>。有函数表达式，同理也有“类表达式”，比如：</li>
@@ -359,6 +359,9 @@
 <li>私有性：无论是变量还是方法，一般是公有；若想要保证其私有性，可以对属性名利用Symbol，然后写在模块内、类定义外，这样外部就访问不到了。举另外一个例子：</li>
 </ol>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> age = <span class="built_in">Symbol</span>(<span class="string">'age'</span>) <span class="comment">// 如果使用Symbol.for的话，外部还是有低概率猜到。所以用Symbol()</span></span><br><span class="line"><span class="keyword">const</span> getAge = <span class="built_in">Symbol</span>(<span class="string">'getAge'</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Girl</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span> () &#123;</span><br><span class="line">        <span class="keyword">this</span>[age] = <span class="string">'secret'</span> <span class="comment">// 外部访问不到[age]变量</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    [getAge] () &#123;	<span class="comment">// 外部访问不到[getAge]方法</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>[age]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="8">
+<li>get/set：实际上是定义在了实例的属性的descriptor上。</li>
+</ol>
 
       
     </div>
@@ -383,8 +386,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/07/12/Vue：双向绑定的不同写法/" rel="next" title="Vue：双向绑定的不同写法">
-                <i class="fa fa-chevron-left"></i> Vue：双向绑定的不同写法
+              <a href="/2018/07/12/Vue：组件双向绑定的两种方式/" rel="next" title="Vue：组件双向绑定的两种方式">
+                <i class="fa fa-chevron-left"></i> Vue：组件双向绑定的两种方式
               </a>
             
           </div>
@@ -472,7 +475,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -485,7 +488,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">60</span>
+                  <span class="site-state-item-count">63</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>
