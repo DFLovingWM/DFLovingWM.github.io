@@ -233,6 +233,592 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/05/Iterable：可迭代对象/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/05/Iterable：可迭代对象/" itemprop="url">Untitled</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-05T20:05:03+08:00">
+                2018-08-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>感谢<a href="http://es6katas.org/" target="_blank" rel="noopener">ES6 Kata</a>，它让我觉得是时候对Iterator、Generator、Iterable等知识点作出总结了。</p>
+<h2 id="1-前置知识"><a href="#1-前置知识" class="headerlink" title="1. 前置知识"></a>1. 前置知识</h2><p>首先要知道Iterator（迭代器）与Generator（生成器）这两个概念。迭代器和生成器，都是nextable（有next方法的对象）。</p>
+<h3 id="1-1-迭代器"><a href="#1-1-迭代器" class="headerlink" title="1.1 迭代器"></a>1.1 迭代器</h3><p>对于Iterator知识体系，可以参考<a href="https://babeljs.io/docs/en/learn/#iterators-forof" target="_blank" rel="noopener">Babel | Learning ES6 | Iterators + For…of</a>：</p>
+<ol>
+<li>IteratorResult，表示迭代器的结果。有done（表示是否完结）与value（表示当前值）两个属性：</li>
+</ol>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> IteratorResult &#123;</span><br><span class="line">    done: <span class="built_in">boolean</span>;</span><br><span class="line">    value: <span class="built_in">any</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>Iterator，表示迭代器。有next方法，调用后返回一个迭代器结果：</li>
+</ol>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Iterator &#123;</span><br><span class="line">    next(): IteratorResult;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>Iterable，表示可迭代对象。其特点是key为[Symbol.iterator]是一个方法，调用后返回一个迭代器：</li>
+</ol>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Iterable &#123;</span><br><span class="line">    [Symbol.iterator](): Iterator;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="1-2-生成器"><a href="#1-2-生成器" class="headerlink" title="1.2 生成器"></a>1.2 生成器</h3><p>说生成器之前，先说一个概念“Generator Function”（生成器函数）。Generator Function在形式上有个”*”号，但它也就是个内部可以使用yield关键字的特殊函数，其函数形状可以定义为：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> GeneratorFunction &#123;</span><br><span class="line">    (): Generator;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>举个例子：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> * <span class="title">g</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'hello'</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'world'</span></span><br><span class="line">    <span class="comment">// return undefined	// 没有显式return时，其实隐含了这一句。对应的done才为true</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> f = g()</span><br><span class="line">f.next()	<span class="comment">// &#123; done: false, value: 'hello' &#125;</span></span><br><span class="line">f.next()	<span class="comment">// &#123; done: false, value: 'world' &#125;</span></span><br><span class="line">f.next()	<span class="comment">// &#123; done: true, value: undefined &#125;</span></span><br></pre></td></tr></table></figure>
+<p>上述例子中，g调用后返回一个生成器f，其对象形状可以表示为：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Generator &#123;</span><br><span class="line">    next(value?: <span class="built_in">any</span>): IteratorResult; <span class="comment">// value可选，是Generator特有的传参功能</span></span><br><span class="line">    <span class="keyword">throw</span>(exception: <span class="built_in">any</span>);	<span class="comment">// 产生异常</span></span><br><span class="line">    <span class="keyword">return</span>(value?: <span class="built_in">any</span>): IteratorResult;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="1-3-区别"><a href="#1-3-区别" class="headerlink" title="1.3 区别"></a>1.3 区别</h3><table>
+<thead>
+<tr>
+<th></th>
+<th>Generator</th>
+<th>Iterator</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>获取方式</td>
+<td>生成器函数调用返回</td>
+<td>手动实现next函数</td>
+</tr>
+<tr>
+<td>作用</td>
+<td>遍历；实现协程、异步</td>
+<td>遍历</td>
+</tr>
+<tr>
+<td>额外</td>
+<td>与ES6很多API有紧密联系（见下文）</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-可迭代对象的常见场景"><a href="#2-可迭代对象的常见场景" class="headerlink" title="2. 可迭代对象的常见场景"></a>2. 可迭代对象的常见场景</h2><p>下面介绍几种与Iterable密切相关的方法，并探讨方法内部的大概实现（对Iterable的影响），以加深对相关知识的记忆。它们分别是：</p>
+<ul>
+<li>Array.from</li>
+<li>for…of</li>
+<li>[…obj]</li>
+<li>Array实例的keys、values、entries方法</li>
+<li>解构</li>
+</ul>
+<p>因为在讨论迭代对象时，它们是类似的，所以只详述第一种情况：Array.from，其它的可能会一笔带过。</p>
+<h3 id="2-1-Array-from"><a href="#2-1-Array-from" class="headerlink" title="2.1 Array.from()"></a>2.1 Array.from()</h3><p>作用是把某种对象初始化/转换为一个数组。而其作用的对象，我们一般都可以想到：普通数组、类数组对象、Map、Set……但这样记忆不够系统性。其实，Array.from的作用者可以总结为：</p>
+<ul>
+<li>Array-like Object：具有length属性的对象，常见的比如DOM的NodeList、HTMLCollection接口；或者自己写的一个具有length属性的普通对象。注意，原来是“空slot/占位符”的元素会被转化成undefined。举个简单例子：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arrayLikeObject = &#123;</span><br><span class="line">	length: <span class="number">3</span>,</span><br><span class="line">	<span class="number">0</span>: <span class="string">'hello'</span>,</span><br><span class="line">	<span class="number">2</span>: <span class="string">'world'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">Array</span>.from(arrayLikeObject)	<span class="comment">// ["hello", undefined, "world"]</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>Generator：需要注意，Array.from方法会使该Generator发生改变，内部指针走到了尽头。拿最开始那个例子看：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> * <span class="title">generatorFunction</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'hello'</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'world'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> generator = generatorFunction() <span class="comment">// 定义了一个生成器</span></span><br><span class="line"><span class="built_in">Array</span>.from(generator)	<span class="comment">// 将生成器转换为数组得到：['hello', 'world']</span></span><br><span class="line"></span><br><span class="line">generator.next()	<span class="comment">// (第一次)调用next时，却得到：&#123; done: true, value: undefined &#125;</span></span><br><span class="line"><span class="built_in">Array</span>.from(generator)	<span class="comment">// []</span></span><br></pre></td></tr></table></figure>
+<p>可以看到，Array.from作用于迭代器时，其实会循环调用迭代器的next方法直到其内部指针完结。所以之后调用next时，发现该迭代器已经“没用”了。所以这里有点危险。</p>
+<ul>
+<li>Iterable：首先调用[Symbol.iterator]方法得到迭代器，之后的步骤类似于上述Iterator。有很多对象类型都属于可迭代的，比如：<ul>
+<li>Array：相当于返回一个shallow copy</li>
+<li>String：其实String本来就可以看作是“char”数组，也相当于调用了string.split(‘’)</li>
+<li>Map/WeakMap：返回一个二维数组，每个元素是[key, value]</li>
+<li>Set/WeakSet</li>
+<li>……（暂时想不到了）</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Array</span>.from([<span class="string">'hello'</span>, <span class="string">'world'</span>])	<span class="comment">// ["hello", "world"]</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.from(<span class="string">'hello'</span>)	<span class="comment">// ["h", "e", "l", "l", "o"]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> map = <span class="keyword">new</span> <span class="built_in">Map</span>()</span><br><span class="line">map.set(<span class="string">'name'</span>, <span class="string">'Alice'</span>)</span><br><span class="line">map.set(<span class="string">'age'</span>, <span class="number">10</span>)</span><br><span class="line"><span class="built_in">Array</span>.from(map)	<span class="comment">// [ ["name", "Alice"], ["age", 10] ]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> set = <span class="keyword">new</span> <span class="built_in">Set</span>()</span><br><span class="line">set.add(<span class="string">'name'</span>)</span><br><span class="line">set.add(<span class="string">'age'</span>)</span><br><span class="line"><span class="built_in">Array</span>.from(set)	<span class="comment">// ["name", "age"]</span></span><br></pre></td></tr></table></figure>
+<p>返回什么东西，当然是取决于[Symbol.iterator]方法是怎么实现的。</p>
+<p>其实，<u>generator也是一个Iterable</u>，我们可以随便验证一下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> * <span class="title">gen</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'hello'</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'world'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> generator = gen()</span><br><span class="line">generator[<span class="built_in">Symbol</span>.iterator]() === generator <span class="comment">// 返回true</span></span><br></pre></td></tr></table></figure>
+<p>所以本质上，这几种适用的对象可以总结为一个：Iterable。</p>
+<h3 id="2-2-for…of"><a href="#2-2-for…of" class="headerlink" title="2.2 for…of"></a>2.2 for…of</h3><p>遍历（可以看作是以数组的方式对某对象进行遍历，所以可能隐含一个转换为数组的过程）。作用对象包括：</p>
+<ul>
+<li>Iterable</li>
+</ul>
+<p>注意事项与Array.from一样。</p>
+<p>对于Iterable，举个例子，我们可以自定义一个Iterable：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> someIterableObject = &#123;</span><br><span class="line">    *[<span class="built_in">Symbol</span>.iterator] () &#123;</span><br><span class="line">        <span class="keyword">yield</span> <span class="string">'A'</span></span><br><span class="line">    	<span class="keyword">yield</span> <span class="string">'B'</span></span><br><span class="line">    	<span class="keyword">yield</span> <span class="string">'C'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> item <span class="keyword">of</span> someIterableObject) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(item)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出结果：</span></span><br><span class="line"><span class="comment">// A</span></span><br><span class="line"><span class="comment">// B</span></span><br><span class="line"><span class="comment">// C</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-3-Array实例的keys、values、entries方法"><a href="#2-3-Array实例的keys、values、entries方法" class="headerlink" title="2.3 Array实例的keys、values、entries方法"></a>2.3 Array实例的keys、values、entries方法</h3><p>3个方法都返回一个Iterator，内部指针分别指向数组的下标、值、键值对。可以用作对数组不同方式的遍历：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> minions = [<span class="string">'Kevin'</span>, <span class="string">'Stewart'</span>, <span class="string">'Bob'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">// 遍历下标</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> index <span class="keyword">of</span> minions.keys()) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(index)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 输出结果：</span></span><br><span class="line"><span class="comment">// 0</span></span><br><span class="line"><span class="comment">// 1</span></span><br><span class="line"><span class="comment">// 2</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 遍历值</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> value <span class="keyword">of</span> minions.values()) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(value)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 输出结果：</span></span><br><span class="line"><span class="comment">// Kevin</span></span><br><span class="line"><span class="comment">// Stewart</span></span><br><span class="line"><span class="comment">// Bob</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 遍历KV对</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> [key, value] <span class="keyword">of</span> minions.entries()) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;key&#125;</span> =&gt; <span class="subst">$&#123;value&#125;</span>`</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 输出结果：</span></span><br><span class="line"><span class="comment">// 0 =&gt; Kevin</span></span><br><span class="line"><span class="comment">// 1 =&gt; Stewart</span></span><br><span class="line"><span class="comment">// 2 =&gt; Bob</span></span><br></pre></td></tr></table></figure>
+<p>需要注意，要与Object类上3个同名（但是静态）方法进行区别：</p>
+<ul>
+<li>Object.keys()</li>
+<li>Object.values()</li>
+<li>Object.entries()</li>
+</ul>
+<p>区别在于：首先，此三者主要作用是对Object实例进行遍历，而因为Array.prototype继承于Object.prototype，所以当然也可以用于遍历Array实例；其次，它们的返回值不是Iterator，而都是数组：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> minions = [<span class="string">'Kevin'</span>, <span class="string">'Stewart'</span>, <span class="string">'Bob'</span>]</span><br><span class="line"><span class="built_in">Object</span>.entries(minions) <span class="comment">// [ ["0", "Kevin"], ["1", "Stewart"], ["2", "Bob"] ]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> minionGroup = &#123;</span><br><span class="line">    clever: <span class="string">'Kevin'</span>,</span><br><span class="line">    romantic: <span class="string">'Stewart'</span>,</span><br><span class="line">    lucky: <span class="string">'Bob'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> [key, value] <span class="keyword">of</span> <span class="built_in">Object</span>.entries(minionGroup)) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;key&#125;</span> =&gt; <span class="subst">$&#123;value&#125;</span>`</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 输出结果：</span></span><br><span class="line"><span class="comment">// clever =&gt; Kevin</span></span><br><span class="line"><span class="comment">// romantic =&gt; Stewart</span></span><br><span class="line"><span class="comment">// lucky =&gt; Bob</span></span><br></pre></td></tr></table></figure>
+<p>一句话总结：Array的3个实例方法用于数组遍历；Object的3个静态方法用于对象遍历（如没有配置[Symbol.iterator]，对象本身是不可迭代/遍历的）。</p>
+<h3 id="2-4-解构：-…obj"><a href="#2-4-解构：-…obj" class="headerlink" title="2.4 解构：[…obj]"></a>2.4 解构：[…obj]</h3><p>…(rest参数)的作用是“打散”一个对象，但其通常与[]一起使用，用来将Object转换成一个Array：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[...obj]</span><br></pre></td></tr></table></figure>
+<p>需要注意，该Object依然需要满足以下条件之一：</p>
+<ul>
+<li>Iterable</li>
+</ul>
+<p>举个例子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">    name: <span class="string">'Gru'</span>,</span><br><span class="line">    age: <span class="string">'unknown'</span></span><br><span class="line">&#125;</span><br><span class="line">[...obj] <span class="comment">// 报错：Uncaught TypeError: obj is not iterable</span></span><br><span class="line">[...Object.values(obj)] <span class="comment">// 输出：['Gru', 'unknown']</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-5-“反”解构"><a href="#2-5-“反”解构" class="headerlink" title="2.5 “反”解构"></a>2.5 “反”解构</h3><p>直接看一个例子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> [...arr] = <span class="string">'minions'</span></span><br><span class="line"><span class="built_in">console</span>.log(arr) <span class="comment">// ['m', 'i', 'n', 'i', 'o', 'n', 's']</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">    name: <span class="string">'Gru'</span>,</span><br><span class="line">    age: <span class="string">'unknown'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> [...arr2] = <span class="built_in">Object</span>.values(obj)</span><br><span class="line"><span class="built_in">console</span>.log(arr2) <span class="comment">// ["Gru", "unknown"]</span></span><br></pre></td></tr></table></figure>
+<p>作为2.4的逆向过程，其实作用是类似的，所以也没什么好说的了。</p>
+<h2 id="3-String与Array互相转化"><a href="#3-String与Array互相转化" class="headerlink" title="3. String与Array互相转化"></a>3. String与Array互相转化</h2><p>这是个很小的话题了，但也可以总结一下：</p>
+<ol>
+<li>String转为Array（字符数组）：不止是string.split()，还有：<ul>
+<li>array = Array.from(string)</li>
+<li>array = […string]</li>
+<li>[…array] = string</li>
+</ul>
+</li>
+<li>Array转为String：除了array.join()，还有：<ul>
+<li>呃，不考虑需求的情况下，还是使用join吧。上面的都不大方便。</li>
+</ul>
+</li>
+</ol>
+<h2 id="4-后语"><a href="#4-后语" class="headerlink" title="4. 后语"></a>4. 后语</h2><p>最后，推荐一个学习ES6的好网站：<a href="http://es6katas.org/" target="_blank" rel="noopener">ES6 Katas</a>。它以TDD(test-driven development)即“测试驱动开发”的方式，让我们通过修改其中每一个测试案例的数据/行为，来达到学习、巩固ES6的目的。同时，非常感谢它对我的启发，向后看总会让人更好地前行。</p>
+<h2 id="5-参考"><a href="#5-参考" class="headerlink" title="5. 参考"></a>5. 参考</h2><p><a href="https://babeljs.io/docs/en/learn/#generators" target="_blank" rel="noopener">ES6：Generator</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/18/ES6：class入门/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/18/ES6：class入门/" itemprop="url">Untitled</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-18T16:55:37+08:00">
+                2018-07-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>class作为ES6最耀眼的特性，让JS的OOP更通俗、易用。</p>
+<h2 id="几个重要概念与写法"><a href="#几个重要概念与写法" class="headerlink" title="几个重要概念与写法"></a>几个重要概念与写法</h2><p>说到class，重要的概念无非是：</p>
+<ul>
+<li>类</li>
+<li>变量成员<ul>
+<li>实例、静态变量</li>
+<li>公有、私有变量</li>
+</ul>
+</li>
+<li>方法成员<ul>
+<li>实例、静态方法</li>
+<li>公有、私有方法</li>
+</ul>
+</li>
+</ul>
+<p>从一个Person类的例子中理解：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123; <span class="comment">// 1</span></span><br><span class="line">    name = <span class="string">'Hello'</span></span><br><span class="line">	_age = <span class="number">10</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">constructor</span> () &#123; <span class="comment">// 2</span></span><br><span class="line">        <span class="keyword">this</span>.id = Person.generateId() <span class="comment">// 5</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    showId () &#123; <span class="comment">// 3</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">`My id is: <span class="subst">$&#123;<span class="keyword">this</span>.id&#125;</span>`</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">static</span> generateId () &#123; <span class="comment">// 4</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.nextId++</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	get age () &#123; <span class="keyword">return</span> <span class="keyword">this</span>._age &#125; <span class="comment">// 8</span></span><br><span class="line">	set age (val) &#123; </span><br><span class="line">        <span class="keyword">if</span> (val &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Age must be a positive integer!'</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>._age = val</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">Person.nextId = <span class="number">0</span> <span class="comment">// 6</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p = <span class="keyword">new</span> Person()</span><br><span class="line">p.showId()</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p2 = <span class="keyword">new</span> Person()</span><br><span class="line">p2.showId()</span><br></pre></td></tr></table></figure>
+<p>理解：</p>
+<ol>
+<li>Person类，其实是一个<u>ES5函数（构造器）</u>。有函数表达式，同理也有“类表达式”，比如：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Person = <span class="class"><span class="keyword">class</span> <span class="title">TmpPerson</span> </span>&#123; ... &#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>constructor：实例化时调用的一个特殊方法，<u>本质上就是Person自身</u>：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log( Person === Person.prototype.constructor ) <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<p>实例化时，一定要用new关键字，否则会报错：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Person()	<span class="comment">// OK</span></span><br><span class="line"><span class="keyword">new</span> Person		<span class="comment">// OK</span></span><br><span class="line"></span><br><span class="line">Person() <span class="comment">// Uncaught TypeError: Class constructor Person cannot be invoked without 'new'</span></span><br></pre></td></tr></table></figure>
+<p>另外，ES5的构造函数没有限制一定要使用new，因为可以把构造函数当普通函数调用。如果需要，可以通过ES6提供的new.target来确定用户代码是否使用了new来实例化。比如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person</span> (<span class="params">id</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">new</span>.target === Person) &#123;	<span class="comment">// new.target指向new后面的构造函数</span></span><br><span class="line">        <span class="keyword">this</span>.id = id</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;	<span class="comment">// 如果没有new，则new.target为undefined</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'必须使用new对Person实例化'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>“实例”方法：Person类中的“实例”方法，是<u>定义在Person.prototype即原型上</u>（之所以这里打了双引号，是因为它并不是实例方法，而是“原型方法”）。所以实例化一个p时，p也可以调用showId方法，这里存在一个在原型链上寻找成员的过程。另外，实例调用方法的时候，内部的this指向实例本身。可以打印出来看看：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log( Person.prototype.showId ) <span class="comment">// 'f showId () &#123; ... &#125;'</span></span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>静态方法：方法前有static关键字的，是<u>定义在Person上</u>。内部的this指向Person。</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log( Person.generateId )</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>实例属性：</li>
+</ol>
+<ul>
+<li>写法1：写在方法内部，其实是动态添加到实例上：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DetailPage</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span> () &#123;</span><br><span class="line">        <span class="keyword">this</span>.state = &#123;</span><br><span class="line">            number: <span class="number">0</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>写法2：（更贴近习惯）写在方法外。注意，虽然写在类中，但并不是定义在原型上，可以看作是实例属性定义的语法糖。React中我们就经常这样定义组件state：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DetailPage</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    state = &#123;</span><br><span class="line">        number: <span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> detailPage = <span class="keyword">new</span> DetailPage()</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log( detailPage.state )	<span class="comment">// &#123; number: 0 &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log( DetailPage.prototype.state ) <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure>
+<ol start="6">
+<li>静态属性：关于静态属性需要定义在类外面的原因，阮一峰前辈在《ECMAScript 6 入门》一书中说到：</li>
+</ol>
+<blockquote>
+<p> ES6 明确规定，Class 内部只有静态方法，没有静态属性。</p>
+</blockquote>
+<ol start="7">
+<li>私有性：无论是变量还是方法，一般是公有；若想要保证其私有性，可以对属性名利用Symbol，然后写在模块内、类定义外，这样外部就访问不到了。举另外一个例子：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> age = <span class="built_in">Symbol</span>(<span class="string">'age'</span>) <span class="comment">// 如果使用Symbol.for的话，外部还是有低概率猜到。所以用Symbol()</span></span><br><span class="line"><span class="keyword">const</span> getAge = <span class="built_in">Symbol</span>(<span class="string">'getAge'</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Girl</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span> () &#123;</span><br><span class="line">        <span class="keyword">this</span>[age] = <span class="string">'secret'</span> <span class="comment">// 外部访问不到[age]变量</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    [getAge] () &#123;	<span class="comment">// 外部访问不到[getAge]方法</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>[age]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="8">
+<li>get/set：实际上是定义在了实例的属性的descriptor上。</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/12/Vue：组件双向绑定的两种方式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/12/Vue：组件双向绑定的两种方式/" itemprop="url">Vue：组件双向绑定的两种方式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-12T14:20:00+08:00">
+                2018-07-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>自定义组件在项目中是常见的需求。在Vue项目中，定义/封装一个具有双向绑定特性的组件时，需要处理好props与data的关系。</p>
+<p>举个简单例子，现在需要定义一个SuperInput组件，将普通的input[type=text]标签封装一下再加上一些漂亮的样式。用户代码可以在页面中这样使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;super-input v-model=&quot;count&quot; /&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="分析关系"><a href="#分析关系" class="headerlink" title="分析关系"></a>分析关系</h2><p>文档树从外到内，需要关注三个角色：</p>
+<ul>
+<li>父页面（传递count）<ul>
+<li>SuperInput组件（接收count作为属性value）<ul>
+<li>input标签（双向绑定的最终目标）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>可以看到，因为双向绑定最终还是需要落实到input上实现，所以自定义组件实质上充当了父页面与input之间的媒介。编写这个媒介，一般有两种思路。</p>
+<h2 id="1-直接沿用上层数据"><a href="#1-直接沿用上层数据" class="headerlink" title="1. 直接沿用上层数据"></a>1. 直接沿用上层数据</h2><p>这里的关键是，在input上不要直接使用v-model。因为“value”接收父页面的数据，在组件这一层只是作为props存在，是不能手动赋值的。由于v-model语法糖的性质，可以拆开成value和@input：value展示“value”属性，而@input就直接把用户输入“反映”到上层（父页面）。代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class=&quot;super-input&quot;&gt;</span><br><span class="line">    &lt;input type=&quot;text&quot; :value=&quot;value&quot; @input=&quot;$emit(&apos;change&apos;, $event.target.value)&quot; /&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;super-input&apos;,</span><br><span class="line">  props: [&apos;value&apos;]</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<p>想想上面说的三者关系，发现这种思路本质上让自定义组件成了一个不折不扣的媒介：把父页面的数据传给下层input，再把下层input的输入实时反映给父页面；它自身基本没有做什么额外的工作，相当于父页面在模板中直接使用input。</p>
+<p>这种方法的缺点是：组件是没有状态的，而“无状态组件”基本是一些展示型组件，没有额外的功能，适用于比较简单的场景。</p>
+<h2 id="2-本地维护一个代替者"><a href="#2-本地维护一个代替者" class="headerlink" title="2. 本地维护一个代替者"></a>2. 本地维护一个代替者</h2><p>意思是在自定义组件这一层，维护一个本地数据（data）作为代替者，它用来与上层数据进行同步。思路可以分为以下几步：</p>
+<ul>
+<li>在组件这一层维护一个本地data，比如“localValue”，与从上层接收到的“value”进行实时同步；</li>
+<li>这个“localValue”可以在input标签上使用v-model；</li>
+<li>对“localValue”的修改要实时反映给上层。</li>
+</ul>
+<p>然后，既然它是个data，那么就可以对input使用v-model进行双向绑定。代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class=&quot;number-picker&quot;&gt;</span><br><span class="line">    &lt;input type=&quot;text&quot; v-model=&quot;localValue&quot; /&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;number-picker&apos;,</span><br><span class="line">  props: [&apos;value&apos;],</span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      localValue: null</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  watch: &#123;</span><br><span class="line">    value: &#123; // 实现本地数据与上层同步</span><br><span class="line">      immediate: true,</span><br><span class="line">      handler (newVal) &#123;</span><br><span class="line">        this.localValue = newVal</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    localValue: &#123; // 把对本地数据的修改反映给上层</span><br><span class="line">      handler (newVal) &#123;</span><br><span class="line">        this.$emit(&apos;input&apos;, newVal)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<p>这种方法也有一个小缺点：囿于watch的触发时机（newValue !== oldValue）：</p>
+<ul>
+<li>当localValue赋相同的值时，localValue的观察函数不会回调；</li>
+<li>当两次emit所携带的值相同时（即传给相同的值给上层），value的观察函数也不会被回调。因此在视图上组件并不会刷新。</li>
+</ul>
+<p>因此也只能应对常见的场景。同时，因为localValue相当于value的副本，所以一定要在watch中控制好两者的同步，否则一个变了、另一个却没有跟着变。对于需要更深度的控制的场景，是使用“localValue”的同时，不使用v-model而是使用value + @input。这样就可以在@input、甚至@focus、@blur等回调中实现对localValue更多的操作。</p>
+<h2 id="某个场景"><a href="#某个场景" class="headerlink" title="某个场景"></a>某个场景</h2><p>针对上面说到的“handler函数有时不会被回调”的问题这通常没有什么问题，因为没必要重渲染同一个值。但我见过一个场景，组件需要在input回调中对用户输入进行修改的，以限制用户只能输入0～100的一个分数：假如我输入一个比100大的数字，在input中会检测到并修改回100。单纯使用这种方法会出现一个问题：第一次输入101，会看到输入框的值被掰回“100”；但如果我继续键入一个1，那么最终会显示“1001”。</p>
+<p>这里需要说明的是，其实对于这两次“非法”输入，组件都把“localValue”修改成了100。第二次只是因为Vue没有对组件视图进行刷新，所以我们看到的是“1001”（这个“1001”是HTML原汁原味的显示，这时候@input还没回调）。这里的原因是：</p>
+<blockquote>
+<p>两次非法输入，最终都修改为“100”，所以连续两次把“100”传递给上层。如此一来，value的观察函数在第二次没有被回调。</p>
+</blockquote>
+<p>我尝试着在非法输入时也emit给上层，以使其回调两次。但我发现并没有效果，不知道是否因为合并成了一次emit（待研究Vue源码），还是别的原因。最终，我选择了：</p>
+<blockquote>
+<p>this.$forceUpdate()</p>
+</blockquote>
+<p>作为我的解决方案，强行让Vue刷新本组件。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/21/Vue：使用双向绑定的注意事项/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1225,481 +1811,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/24/移动端调试/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JK">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="大肥凯">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/24/移动端调试/" itemprop="url">移动端调试</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-24T09:34:00+08:00">
-                2018-05-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>移动端调试的方式有以下几种：</p>
-<ul>
-<li>Chrome DevTools</li>
-<li>Mac Safari + iOS Safari</li>
-<li>weinre（Web Inspector Remote）</li>
-<li><u>vConsole</u></li>
-<li>抓包工具：Charles（Mac）/Fiddler（Win）</li>
-<li>ngrok</li>
-<li>微信开发者工具</li>
-<li>TBS：安卓x5内核</li>
-</ul>
-<p>// To be continued…</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/10/Vue：从Dialog理解v-model/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JK">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="大肥凯">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/10/Vue：从Dialog理解v-model/" itemprop="url">Vue：从Dialog理解v-model</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-10T16:10:51+08:00">
-                2018-05-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>对话框是在网页应用中广泛使用的组件，以类似于对话的形式增强与用户的交互。JS中最简单的对话框就是confirm，它通过返回值来确定用户的选择：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( confirm(<span class="string">'确定要退出吗？'</span>) ) &#123;</span><br><span class="line">    <span class="comment">// 执行退出页面的逻辑</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>缺点也很明显：</p>
-<ul>
-<li>比较简单，样式不能定制</li>
-<li>阻塞JS（内核）线程</li>
-</ul>
-<p>于是我们想到，可以自定义一个对话框。</p>
-<h2 id="在Vue中使用自定义对话框"><a href="#在Vue中使用自定义对话框" class="headerlink" title="在Vue中使用自定义对话框"></a>在Vue中使用自定义对话框</h2><p>参考element-ui的dialog，我写了一个简单的dialog组件”SimpleDialog”：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">// SimpleDialog.vue</span><br><span class="line">// 省略样式部分</span><br><span class="line"></span><br><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class=&quot;simple-dialog&quot; v-show=&quot;show&quot;&gt;</span><br><span class="line">    &lt;div class=&quot;dialog-backdrop&quot;&gt;&lt;/div&gt;&lt;!-- 遮罩 --&gt;</span><br><span class="line">    &lt;div class=&quot;dialog-content&quot;&gt;&lt;!-- 主体 --&gt;</span><br><span class="line">      &lt;div class=&quot;header&quot;&gt;</span><br><span class="line">        &lt;span class=&quot;title&quot;&gt;&#123;&#123; title &#125;&#125;&lt;/span&gt;</span><br><span class="line">        &lt;button class=&quot;close-button&quot; @click=&quot;onCancel&quot;&gt;✕&lt;/button&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">      &lt;div class=&quot;body&quot;&gt;</span><br><span class="line">        &lt;slot&gt;&lt;/slot&gt;&lt;!--用户自定义内容--&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">      &lt;div class=&quot;footer&quot;&gt;</span><br><span class="line">        &lt;button class=&quot;confirm-button&quot; @click=&quot;onConfirm&quot;&gt;确定&lt;/button&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;simple-dialog&apos;,</span><br><span class="line">  props: [&apos;show&apos;, &apos;title&apos;, &apos;content&apos;],</span><br><span class="line">  methods: &#123;</span><br><span class="line">    onCancel (event) &#123;</span><br><span class="line">      this.$emit(&apos;cancel&apos;);</span><br><span class="line">    &#125;,</span><br><span class="line">    onConfirm (event) &#123;</span><br><span class="line">      this.$emit(&apos;confirm&apos;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
-<p>在主页面中使用该组件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">// App.vue</span><br><span class="line"></span><br><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div id=&quot;app&quot;&gt;</span><br><span class="line">    &lt;button @click=&quot;isShowDialog = true&quot;&gt;打开对话框&lt;/button&gt;</span><br><span class="line">    &lt;p&gt;&#123;&#123; action &#125;&#125;&lt;/p&gt;</span><br><span class="line">    &lt;simple-dialog </span><br><span class="line">      :show=&quot;isShowDialog&quot;</span><br><span class="line">      title=&quot;提示&quot; </span><br><span class="line">      @cancel=&quot;onDialogCancel&quot; </span><br><span class="line">      @confirm=&quot;onDialogConfirm&quot;</span><br><span class="line">    &gt;</span><br><span class="line">      &lt;span class=&quot;u-content&quot;&gt;确定要退出吗？&lt;/span&gt;</span><br><span class="line">    &lt;/simple-dialog&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">import SimpleDialog from &apos;./SimpleDialog.vue&apos;;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  components: &#123;</span><br><span class="line">    SimpleDialog</span><br><span class="line">  &#125;,</span><br><span class="line">  name: &apos;app&apos;,</span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      isShowDialog: false,</span><br><span class="line">      action: &apos;无动作&apos;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    onDialogCancel () &#123;</span><br><span class="line">      this.action = &apos;点击了取消&apos;;</span><br><span class="line">      this.isShowDialog = false;</span><br><span class="line">    &#125;,</span><br><span class="line">    onDialogConfirm () &#123;</span><br><span class="line">      this.action = &apos;点击了确定&apos;;</span><br><span class="line">      this.isShowDialog = false;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
-<p>通过组件中的：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// SimpleDialog.vue</span><br><span class="line"></span><br><span class="line">&lt;div class=&quot;simple-dialog&quot; v-show=&quot;show&quot;&gt;</span><br><span class="line">    ...</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
-<p>可以看到，SimpleDialog内部使用show这一个props，来控制显示/隐藏。而真正控制它开关的是父组件App，因为它使用的时候，传入了自身data中的isShowDialog：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// App.vue</span><br><span class="line"></span><br><span class="line">&lt;simple-dialog </span><br><span class="line">      :show=&quot;isShowDialog&quot;</span><br><span class="line">      ...</span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure>
-<p>然而，这样就存在一个不足。我们印象中的对话框，点击【交叉按钮/确定按钮】后，一般都会先关闭对话框，再去回调用户（在这里指App这个父组件）的函数。但是，组件内部控制显隐的props是不可变的，即子组件内部并不能含有关闭自己的逻辑。所以上面的例子中，我们只能把本应该是对话框关闭自己的逻辑，转移到了父组件中：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// App.vue</span></span><br><span class="line"></span><br><span class="line">onDialogCancel () &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">this</span>.isShowDialog = <span class="literal">false</span>; <span class="comment">// 父组件写这一句来关掉对话框</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-<p>这样是不大好的做法，因为首先这会造成父组件的职责不单一；而且父组件很可能会忘记写这一句话，导致对话框没有关掉。</p>
-<p>其实解决方法就是：双向绑定，它具有以下两种方式（其实是类似的，理解好v-model就可以了）：</p>
-<ul>
-<li>使用v-model指令，进行双向绑定</li>
-<li>对属性使用sync修饰符，进行双向绑定</li>
-</ul>
-<h2 id="使用v-model改进"><a href="#使用v-model改进" class="headerlink" title="使用v-model改进"></a>使用v-model改进</h2><p>梳理一下，现在的问题是：子组件（SimpleDialog）关闭的逻辑只能写在父组件（App）中，但是这又违背了我们的直觉。像这种貌似父组件、子组件都可以改变的属性，其实就是“双向绑定”，在Vue中可以通过v-model这个指令来完成。v-model指令的基本使用方式是：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 写法1：v-model写法</span><br><span class="line">&lt;input v-model=&quot;name&quot;&gt;</span><br><span class="line"></span><br><span class="line">// 写法2（等价的写法，但不推荐）：与属性、事件名耦合的写法</span><br><span class="line">&lt;input :value=&quot;name&quot; @change=&quot;name = $event.target.value&quot;&gt;</span><br></pre></td></tr></table></figure>
-<p>同时它也可以使用在自定义组件中，只要组件内部接收一个”value”的props，以及在适当的时候发射”change”事件，就可以完美地完成双向绑定。当然，不一定就要叫”value”、”change”，子组件内部可以通过定义model.prop和model.event特性来决定它们的名字（稍后的例子会说明）。</p>
-<p><strong>重点是，虽然目标属性还是在父组件中改变，但是v-model为我们省去了这一步，我们不用自己来写，所以看起来就像是子组件自己改变了。这才是v-model最大的优点。</strong></p>
-<p>回到我们讨论的问题上，我们对子组件作一下修改：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  name: <span class="string">'simple-dialog'</span>,</span><br><span class="line">+  model: &#123;</span><br><span class="line">+    prop: <span class="string">'show'</span>,</span><br><span class="line">+    event: <span class="string">'close'</span></span><br><span class="line">+  &#125;,</span><br><span class="line">  props: [<span class="string">'show'</span>, <span class="string">'title'</span>, <span class="string">'content'</span>],</span><br><span class="line">  methods: &#123;</span><br><span class="line">    onCancel (event) &#123;</span><br><span class="line">+      <span class="keyword">this</span>.$emit(<span class="string">'close'</span>, <span class="literal">false</span>); <span class="comment">// 在这里间接关闭了对话框，给我们感觉是子组件自己关闭的</span></span><br><span class="line">      <span class="keyword">this</span>.$emit(<span class="string">'cancel'</span>); <span class="comment">// 随后触发用户回调</span></span><br><span class="line">    &#125;,</span><br><span class="line">    onConfirm (event) &#123;</span><br><span class="line">+      <span class="keyword">this</span>.$emit(<span class="string">'close'</span>, <span class="literal">false</span>); <span class="comment">// 同理。数据流：event('close') up =&gt; 父组件改变 =&gt; prop('show') down</span></span><br><span class="line">      <span class="keyword">this</span>.$emit(<span class="string">'confirm'</span>); <span class="comment">// 随后触发用户回调</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>同时也修改下父组件，不必再显式地修改”isShowDialog”：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&lt;simple-dialog </span><br><span class="line">-	 :show=<span class="string">"isShowDialog"</span></span><br><span class="line">+    v-model=<span class="string">"isShowDialog"</span></span><br><span class="line">    title=<span class="string">"提示"</span> </span><br><span class="line">    @cancel=<span class="string">"onDialogCancel"</span> </span><br><span class="line">    @confirm=<span class="string">"onDialogConfirm"</span></span><br><span class="line">&gt;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  components: &#123;</span><br><span class="line">    SimpleDialog</span><br><span class="line">  &#125;,</span><br><span class="line">  name: <span class="string">'app'</span>,</span><br><span class="line">  data () &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      isShowDialog: <span class="literal">false</span>,</span><br><span class="line">      action: <span class="string">'无动作'</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    onDialogCancel () &#123;</span><br><span class="line">      <span class="keyword">this</span>.action = <span class="string">'点击了取消'</span>;</span><br><span class="line">-      <span class="comment">// this.isShowDialog = false;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    onDialogConfirm () &#123;</span><br><span class="line">      <span class="keyword">this</span>.action = <span class="string">'点击了确定'</span>;</span><br><span class="line">-      <span class="comment">// this.isShowDialog = false;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这样一来，我们就从写法上，解决了我们的问题（虽然似乎本质上并没有解决什么）。</p>
-<p>总结一下v-model的特点：</p>
-<ul>
-<li>对数据进行双向绑定。</li>
-<li>父组件直接改变数据，然后传给子组件对应的的props，实现子组件的re-render。即”prop down”。</li>
-<li>子组件通过发射事件，间接地修改数据。即”event up”。</li>
-<li>最大的优点看起来只是少写了一些代码，但由于屏蔽了父组件监听的逻辑，而这个逻辑通常是没有必要手动去写的，所以实现了父组件职责的单一性；同时也保持了”容器组件与展示组件”的理念。</li>
-</ul>
-<h2 id="使用sync修饰符改进"><a href="#使用sync修饰符改进" class="headerlink" title="使用sync修饰符改进"></a>使用sync修饰符改进</h2><p>看过Vue官方文档的话应该知道，sync是v-model的升级版，因为v-model只能双向绑定某个属性，而sync可以对任意多个属性进行绑定。所以上面的思路也可以使用sync这种方式去实现。</p>
-<p>将v-model改为如下：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// App.vue</span></span><br><span class="line"></span><br><span class="line">&lt;simple-dialog</span><br><span class="line">-      v-model=<span class="string">"isShowDialog"</span></span><br><span class="line">+      :show.sync=<span class="string">"isShowDialog"</span></span><br></pre></td></tr></table></figure>
-<p>然后将event的名字改为”update:变量名”：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SimpleDialog.vue</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  methods: &#123;</span><br><span class="line">    onCancel (event) &#123;</span><br><span class="line">-      <span class="keyword">this</span>.$emit(<span class="string">'close'</span>, <span class="literal">false</span>)</span><br><span class="line">+      <span class="keyword">this</span>.$emit(<span class="string">'update:show'</span>, <span class="literal">false</span>)</span><br><span class="line">      <span class="keyword">this</span>.$emit(<span class="string">'cancel'</span>)</span><br><span class="line">    &#125;,</span><br><span class="line">    onConfirm (event) &#123;</span><br><span class="line">-      <span class="keyword">this</span>.$emit(<span class="string">'close'</span>, <span class="literal">false</span>)</span><br><span class="line">+      <span class="keyword">this</span>.$emit(<span class="string">'update:show'</span>, <span class="literal">false</span>)</span><br><span class="line">      <span class="keyword">this</span>.$emit(<span class="string">'confirm'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>其实就是在写法上，v-model与sync的小小区别，它们的作用是一样的，也没什么好说的了。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://cn.vuejs.org/v2/guide/components-custom-events.html#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BB%84%E4%BB%B6%E7%9A%84-v-model" target="_blank" rel="noopener">自定义组件的-v-model</a></p>
-<p><a href="https://cn.vuejs.org/v2/guide/components-custom-events.html#sync-%E4%BF%AE%E9%A5%B0%E7%AC%A6" target="_blank" rel="noopener">sync-修饰符</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/05/Currying与Uncurrying/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JK">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="大肥凯">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/05/Currying与Uncurrying/" itemprop="url">Currying & Uncurrying：函数的(去)柯里化</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-05T00:00:00+08:00">
-                2018-05-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Currying"><a href="#Currying" class="headerlink" title="Currying"></a>Currying</h2><p>​    所谓函数的柯里化（currying）是指，把一个“接受多个参数的函数”转换成“形参更少的函数”，即确认了部分参数。在JavaScript中，柯里化一般可以通过两种方式来实现：</p>
-<ul>
-<li>自己手写咯。</li>
-</ul>
-<ul>
-<li>更简单点，就借助Function.prototype.bind函数来实现。但是有需要注意的地方（稍后说）。</li>
-</ul>
-<p>比如下面的例子：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 简单的加法函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line">add(<span class="number">10</span>, <span class="number">15</span>); <span class="comment">// 25</span></span><br></pre></td></tr></table></figure>
-<p>现在函数接受2个参数，但假如我想要绑定第一个参数，实现一个“f(x) = 10 + x”的柯里化函数，那我可以这样做：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">addBy</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">b</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a + b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 或者更简单地，使用ES6的箭头函数（自己可以琢磨下</span></span><br><span class="line"><span class="keyword">var</span> addBy = <span class="function"><span class="params">a</span> =&gt;</span> b =&gt; a + b;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> add10 = addBy(<span class="number">10</span>); <span class="comment">// 这就实现了柯里化函数：add10</span></span><br><span class="line">add10(<span class="number">1</span>); <span class="comment">// 11</span></span><br></pre></td></tr></table></figure>
-<p>如果借助bind，就更简单了，因为可以直接在已有的add函数的基础上修改：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> add10 = add.bind(<span class="literal">null</span>, <span class="number">10</span>); <span class="comment">// bind的第一个参数是函数执行的this，这里无关紧要，传null</span></span><br><span class="line">add10(<span class="number">1</span>); <span class="comment">// 11</span></span><br></pre></td></tr></table></figure>
-<p>不过使用bind的方式进行柯里化，有两个需要注意的地方，其实是bind函数本身的注意点：</p>
-<ul>
-<li>第一个参数，始终是函数执行时内部的this，之后的参数才会一个接一个对应着形参。</li>
-<li>第一个参数不能重复绑定。</li>
-</ul>
-<p>我们可以进行验证：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`当前的this指向的是：<span class="subst">$&#123;<span class="keyword">this</span>&#125;</span>`</span>);</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> someObj = &#123; </span><br><span class="line">    toString() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'某个对象'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> add10 = add.bind(<span class="built_in">window</span>, <span class="number">10</span>); <span class="comment">// 柯里化后得到add10，内部this指向window</span></span><br><span class="line">add10(<span class="number">5</span>); <span class="comment">// window 15</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> sum15 = add10.bind(someObj, <span class="number">5</span>); <span class="comment">// 再进行柯里化。这里想要再次绑定someObj，是无效的。</span></span><br><span class="line">sum15(); <span class="comment">// 依然是window，然后返回15</span></span><br></pre></td></tr></table></figure>
-<h2 id="Uncurrying"><a href="#Uncurrying" class="headerlink" title="Uncurrying"></a>Uncurrying</h2><p>​    与之相对的概念是uncurrying，即“去柯里化”。顾名思义，就是把已经确定了的参数“脱离”开。一般用于<strong>对某些内置方法的借用</strong>。最常见的应用，就是让“类数组对象”（array-like object）使用数组的内置方法。所谓的类数组对象，就是满足以下条件的对象：</p>
-<ol>
-<li><p>具有length属性；</p>
-</li>
-<li><p><del>可以通过下标访问</del> 。比如：</p>
-<ul>
-<li>函数内部（执行期间）的arguments对象</li>
-<li>document.querySelectorAll()返回的NodeList对象</li>
-<li>document.getElementsByTagName()返回的HTMLCollection对象</li>
-<li>$(‘…’)返回的jQuery对象，等等……</li>
-</ul>
-<p>举个uncurrying的例子：对于arguments对象，我们假如想要截取前面的一部分，我们会这样使用slice方法：</p>
-</li>
-</ol>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">get_leftmost_3_elements</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>, <span class="number">0</span>, <span class="number">3</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">get_leftmost_3_elements(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>); <span class="comment">// [1,2,3]</span></span><br></pre></td></tr></table></figure>
-<p>​    arguments对象不是数组，因而没有slice方法，但是我们可以“借用”数组的slice方法，即通过apply，“强行”把slice方法作用在arguments上。而因为JS语言本身的鸭子类型（duck type）机制，slice可以完美地在arguments对象上作用，产生期望的结果。</p>
-<p>​    再举个相似的例子：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> array_like_object = &#123;</span><br><span class="line">    length: <span class="number">3</span>,</span><br><span class="line">    <span class="number">0</span>: <span class="number">100</span>,</span><br><span class="line">    <span class="number">1</span>: <span class="number">200</span>,</span><br><span class="line">    <span class="number">2</span>: <span class="number">300</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">[].slice.call(array_like_object, <span class="number">0</span>, <span class="number">2</span>); <span class="comment">// [100, 200]</span></span><br><span class="line">[].slice.call(array_like_object, <span class="number">2</span>); <span class="comment">// [300]</span></span><br></pre></td></tr></table></figure>
-<p>​    （1）如果，我想使用下面这种OOP的方式来调用：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">array_like_object.slice(<span class="number">0</span>, <span class="number">2</span>); <span class="comment">// 期望结果：[100, 200]</span></span><br><span class="line">array_like_object.slice(<span class="number">2</span>); <span class="comment">// 期望结果：[300]</span></span><br></pre></td></tr></table></figure>
-<p>​    我们就可以使用uncurrying去实现：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.prototype.slice = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">this</span>.hasOwnProperty(<span class="string">'length'</span>)) &#123;<span class="comment">// 如果不是类数组对象</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'不是类数组对象！'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// this就是调用slice的类数组对象，这里将它作为借用slice时的上下文</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Array</span>.prototype.slice.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">array_like_object.slice(<span class="number">0</span>, <span class="number">2</span>); <span class="comment">// [100, 200]</span></span><br><span class="line">array_like_object.slice(<span class="number">2</span>); <span class="comment">// [300]</span></span><br></pre></td></tr></table></figure>
-<p>​    （2）而如果，我想定义一个（全局的）slice函数，以过程式的方式来调用：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">slice(array_like_object, <span class="number">0</span>, <span class="number">2</span>); <span class="comment">// 期望结果：[100, 200]</span></span><br><span class="line">slice(array_like_object, <span class="number">2</span>); <span class="comment">// 期望结果：[300]</span></span><br></pre></td></tr></table></figure>
-<p>​    那么我就可以这样做：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 原理：把之后将要接受的第一个参数作为调用slice的context */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">slice</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> context = [].shift.call(<span class="built_in">arguments</span>); <span class="comment">// arguments[0]作为之后调用时的上下文</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Array</span>.prototype.slice.apply(context, <span class="built_in">arguments</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">slice(array_like_object, <span class="number">0</span>, <span class="number">2</span>); <span class="comment">// [100, 200]</span></span><br><span class="line">slice(array_like_object, <span class="number">2</span>); <span class="comment">// [300]</span></span><br></pre></td></tr></table></figure>
-<p>​    或者换一个思路，这样做：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> unboundSlice = <span class="built_in">Array</span>.prototype.slice;</span><br><span class="line"><span class="keyword">var</span> slice = <span class="built_in">Function</span>.prototype.call.bind(unboundSlice); <span class="comment">// 关键代码(有点难理解)，下面有说明</span></span><br><span class="line"></span><br><span class="line">slice(array_like_object, <span class="number">0</span>, <span class="number">2</span>); <span class="comment">// [100, 200]</span></span><br><span class="line">slice(array_like_object, <span class="number">2</span>); <span class="comment">// [300]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 原理：</span></span><br><span class="line"><span class="comment">* 正常情况下，我们需要：</span></span><br><span class="line"><span class="comment">*	var result = unboundSlice.call(array_like_object, 0, 2);</span></span><br><span class="line"><span class="comment">* 我们的目的是省略掉“.call”这部分。</span></span><br><span class="line"><span class="comment">* 重点来了：</span></span><br><span class="line"><span class="comment">* 本来unboundSlice是个函数，但函数也是个对象，</span></span><br><span class="line"><span class="comment">* 所以可以把unboundSlice看作是对象（上下文），call是它的实例方法，那么其实等同于：</span></span><br><span class="line"><span class="comment">*	call.call(array_like_object, 0, 2)</span></span><br><span class="line"><span class="comment">* 即：</span></span><br><span class="line"><span class="comment">*	var result = Function.prototype.call.call(array_like_object, 0, 2);</span></span><br><span class="line"><span class="comment">* 我们想返回一个函数，还不是马上调用，就换成bind即：</span></span><br><span class="line"><span class="comment">*	var slice = Function.prototype.call.bind(array_like_object, 0, 2);</span></span><br><span class="line"><span class="comment">* 这就是那句关键代码的由来。</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
-<p>​    最后，我们定义一个高阶函数：uncurrying，以总结去柯里化的两种方式：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 去柯里化</span></span><br><span class="line"><span class="comment">* @param &#123;fn&#125; 要进行去柯里化的函数</span></span><br><span class="line"><span class="comment">* @return 一个新的函数</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">uncurrying</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> context = [].shift.call(<span class="built_in">arguments</span>);</span><br><span class="line">        <span class="keyword">return</span> fn.apply(context, <span class="built_in">arguments</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 或者</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">uncurrying</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> call = <span class="built_in">Function</span>.prototype.call;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> call.apply(fn, <span class="built_in">arguments</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> array_like_object = &#123; <span class="attr">length</span>: <span class="number">3</span>, <span class="number">0</span>: <span class="string">'zero'</span>, <span class="number">1</span>: <span class="string">'one'</span>, <span class="number">2</span>: <span class="string">'two'</span> &#125;;</span><br><span class="line"><span class="keyword">var</span> slice = uncurrying( <span class="built_in">Array</span>.prototype.slice );</span><br><span class="line">slice(array_like_object, <span class="number">2</span>); <span class="comment">// ['two']</span></span><br></pre></td></tr></table></figure>
-<h2 id="后语"><a href="#后语" class="headerlink" title="后语"></a>后语</h2><p>​    函数的柯里化、去柯里化可以说是进阶的内容，可以帮助我们更好地理解JS中bind／call／apply方法的作用，以及应用到一些重要的场合，是非常值得掌握的知识点。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>曾探《JavaScript设计模式与开发实践》：Chapter3.2.4 高级函数的其他应用</p>
-<p><a href="https://www.smashingmagazine.com/2014/01/understanding-javascript-function-prototype-bind/" target="_blank" rel="noopener">Understanding JavaScript Bind () — Smashing Magazine</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1745,7 +1861,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">32</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1758,7 +1874,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-count">67</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>

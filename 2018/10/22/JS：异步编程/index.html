@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="异步,Promise,Generator,async/await," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="例子现提供两个接口：  getToken()：获取token getProductList(token)：查询商品列表  为了方便我们直接在前端设置假数据： 1234567891011const TOKEN = &apos;f23iuf_uy2fujvj9bjsf89b9f8v9vw_e&apos;const DATA = [  &amp;#123;    id: &apos;1&apos;,    name: &apos;商品1&apos;  &amp;#125;,">
+<meta name="keywords" content="异步,Promise,Generator,async&#x2F;await">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS：异步编程">
+<meta property="og:url" content="http://yoursite.com/2018/10/22/JS：异步编程/index.html">
+<meta property="og:site_name" content="大肥凯">
+<meta property="og:description" content="例子现提供两个接口：  getToken()：获取token getProductList(token)：查询商品列表  为了方便我们直接在前端设置假数据： 1234567891011const TOKEN = &apos;f23iuf_uy2fujvj9bjsf89b9f8v9vw_e&apos;const DATA = [  &amp;#123;    id: &apos;1&apos;,    name: &apos;商品1&apos;  &amp;#125;,">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-10-23T01:30:03.264Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JS：异步编程">
+<meta name="twitter:description" content="例子现提供两个接口：  getToken()：获取token getProductList(token)：查询商品列表  为了方便我们直接在前端设置假数据： 1234567891011const TOKEN = &apos;f23iuf_uy2fujvj9bjsf89b9f8v9vw_e&apos;const DATA = [  &amp;#123;    id: &apos;1&apos;,    name: &apos;商品1&apos;  &amp;#125;,">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/10/22/JS：异步编程/"/>
+
+
+
+
+
+  <title>JS：异步编程 | 大肥凯</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">大肥凯</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/22/JS：异步编程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">JS：异步编程</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-22T09:00:00+08:00">
+                2018-10-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>现提供两个接口：</p>
+<ul>
+<li>getToken()：获取token</li>
+<li>getProductList(token)：查询商品列表</li>
+</ul>
+<p>为了方便我们直接在前端设置假数据：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> TOKEN = <span class="string">'f23iuf_uy2fujvj9bjsf89b9f8v9vw_e'</span></span><br><span class="line"><span class="keyword">const</span> DATA = [</span><br><span class="line">  &#123;</span><br><span class="line">    id: <span class="string">'1'</span>,</span><br><span class="line">    name: <span class="string">'商品1'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    id: <span class="string">'2'</span>,</span><br><span class="line">    name: <span class="string">'商品2'</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>然后一开始接口定义是类似于Node的error-first的回调形式：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getToken</span> (<span class="params">fn</span>) </span>&#123;</span><br><span class="line">  setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    fn(<span class="literal">null</span>, TOKEN)</span><br><span class="line">  &#125;, <span class="built_in">Math</span>.random() * <span class="number">5</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getProductList</span> (<span class="params">token, fn</span>) </span>&#123;</span><br><span class="line">  setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    fn(<span class="literal">null</span>, DATA)</span><br><span class="line">  &#125;, <span class="built_in">Math</span>.random() * <span class="number">5</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="异步调用方式"><a href="#异步调用方式" class="headerlink" title="异步调用方式"></a>异步调用方式</h2><h3 id="1-回调"><a href="#1-回调" class="headerlink" title="1. 回调"></a>1. 回调</h3><p>嵌套太深形成callback hell：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">getToken(<span class="function">(<span class="params">error, token</span>) =&gt;</span> &#123;</span><br><span class="line">  getProductList(token, (error, productList) =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(productList)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="2-Promise"><a href="#2-Promise" class="headerlink" title="2. Promise"></a>2. Promise</h3><p>ES6 Promise相对于回调，是一种全新的异步调用方式(Promise A+规范)，它解决了callback hell的问题，将嵌套调用的代码转化为链式调用。</p>
+<p>但Promise也带来了一些缺点如：写法略繁琐、API标记多但语义不够清晰等。对于开头例子，首先需要将error-first风格API转换成Promise风格，为此我们设计一个“promisify”方法：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">promisify</span> (<span class="params">fn</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">...args</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">let</span> params = <span class="keyword">new</span> <span class="built_in">Array</span>(fn.length - <span class="number">1</span>)</span><br><span class="line">      <span class="comment">// 只取n-1个参数</span></span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; fn.length - <span class="number">1</span>; ++i) &#123;</span><br><span class="line">        params[i] = args[i]</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 调用。在回调函数中将结果传给Promise</span></span><br><span class="line">      fn(...params, (err, data) =&gt; &#123;</span><br><span class="line">        <span class="keyword">if</span> (err) &#123;</span><br><span class="line">          reject(err)</span><br><span class="line">          <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">        resolve(data)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面是粗略写法，更规范的定义请参考：异步封装库bludbird的promisify，或Node.js v8.0.0版本新增的util.promisify。然后利用该工具方法，重新定义接口：函数以“Async”结尾，表示调用后返回一个Promise(参考bluebird的promisifyAll方法的理念)：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> getTokenAsync = promisify(getToken)</span><br><span class="line"><span class="keyword">let</span> getProductListAsync = promisify(getProductList)</span><br></pre></td></tr></table></figure>
+<p>然后是调用接口的代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">getTokenAsync()</span><br><span class="line">.then(</span><br><span class="line">  token =&gt; getProductListAsync(token),</span><br><span class="line">  <span class="literal">null</span></span><br><span class="line">)</span><br><span class="line">.then(</span><br><span class="line">  <span class="built_in">console</span>.log,</span><br><span class="line">  <span class="literal">null</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="3-Generator"><a href="#3-Generator" class="headerlink" title="3. Generator"></a>3. Generator</h3><p>Generator与Iterator拥有共同的方法：next，但其最大的作用不是遍历，而是通过next和yield这两个关键字，将程序的控制流在两个时空不断转移，因此可以用作异步调用的一种模式，具体来说是将异步代码转化为同步调用的方式(体现在Generator Function中)。但是，它总是需要一个执行器(executor)，来接管异步流程的部分。即它的组成有：</p>
+<ul>
+<li>Generator Function(以下成为GF)：业务逻辑，写法上类似于同步代码</li>
+<li>executor：接管异步部分</li>
+</ul>
+<p>基于刚才定义的Promise风格的接口，我们为其写一个GF：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> * <span class="title">fetchProductList</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> token = <span class="keyword">yield</span> getTokenAsync()</span><br><span class="line">  <span class="keyword">let</span> productList = <span class="keyword">yield</span> getProductListAsync(token)</span><br><span class="line">  <span class="built_in">console</span>.log(productList)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后是executor部分：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> generator = fetchProductList()</span><br><span class="line"></span><br><span class="line">generator.next().value</span><br><span class="line">.then(</span><br><span class="line">  token =&gt; generator.next(token).value</span><br><span class="line">)</span><br><span class="line">.then(</span><br><span class="line">  productList =&gt; generator.next(productList)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>但我们发现，实际上executor的工作是重复的：每次获取一个Promise，将其resolve之后，把结果返回给GF，周而复始直到没有Promise可取(即在GF中遇到显式或隐式的return语句)。于是“自动执行器”应运而生，由于是迭代(通常所说的迭代，包括循环和递归，然而你会发现在这里只能是递归，因为循环在异步中不管用)地处理每个yield的值，所以，它<u>基于一个前提，就是异步函数返回统一的接口形式</u>。而这些形式，包括但不限于：</p>
+<ul>
+<li>Thunk函数</li>
+<li>Promise</li>
+</ul>
+<p>Thunk函数又是一个额外但有趣的知识点，阮一峰老师在《ES6标准入门》中有着非常好的介绍。说回Promise，上述的promisify转化方法，其实就是为了将error-first接口转化为统一的Promise形式，才能让自动执行器处理。</p>
+<p>自动执行器的一种粗略实现：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run</span> (<span class="params">generator</span>) </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">next</span> (<span class="params">param</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> &#123; done, value &#125; = generator.next(param)</span><br><span class="line">    <span class="keyword">if</span> (done) &#123;</span><br><span class="line">      generator.next(value)</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 此时(根据约定)，value是一个Promise</span></span><br><span class="line">    value.then(</span><br><span class="line">      resolvedResult =&gt; &#123;</span><br><span class="line">        next(resolvedResult) <span class="comment">// 递归</span></span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="literal">null</span></span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  next()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用该executor：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run(fetchProductList())</span><br></pre></td></tr></table></figure>
+<p>率先实现自动执行器的库当属TJ的<a href="https://github.com/tj/co" target="_blank" rel="noopener">co</a>。</p>
+<h3 id="4-async-await"><a href="#4-async-await" class="headerlink" title="4. async/await"></a>4. async/await</h3><h4 id="4-1-本质"><a href="#4-1-本质" class="headerlink" title="4.1 本质"></a>4.1 本质</h4><p>async/await实际上实现了Generator的Promise风格的自动执行器，即内置了一个类似于上一个例子中的run的执行器。与Generator/yield相比，它在语法上的特点是：</p>
+<ul>
+<li>Generator Function替换成Async Function(*替换成async)</li>
+<li>yield替换成await</li>
+</ul>
+<p>async意味着函数涉及到异步操作，await表示等待某个具体的异步操作，可见比Generator有着更好的语义。它本质上<u>是一个Promise，在这个大的Promise中它resolve了N个Promise</u>。它的结构可以描述为：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// E为参数的类型，T为return的对象的类型</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 异步函数返回一个Promise</span></span><br><span class="line"><span class="keyword">interface</span> AsyncFunction&lt;E, T&gt; &#123;</span><br><span class="line">  (firstParam: E): <span class="built_in">Promise</span>&lt;T&gt;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 普通函数</span></span><br><span class="line"><span class="keyword">interface</span> Function&lt;E, T&gt; &#123;</span><br><span class="line">  (param: E): T</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="4-2-理解"><a href="#4-2-理解" class="headerlink" title="4.2 理解"></a>4.2 理解</h4><p>还是那个例子，经过简单的关键字转换后，可以得到一个Async Function：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">fetchProductList</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> token = <span class="keyword">await</span> getTokenAsync()</span><br><span class="line">  <span class="keyword">let</span> productList = <span class="keyword">await</span> getProductListAsync(token)</span><br><span class="line">  <span class="built_in">console</span>.log(productList)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>要执行该async function，和普通函数调用无异，就是简单的一句：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fetchProductList()</span><br></pre></td></tr></table></figure>
+<p>然而，async function是一个大Promise，那如果我们想要获取这个大Promise的结果，还是要对其进行resolve：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">fetchProductList().then(</span><br><span class="line">  <span class="built_in">console</span>.log,</span><br><span class="line">  <span class="literal">null</span></span><br><span class="line">)</span><br><span class="line"><span class="comment">// fetchProductList函数无return语句，是隐式的"return undefined"，所以打印出：undefined</span></span><br></pre></td></tr></table></figure>
+<p>看起来有点繁琐，因为结果顶层Promise还是要使用promise的一般语法来resolve，除非这个Promise又包含在别的async function中才能使用await将其resolve。针对这个情况，<a href="https://github.com/standard-things/esm#readme" target="_blank" rel="noopener">esm库</a>支持了顶层await。</p>
+<h4 id="4-3-异步场景"><a href="#4-3-异步场景" class="headerlink" title="4.3 异步场景"></a>4.3 异步场景</h4><p>异步任务控制流，需要从两个方面去区分/选择：</p>
+<ol>
+<li><p>任务是并行的还是有序的</p>
+</li>
+<li><p>结果顺序是否稳定</p>
+</li>
+</ol>
+<p>例如有以下Promise风格的接口，模拟一个进行网络请求的任务，等待时间不确定：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getResultAsync</span> (<span class="params">n</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> waitTime = <span class="built_in">Math</span>.random() * <span class="number">1000</span> <span class="comment">// 等待1秒以内</span></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      resolve(&#123;</span><br><span class="line">        data: n</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;, waitTime)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么对于业务来说有四种场景可以选用：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 过程有序，结果有序</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">runOrderly</span> (<span class="params">params</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> results = []</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> n <span class="keyword">of</span> params) &#123;</span><br><span class="line">    <span class="keyword">const</span> result = <span class="keyword">await</span> getResultAsync(n) <span class="comment">// 解释(1)</span></span><br><span class="line">    results.push(result)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">console</span>.log(results)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 过程并行，结果随意(不稳定)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">runRandomly</span> (<span class="params">params</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> results = []</span><br><span class="line">  params.forEach(<span class="keyword">async</span> n =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> result = <span class="keyword">await</span> getResultAsync(n)</span><br><span class="line">    results.push(result)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (results.length === params.length) &#123; <span class="comment">// 判断是否所有任务都结束了</span></span><br><span class="line">      <span class="built_in">console</span>.log(results)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 过程并行，结果有序：</span></span><br><span class="line"><span class="comment"> * 使用map来并行执行，然后for循环顺序await来获取结果</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">run1</span> (<span class="params">params</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> promises = params.map(getResultAsync)</span><br><span class="line">  <span class="keyword">const</span> results = []</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> promise <span class="keyword">of</span> promises) &#123;</span><br><span class="line">    <span class="keyword">const</span> result = <span class="keyword">await</span> promise <span class="comment">// 解释(2)</span></span><br><span class="line">    results.push(result)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">console</span>.log(results)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 过程并行，结果有序</span></span><br><span class="line"><span class="comment"> * 使用Promise.all</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">run2</span> (<span class="params">params</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> results = <span class="keyword">await</span> <span class="built_in">Promise</span>.all(params.map(getResultAsync))</span><br><span class="line">  <span class="built_in">console</span>.log(results)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面我标出了两个使用了await的地方需要解释：</p>
+<p>（1）该await出现在for循环中、紧跟着异步函数，所以其效果是等待异步函数执行并取出结果，对于整个循环而言，后面的任务都在等待着前面的，所以过程是顺序的。</p>
+<p>（2）这次await出现之前，所有异步任务已经(作为map函数回调)被执行了，所以过程是并行的。此await的效果只是等待并获取返回值，所以在结果上表现为顺序/稳定。</p>
+<p>另外可以看到使用Promise.all这个API很方便，它的特点是：</p>
+<ul>
+<li>接收Promise数组，返回一个Promise(resolve的结果是传入Promise数组全被resolve的结果)</li>
+<li>返回一个Promise</li>
+</ul>
+<p>所以可以这样实现：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">PromiseAll</span> (<span class="params">promises</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> results = []</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> promise <span class="keyword">of</span> promises) &#123;</span><br><span class="line">    <span class="keyword">const</span> result = <span class="keyword">await</span> promise</span><br><span class="line">    results.push(result)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> results</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>可见回调之后的异步编程模式，核心都是Promise。所以下次博客的内容是探究并实现一个Promise。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/异步/" rel="tag"># 异步</a>
+          
+            <a href="/tags/Promise/" rel="tag"># Promise</a>
+          
+            <a href="/tags/Generator/" rel="tag"># Generator</a>
+          
+            <a href="/tags/async-await/" rel="tag"># async/await</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/15/Vue：列表key的作用/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/10/22/JS：探究Promise/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">JK</p>
+              <p class="site-description motion-element" itemprop="description">分享技术心得</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">67</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#例子"><span class="nav-number">1.</span> <span class="nav-text">例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#异步调用方式"><span class="nav-number">2.</span> <span class="nav-text">异步调用方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-回调"><span class="nav-number">2.1.</span> <span class="nav-text">1. 回调</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Promise"><span class="nav-number">2.2.</span> <span class="nav-text">2. Promise</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Generator"><span class="nav-number">2.3.</span> <span class="nav-text">3. Generator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-async-await"><span class="nav-number">2.4.</span> <span class="nav-text">4. async/await</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-本质"><span class="nav-number">2.4.1.</span> <span class="nav-text">4.1 本质</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-理解"><span class="nav-number">2.4.2.</span> <span class="nav-text">4.2 理解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-异步场景"><span class="nav-number">2.4.3.</span> <span class="nav-text">4.3 异步场景</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">JK</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

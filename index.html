@@ -233,7 +233,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/11/JS：异步编程/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/22/JS：探究Generator/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="JK">
@@ -252,7 +252,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/10/11/JS：异步编程/" itemprop="url">Untitled</a></h1>
+                <a class="post-title-link" href="/2018/10/22/JS：探究Generator/" itemprop="url">Untitled</a></h1>
         
 
         <div class="post-meta">
@@ -264,8 +264,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-11T08:56:34+08:00">
-                2018-10-11
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-22T10:19:26+08:00">
+                2018-10-22
               </time>
             
 
@@ -304,18 +304,7 @@
       
         
           
-            <p>代码：/实验代码/async/…</p>
-<ul>
-<li>callback hell<ul>
-<li>缺点</li>
-</ul>
-</li>
-<li>Promise<ul>
-<li>链式调用与API</li>
-<li>实现一个Promise</li>
-</ul>
-</li>
-<li><p>Generator（与Generator Function）</p>
+            <p>Generator（与Generator Function）</p>
 <ul>
 <li>对yield/return的理解；传参(next、return、throw)与返回值</li>
 <li>异常处理</li>
@@ -326,18 +315,438 @@
 <li>异步任务控制流</li>
 <li>实现一个co模块（用generator模拟async/await）</li>
 </ul>
-</li>
-<li><p>async/await</p>
-<ul>
-<li>理解async函数：Generator语法糖，但更规范：本质上是resolve了内部所有Promise的一个大Promise</li>
-<li>异常处理</li>
-<li>异步任务控制流，尤其对于循环</li>
-<li>模拟实现一个async/await（利用Generator）（同上）</li>
-<li>直接调用最外层Promise就可以执行。但若想取其返回值，需要then/再嵌套一层async function，@std/esm实现了在普通函数中直接使用await。</li>
-</ul>
-</li>
-</ul>
 
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/22/JS：探究Promise/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/22/JS：探究Promise/" itemprop="url">Untitled</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-22T09:40:08+08:00">
+                2018-10-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="认识Promise"><a href="#认识Promise" class="headerlink" title="认识Promise"></a>认识Promise</h2><h2 id="实现Promise"><a href="#实现Promise" class="headerlink" title="实现Promise"></a>实现Promise</h2>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/22/JS：异步编程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/22/JS：异步编程/" itemprop="url">JS：异步编程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-22T09:00:00+08:00">
+                2018-10-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>现提供两个接口：</p>
+<ul>
+<li>getToken()：获取token</li>
+<li>getProductList(token)：查询商品列表</li>
+</ul>
+<p>为了方便我们直接在前端设置假数据：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> TOKEN = <span class="string">'f23iuf_uy2fujvj9bjsf89b9f8v9vw_e'</span></span><br><span class="line"><span class="keyword">const</span> DATA = [</span><br><span class="line">  &#123;</span><br><span class="line">    id: <span class="string">'1'</span>,</span><br><span class="line">    name: <span class="string">'商品1'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    id: <span class="string">'2'</span>,</span><br><span class="line">    name: <span class="string">'商品2'</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>然后一开始接口定义是类似于Node的error-first的回调形式：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getToken</span> (<span class="params">fn</span>) </span>&#123;</span><br><span class="line">  setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    fn(<span class="literal">null</span>, TOKEN)</span><br><span class="line">  &#125;, <span class="built_in">Math</span>.random() * <span class="number">5</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getProductList</span> (<span class="params">token, fn</span>) </span>&#123;</span><br><span class="line">  setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    fn(<span class="literal">null</span>, DATA)</span><br><span class="line">  &#125;, <span class="built_in">Math</span>.random() * <span class="number">5</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="异步调用方式"><a href="#异步调用方式" class="headerlink" title="异步调用方式"></a>异步调用方式</h2><h3 id="1-回调"><a href="#1-回调" class="headerlink" title="1. 回调"></a>1. 回调</h3><p>嵌套太深形成callback hell：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">getToken(<span class="function">(<span class="params">error, token</span>) =&gt;</span> &#123;</span><br><span class="line">  getProductList(token, (error, productList) =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(productList)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="2-Promise"><a href="#2-Promise" class="headerlink" title="2. Promise"></a>2. Promise</h3><p>ES6 Promise相对于回调，是一种全新的异步调用方式(Promise A+规范)，它解决了callback hell的问题，将嵌套调用的代码转化为链式调用。</p>
+<p>但Promise也带来了一些缺点如：写法略繁琐、API标记多但语义不够清晰等。对于开头例子，首先需要将error-first风格API转换成Promise风格，为此我们设计一个“promisify”方法：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">promisify</span> (<span class="params">fn</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">...args</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">let</span> params = <span class="keyword">new</span> <span class="built_in">Array</span>(fn.length - <span class="number">1</span>)</span><br><span class="line">      <span class="comment">// 只取n-1个参数</span></span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; fn.length - <span class="number">1</span>; ++i) &#123;</span><br><span class="line">        params[i] = args[i]</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 调用。在回调函数中将结果传给Promise</span></span><br><span class="line">      fn(...params, (err, data) =&gt; &#123;</span><br><span class="line">        <span class="keyword">if</span> (err) &#123;</span><br><span class="line">          reject(err)</span><br><span class="line">          <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">        resolve(data)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面是粗略写法，更规范的定义请参考：异步封装库bludbird的promisify，或Node.js v8.0.0版本新增的util.promisify。然后利用该工具方法，重新定义接口：函数以“Async”结尾，表示调用后返回一个Promise(参考bluebird的promisifyAll方法的理念)：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> getTokenAsync = promisify(getToken)</span><br><span class="line"><span class="keyword">let</span> getProductListAsync = promisify(getProductList)</span><br></pre></td></tr></table></figure>
+<p>然后是调用接口的代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">getTokenAsync()</span><br><span class="line">.then(</span><br><span class="line">  token =&gt; getProductListAsync(token),</span><br><span class="line">  <span class="literal">null</span></span><br><span class="line">)</span><br><span class="line">.then(</span><br><span class="line">  <span class="built_in">console</span>.log,</span><br><span class="line">  <span class="literal">null</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="3-Generator"><a href="#3-Generator" class="headerlink" title="3. Generator"></a>3. Generator</h3><p>Generator与Iterator拥有共同的方法：next，但其最大的作用不是遍历，而是通过next和yield这两个关键字，将程序的控制流在两个时空不断转移，因此可以用作异步调用的一种模式，具体来说是将异步代码转化为同步调用的方式(体现在Generator Function中)。但是，它总是需要一个执行器(executor)，来接管异步流程的部分。即它的组成有：</p>
+<ul>
+<li>Generator Function(以下成为GF)：业务逻辑，写法上类似于同步代码</li>
+<li>executor：接管异步部分</li>
+</ul>
+<p>基于刚才定义的Promise风格的接口，我们为其写一个GF：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> * <span class="title">fetchProductList</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> token = <span class="keyword">yield</span> getTokenAsync()</span><br><span class="line">  <span class="keyword">let</span> productList = <span class="keyword">yield</span> getProductListAsync(token)</span><br><span class="line">  <span class="built_in">console</span>.log(productList)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后是executor部分：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> generator = fetchProductList()</span><br><span class="line"></span><br><span class="line">generator.next().value</span><br><span class="line">.then(</span><br><span class="line">  token =&gt; generator.next(token).value</span><br><span class="line">)</span><br><span class="line">.then(</span><br><span class="line">  productList =&gt; generator.next(productList)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>但我们发现，实际上executor的工作是重复的：每次获取一个Promise，将其resolve之后，把结果返回给GF，周而复始直到没有Promise可取(即在GF中遇到显式或隐式的return语句)。于是“自动执行器”应运而生，由于是迭代(通常所说的迭代，包括循环和递归，然而你会发现在这里只能是递归，因为循环在异步中不管用)地处理每个yield的值，所以，它<u>基于一个前提，就是异步函数返回统一的接口形式</u>。而这些形式，包括但不限于：</p>
+<ul>
+<li>Thunk函数</li>
+<li>Promise</li>
+</ul>
+<p>Thunk函数又是一个额外但有趣的知识点，阮一峰老师在《ES6标准入门》中有着非常好的介绍。说回Promise，上述的promisify转化方法，其实就是为了将error-first接口转化为统一的Promise形式，才能让自动执行器处理。</p>
+<p>自动执行器的一种粗略实现：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run</span> (<span class="params">generator</span>) </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">next</span> (<span class="params">param</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> &#123; done, value &#125; = generator.next(param)</span><br><span class="line">    <span class="keyword">if</span> (done) &#123;</span><br><span class="line">      generator.next(value)</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 此时(根据约定)，value是一个Promise</span></span><br><span class="line">    value.then(</span><br><span class="line">      resolvedResult =&gt; &#123;</span><br><span class="line">        next(resolvedResult) <span class="comment">// 递归</span></span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="literal">null</span></span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  next()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用该executor：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run(fetchProductList())</span><br></pre></td></tr></table></figure>
+<p>率先实现自动执行器的库当属TJ的<a href="https://github.com/tj/co" target="_blank" rel="noopener">co</a>。</p>
+<h3 id="4-async-await"><a href="#4-async-await" class="headerlink" title="4. async/await"></a>4. async/await</h3><h4 id="4-1-本质"><a href="#4-1-本质" class="headerlink" title="4.1 本质"></a>4.1 本质</h4><p>async/await实际上实现了Generator的Promise风格的自动执行器，即内置了一个类似于上一个例子中的run的执行器。与Generator/yield相比，它在语法上的特点是：</p>
+<ul>
+<li>Generator Function替换成Async Function(*替换成async)</li>
+<li>yield替换成await</li>
+</ul>
+<p>async意味着函数涉及到异步操作，await表示等待某个具体的异步操作，可见比Generator有着更好的语义。它本质上<u>是一个Promise，在这个大的Promise中它resolve了N个Promise</u>。它的结构可以描述为：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// E为参数的类型，T为return的对象的类型</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 异步函数返回一个Promise</span></span><br><span class="line"><span class="keyword">interface</span> AsyncFunction&lt;E, T&gt; &#123;</span><br><span class="line">  (firstParam: E): <span class="built_in">Promise</span>&lt;T&gt;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 普通函数</span></span><br><span class="line"><span class="keyword">interface</span> Function&lt;E, T&gt; &#123;</span><br><span class="line">  (param: E): T</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="4-2-理解"><a href="#4-2-理解" class="headerlink" title="4.2 理解"></a>4.2 理解</h4><p>还是那个例子，经过简单的关键字转换后，可以得到一个Async Function：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">fetchProductList</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> token = <span class="keyword">await</span> getTokenAsync()</span><br><span class="line">  <span class="keyword">let</span> productList = <span class="keyword">await</span> getProductListAsync(token)</span><br><span class="line">  <span class="built_in">console</span>.log(productList)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>要执行该async function，和普通函数调用无异，就是简单的一句：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fetchProductList()</span><br></pre></td></tr></table></figure>
+<p>然而，async function是一个大Promise，那如果我们想要获取这个大Promise的结果，还是要对其进行resolve：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">fetchProductList().then(</span><br><span class="line">  <span class="built_in">console</span>.log,</span><br><span class="line">  <span class="literal">null</span></span><br><span class="line">)</span><br><span class="line"><span class="comment">// fetchProductList函数无return语句，是隐式的"return undefined"，所以打印出：undefined</span></span><br></pre></td></tr></table></figure>
+<p>看起来有点繁琐，因为结果顶层Promise还是要使用promise的一般语法来resolve，除非这个Promise又包含在别的async function中才能使用await将其resolve。针对这个情况，<a href="https://github.com/standard-things/esm#readme" target="_blank" rel="noopener">esm库</a>支持了顶层await。</p>
+<h4 id="4-3-异步场景"><a href="#4-3-异步场景" class="headerlink" title="4.3 异步场景"></a>4.3 异步场景</h4><p>异步任务控制流，需要从两个方面去区分/选择：</p>
+<ol>
+<li><p>任务是并行的还是有序的</p>
+</li>
+<li><p>结果顺序是否稳定</p>
+</li>
+</ol>
+<p>例如有以下Promise风格的接口，模拟一个进行网络请求的任务，等待时间不确定：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getResultAsync</span> (<span class="params">n</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> waitTime = <span class="built_in">Math</span>.random() * <span class="number">1000</span> <span class="comment">// 等待1秒以内</span></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      resolve(&#123;</span><br><span class="line">        data: n</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;, waitTime)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么对于业务来说有四种场景可以选用：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 过程有序，结果有序</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">runOrderly</span> (<span class="params">params</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> results = []</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> n <span class="keyword">of</span> params) &#123;</span><br><span class="line">    <span class="keyword">const</span> result = <span class="keyword">await</span> getResultAsync(n) <span class="comment">// 解释(1)</span></span><br><span class="line">    results.push(result)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">console</span>.log(results)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 过程并行，结果随意(不稳定)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">runRandomly</span> (<span class="params">params</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> results = []</span><br><span class="line">  params.forEach(<span class="keyword">async</span> n =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> result = <span class="keyword">await</span> getResultAsync(n)</span><br><span class="line">    results.push(result)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (results.length === params.length) &#123; <span class="comment">// 判断是否所有任务都结束了</span></span><br><span class="line">      <span class="built_in">console</span>.log(results)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 过程并行，结果有序：</span></span><br><span class="line"><span class="comment"> * 使用map来并行执行，然后for循环顺序await来获取结果</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">run1</span> (<span class="params">params</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> promises = params.map(getResultAsync)</span><br><span class="line">  <span class="keyword">const</span> results = []</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> promise <span class="keyword">of</span> promises) &#123;</span><br><span class="line">    <span class="keyword">const</span> result = <span class="keyword">await</span> promise <span class="comment">// 解释(2)</span></span><br><span class="line">    results.push(result)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">console</span>.log(results)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 过程并行，结果有序</span></span><br><span class="line"><span class="comment"> * 使用Promise.all</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">run2</span> (<span class="params">params</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> results = <span class="keyword">await</span> <span class="built_in">Promise</span>.all(params.map(getResultAsync))</span><br><span class="line">  <span class="built_in">console</span>.log(results)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面我标出了两个使用了await的地方需要解释：</p>
+<p>（1）该await出现在for循环中、紧跟着异步函数，所以其效果是等待异步函数执行并取出结果，对于整个循环而言，后面的任务都在等待着前面的，所以过程是顺序的。</p>
+<p>（2）这次await出现之前，所有异步任务已经(作为map函数回调)被执行了，所以过程是并行的。此await的效果只是等待并获取返回值，所以在结果上表现为顺序/稳定。</p>
+<p>另外可以看到使用Promise.all这个API很方便，它的特点是：</p>
+<ul>
+<li>接收Promise数组，返回一个Promise(resolve的结果是传入Promise数组全被resolve的结果)</li>
+<li>返回一个Promise</li>
+</ul>
+<p>所以可以这样实现：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">PromiseAll</span> (<span class="params">promises</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> results = []</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> promise <span class="keyword">of</span> promises) &#123;</span><br><span class="line">    <span class="keyword">const</span> result = <span class="keyword">await</span> promise</span><br><span class="line">    results.push(result)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> results</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>可见回调之后的异步编程模式，核心都是Promise。所以下次博客的内容是探究并实现一个Promise。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/15/Vue：列表key的作用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大肥凯">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/15/Vue：列表key的作用/" itemprop="url">Untitled</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-15T09:56:08+08:00">
+                2018-10-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
           
         
       
@@ -1267,570 +1676,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/05/Iterable：可迭代对象/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JK">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="大肥凯">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/05/Iterable：可迭代对象/" itemprop="url">Untitled</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-05T20:05:03+08:00">
-                2018-08-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>感谢<a href="http://es6katas.org/" target="_blank" rel="noopener">ES6 Kata</a>，它让我觉得是时候对Iterator、Generator、Iterable等知识点作出总结了。</p>
-<h2 id="1-前置知识"><a href="#1-前置知识" class="headerlink" title="1. 前置知识"></a>1. 前置知识</h2><p>首先要知道Iterator（迭代器）与Generator（生成器）这两个概念。迭代器和生成器，都是nextable（有next方法的对象）。</p>
-<h3 id="1-1-迭代器"><a href="#1-1-迭代器" class="headerlink" title="1.1 迭代器"></a>1.1 迭代器</h3><p>对于Iterator知识体系，可以参考<a href="https://babeljs.io/docs/en/learn/#iterators-forof" target="_blank" rel="noopener">Babel | Learning ES6 | Iterators + For…of</a>：</p>
-<ol>
-<li>IteratorResult，表示迭代器的结果。有done（表示是否完结）与value（表示当前值）两个属性：</li>
-</ol>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> IteratorResult &#123;</span><br><span class="line">    done: <span class="built_in">boolean</span>;</span><br><span class="line">    value: <span class="built_in">any</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol start="2">
-<li>Iterator，表示迭代器。有next方法，调用后返回一个迭代器结果：</li>
-</ol>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Iterator &#123;</span><br><span class="line">    next(): IteratorResult;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol start="3">
-<li>Iterable，表示可迭代对象。其特点是key为[Symbol.iterator]是一个方法，调用后返回一个迭代器：</li>
-</ol>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Iterable &#123;</span><br><span class="line">    [Symbol.iterator](): Iterator;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="1-2-生成器"><a href="#1-2-生成器" class="headerlink" title="1.2 生成器"></a>1.2 生成器</h3><p>说生成器之间，先说一个概念“Generator Function”（生成器函数）：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> * <span class="title">g</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'hello'</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'world'</span></span><br><span class="line">    <span class="comment">// return undefined	// 没有显式return时，其实隐含了这一句。对应的done才为true</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> f = g()</span><br><span class="line">f.next()	<span class="comment">// &#123; done: false, value: 'hello' &#125;</span></span><br><span class="line">f.next()	<span class="comment">// &#123; done: false, value: 'world' &#125;</span></span><br><span class="line">f.next()	<span class="comment">// &#123; done: true, value: undefined &#125;</span></span><br></pre></td></tr></table></figure>
-<p>上述例子中，g是一个Generator Function，调用后返回一个生成器f，其对象形状可以表示为：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Generator &#123;</span><br><span class="line">    next(value?: <span class="built_in">any</span>): IteratorResult; <span class="comment">// value可选，是Generator特有的传参功能</span></span><br><span class="line">    <span class="keyword">throw</span>(exception: <span class="built_in">any</span>);	<span class="comment">// 产生异常</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>而Generator Function在形式上虽然有个”*”号，但它是个内部可以使用yield关键字的特殊函数，其函数形状可以定义为：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> GeneratorFunction &#123;</span><br><span class="line">    (): Generator;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="2-可迭代对象的常见场景"><a href="#2-可迭代对象的常见场景" class="headerlink" title="2. 可迭代对象的常见场景"></a>2. 可迭代对象的常见场景</h2><p>下面介绍几种与Iterable密切相关的方法，并探讨方法内部的大概实现（对Iterable的影响），以加深对相关知识的记忆。它们分别是：</p>
-<ul>
-<li>Array.from</li>
-<li>for…of</li>
-<li>[…obj]</li>
-<li>Array实例的keys、values、entries方法</li>
-<li>解构</li>
-</ul>
-<p>因为在讨论迭代对象时，它们是类似的，所以只详述第一种情况：Array.from，其它的可能会一笔带过。</p>
-<h3 id="2-1-Array-from"><a href="#2-1-Array-from" class="headerlink" title="2.1 Array.from()"></a>2.1 Array.from()</h3><p>作用是把某种对象初始化/转换为一个数组。而其作用的对象，我们一般都可以想到：普通数组、类数组对象、Map、Set……但这样记忆不够系统性。其实，Array.from的作用者可以总结为：</p>
-<ul>
-<li>Array-like Object：具有length属性的对象，常见的比如DOM的NodeList、HTMLCollection接口；或者自己写的一个具有length属性的普通对象。注意，原来是“空slot/占位符”的元素会被转化成undefined。举个简单例子：</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arrayLikeObject = &#123;</span><br><span class="line">	length: <span class="number">3</span>,</span><br><span class="line">	<span class="number">0</span>: <span class="string">'hello'</span>,</span><br><span class="line">	<span class="number">2</span>: <span class="string">'world'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">Array</span>.from(arrayLikeObject)	<span class="comment">// ["hello", undefined, "world"]</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>Iterator/Generator：需要注意，Array.from方法会使该Iterator/Generator发生改变，内部指针走到了尽头。拿最开始那个例子看：</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> * <span class="title">generatorFunction</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'hello'</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'world'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> generator = generatorFunction() <span class="comment">// 定义了一个生成器</span></span><br><span class="line"><span class="built_in">Array</span>.from(generator)	<span class="comment">// 将生成器转换为数组得到：['hello', 'world']</span></span><br><span class="line"></span><br><span class="line">generator.next()	<span class="comment">// (第一次)调用next时，却得到：&#123; done: true, value: undefined &#125;</span></span><br><span class="line"><span class="built_in">Array</span>.from(generator)	<span class="comment">// []</span></span><br></pre></td></tr></table></figure>
-<p>可以看到，Array.from作用于迭代器时，其实会循环调用迭代器的next方法直到其内部指针完结。所以之后调用next时，发现该迭代器已经“没用”了。所以这里有点危险。</p>
-<ul>
-<li>Iterable：首先调用[Symbol.iterator]方法得到迭代器，之后的步骤类似于上述Iterator。有很多对象类型都属于可迭代的，比如：<ul>
-<li>Array：相当于返回一个shallow copy</li>
-<li>String：其实String本来就可以看作是“char”数组，也相当于调用了string.split(‘’)</li>
-<li>Map/WeakMap：返回一个二维数组，每个元素是[key, value]</li>
-<li>Set/WeakSet</li>
-<li>……（暂时想不到了）</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Array</span>.from([<span class="string">'hello'</span>, <span class="string">'world'</span>])	<span class="comment">// ["hello", "world"]</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.from(<span class="string">'hello'</span>)	<span class="comment">// ["h", "e", "l", "l", "o"]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> map = <span class="keyword">new</span> <span class="built_in">Map</span>()</span><br><span class="line">map.set(<span class="string">'name'</span>, <span class="string">'Alice'</span>)</span><br><span class="line">map.set(<span class="string">'age'</span>, <span class="number">10</span>)</span><br><span class="line"><span class="built_in">Array</span>.from(map)	<span class="comment">// [ ["name", "Alice"], ["age", 10] ]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> set = <span class="keyword">new</span> <span class="built_in">Set</span>()</span><br><span class="line">set.add(<span class="string">'name'</span>)</span><br><span class="line">set.add(<span class="string">'age'</span>)</span><br><span class="line"><span class="built_in">Array</span>.from(set)	<span class="comment">// ["name", "age"]</span></span><br></pre></td></tr></table></figure>
-<p>返回什么东西，当然是取决于[Symbol.iterator]方法是怎么实现的。</p>
-<h3 id="2-2-for…of"><a href="#2-2-for…of" class="headerlink" title="2.2 for…of"></a>2.2 for…of</h3><p>遍历（可以看作是以数组的方式对某对象进行遍历，所以可能隐含一个转换为数组的过程）。作用对象包括：</p>
-<ul>
-<li>Iterator</li>
-<li>Iterable</li>
-</ul>
-<p>注意事项与Array.from一样。</p>
-<p>对于Iterable，举个例子，我们可以自定义一个Iterable：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> someIterableObject = &#123;</span><br><span class="line">    *[<span class="built_in">Symbol</span>.iterator] () &#123;</span><br><span class="line">        <span class="keyword">yield</span> <span class="string">'A'</span></span><br><span class="line">    	<span class="keyword">yield</span> <span class="string">'B'</span></span><br><span class="line">    	<span class="keyword">yield</span> <span class="string">'C'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> item <span class="keyword">of</span> someIterableObject) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(item)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出结果：</span></span><br><span class="line"><span class="comment">// A</span></span><br><span class="line"><span class="comment">// B</span></span><br><span class="line"><span class="comment">// C</span></span><br></pre></td></tr></table></figure>
-<h3 id="2-3-Array实例的keys、values、entries方法"><a href="#2-3-Array实例的keys、values、entries方法" class="headerlink" title="2.3 Array实例的keys、values、entries方法"></a>2.3 Array实例的keys、values、entries方法</h3><p>3个方法都返回一个Iterator，内部指针分别指向数组的下标、值、键值对。可以用作对数组不同方式的遍历：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> minions = [<span class="string">'Kevin'</span>, <span class="string">'Stewart'</span>, <span class="string">'Bob'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">// 遍历下标</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> index <span class="keyword">of</span> minions.keys()) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(index)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 输出结果：</span></span><br><span class="line"><span class="comment">// 0</span></span><br><span class="line"><span class="comment">// 1</span></span><br><span class="line"><span class="comment">// 2</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 遍历值</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> value <span class="keyword">of</span> minions.values()) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(value)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 输出结果：</span></span><br><span class="line"><span class="comment">// Kevin</span></span><br><span class="line"><span class="comment">// Stewart</span></span><br><span class="line"><span class="comment">// Bob</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 遍历KV对</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> [key, value] <span class="keyword">of</span> minions.entries()) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;key&#125;</span> =&gt; <span class="subst">$&#123;value&#125;</span>`</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 输出结果：</span></span><br><span class="line"><span class="comment">// 0 =&gt; Kevin</span></span><br><span class="line"><span class="comment">// 1 =&gt; Stewart</span></span><br><span class="line"><span class="comment">// 2 =&gt; Bob</span></span><br></pre></td></tr></table></figure>
-<p>需要注意，要与Object类上3个同名（但是静态）方法进行区别：</p>
-<ul>
-<li>Object.keys()</li>
-<li>Object.values()</li>
-<li>Object.entries()</li>
-</ul>
-<p>区别在于：首先，此三者主要作用是对Object实例进行遍历，而因为Array.prototype继承于Object.prototype，所以当然也可以用于遍历Array实例；其次，它们的返回值不是Iterator，而都是数组：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> minions = [<span class="string">'Kevin'</span>, <span class="string">'Stewart'</span>, <span class="string">'Bob'</span>]</span><br><span class="line"><span class="built_in">Object</span>.entries(minions) <span class="comment">// [ ["0", "Kevin"], ["1", "Stewart"], ["2", "Bob"] ]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> minionGroup = &#123;</span><br><span class="line">    clever: <span class="string">'Kevin'</span>,</span><br><span class="line">    romantic: <span class="string">'Stewart'</span>,</span><br><span class="line">    lucky: <span class="string">'Bob'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> [key, value] <span class="keyword">of</span> <span class="built_in">Object</span>.entries(minionGroup)) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;key&#125;</span> =&gt; <span class="subst">$&#123;value&#125;</span>`</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 输出结果：</span></span><br><span class="line"><span class="comment">// clever =&gt; Kevin</span></span><br><span class="line"><span class="comment">// romantic =&gt; Stewart</span></span><br><span class="line"><span class="comment">// lucky =&gt; Bob</span></span><br></pre></td></tr></table></figure>
-<p>一句话总结：Array的3个实例方法用于数组遍历；Object的3个静态方法用于对象遍历（如没有配置[Symbol.iterator]，对象本身是不可迭代/遍历的）。</p>
-<h3 id="2-4-解构：-…obj"><a href="#2-4-解构：-…obj" class="headerlink" title="2.4 解构：[…obj]"></a>2.4 解构：[…obj]</h3><p>…(rest参数)的作用是“打散”一个对象，但其通常与[]一起使用，用来将Object转换成一个Array：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[...obj]</span><br></pre></td></tr></table></figure>
-<p>需要注意，该Object依然需要满足以下条件之一：</p>
-<ul>
-<li>Iterator</li>
-<li>Iterable</li>
-</ul>
-<p>举个例子：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">    name: <span class="string">'Gru'</span>,</span><br><span class="line">    age: <span class="string">'unknown'</span></span><br><span class="line">&#125;</span><br><span class="line">[...obj] <span class="comment">// 报错：Uncaught TypeError: obj is not iterable</span></span><br><span class="line">[...Object.values(obj)] <span class="comment">// 输出：['Gru', 'unknown']</span></span><br></pre></td></tr></table></figure>
-<h3 id="2-5-“反”解构"><a href="#2-5-“反”解构" class="headerlink" title="2.5 “反”解构"></a>2.5 “反”解构</h3><p>直接看一个例子：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> [...arr] = <span class="string">'minions'</span></span><br><span class="line"><span class="built_in">console</span>.log(arr) <span class="comment">// ['m', 'i', 'n', 'i', 'o', 'n', 's']</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">    name: <span class="string">'Gru'</span>,</span><br><span class="line">    age: <span class="string">'unknown'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> [...arr2] = <span class="built_in">Object</span>.values(obj)</span><br><span class="line"><span class="built_in">console</span>.log(arr2) <span class="comment">// ["Gru", "unknown"]</span></span><br></pre></td></tr></table></figure>
-<p>作为2.4的逆向过程，其实作用是类似的，所以也没什么好说的了。</p>
-<h2 id="3-String与Array互相转化（“茴”的N种写法）"><a href="#3-String与Array互相转化（“茴”的N种写法）" class="headerlink" title="3. String与Array互相转化（“茴”的N种写法）"></a>3. String与Array互相转化（“茴”的N种写法）</h2><p>这是个很小的话题了，但也可以总结一下：</p>
-<ol>
-<li>String转为Array（字符数组）：不止是string.split()，还有：<ul>
-<li>array = Array.from(string)</li>
-<li>array = […string]</li>
-<li>[…array] = string</li>
-</ul>
-</li>
-<li>Array转为String：除了array.join()，还有：<ul>
-<li>呃，不考虑需求的情况下，还是使用join吧。上面的都不大方便。</li>
-</ul>
-</li>
-</ol>
-<h2 id="4-后语"><a href="#4-后语" class="headerlink" title="4. 后语"></a>4. 后语</h2><p>最后，推荐一个学习ES6的好网站：<a href="http://es6katas.org/" target="_blank" rel="noopener">ES6 Katas</a>。它以TDD(test-driven development)即“测试驱动开发”的方式，让我们通过修改其中每一个测试案例的数据/行为，来达到学习、巩固ES6的目的。同时，非常感谢它对我的启发，向后看总会让人更好地前行。</p>
-<h2 id="5-参考"><a href="#5-参考" class="headerlink" title="5. 参考"></a>5. 参考</h2><p><a href="https://babeljs.io/docs/en/learn/#generators" target="_blank" rel="noopener">ES6：Generator</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/18/ES6：class入门/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JK">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="大肥凯">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/18/ES6：class入门/" itemprop="url">Untitled</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-18T16:55:37+08:00">
-                2018-07-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>class作为ES6最耀眼的特性，让JS的OOP更通俗、易用。</p>
-<h2 id="几个重要概念与写法"><a href="#几个重要概念与写法" class="headerlink" title="几个重要概念与写法"></a>几个重要概念与写法</h2><p>说到class，重要的概念无非是：</p>
-<ul>
-<li>类</li>
-<li>变量成员<ul>
-<li>实例、静态变量</li>
-<li>公有、私有变量</li>
-</ul>
-</li>
-<li>方法成员<ul>
-<li>实例、静态方法</li>
-<li>公有、私有方法</li>
-</ul>
-</li>
-</ul>
-<p>从一个Person类的例子中理解：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123; <span class="comment">// 1</span></span><br><span class="line">    name = <span class="string">'Hello'</span></span><br><span class="line">	_age = <span class="number">10</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">constructor</span> () &#123; <span class="comment">// 2</span></span><br><span class="line">        <span class="keyword">this</span>.id = Person.generateId() <span class="comment">// 5</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    showId () &#123; <span class="comment">// 3</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">`My id is: <span class="subst">$&#123;<span class="keyword">this</span>.id&#125;</span>`</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">static</span> generateId () &#123; <span class="comment">// 4</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.nextId++</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	get age () &#123; <span class="keyword">return</span> <span class="keyword">this</span>._age &#125; <span class="comment">// 8</span></span><br><span class="line">	set age (val) &#123; </span><br><span class="line">        <span class="keyword">if</span> (val &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Age must be a positive integer!'</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>._age = val</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">Person.nextId = <span class="number">0</span> <span class="comment">// 6</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p = <span class="keyword">new</span> Person()</span><br><span class="line">p.showId()</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p2 = <span class="keyword">new</span> Person()</span><br><span class="line">p2.showId()</span><br></pre></td></tr></table></figure>
-<p>理解：</p>
-<ol>
-<li>Person类，其实是一个<u>ES5函数（构造器）</u>。有函数表达式，同理也有“类表达式”，比如：</li>
-</ol>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Person = <span class="class"><span class="keyword">class</span> <span class="title">TmpPerson</span> </span>&#123; ... &#125;</span><br></pre></td></tr></table></figure>
-<ol start="2">
-<li>constructor：实例化时调用的一个特殊方法，<u>本质上就是Person自身</u>：</li>
-</ol>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log( Person === Person.prototype.constructor ) <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
-<p>实例化时，一定要用new关键字，否则会报错：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Person()	<span class="comment">// OK</span></span><br><span class="line"><span class="keyword">new</span> Person		<span class="comment">// OK</span></span><br><span class="line"></span><br><span class="line">Person() <span class="comment">// Uncaught TypeError: Class constructor Person cannot be invoked without 'new'</span></span><br></pre></td></tr></table></figure>
-<p>另外，ES5的构造函数没有限制一定要使用new，因为可以把构造函数当普通函数调用。如果需要，可以通过ES6提供的new.target来确定用户代码是否使用了new来实例化。比如：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person</span> (<span class="params">id</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">new</span>.target === Person) &#123;	<span class="comment">// new.target指向new后面的构造函数</span></span><br><span class="line">        <span class="keyword">this</span>.id = id</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;	<span class="comment">// 如果没有new，则new.target为undefined</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'必须使用new对Person实例化'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol start="3">
-<li>“实例”方法：Person类中的“实例”方法，是<u>定义在Person.prototype即原型上</u>（之所以这里打了双引号，是因为它并不是实例方法，而是“原型方法”）。所以实例化一个p时，p也可以调用showId方法，这里存在一个在原型链上寻找成员的过程。另外，实例调用方法的时候，内部的this指向实例本身。可以打印出来看看：</li>
-</ol>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log( Person.prototype.showId ) <span class="comment">// 'f showId () &#123; ... &#125;'</span></span><br></pre></td></tr></table></figure>
-<ol start="4">
-<li>静态方法：方法前有static关键字的，是<u>定义在Person上</u>。内部的this指向Person。</li>
-</ol>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log( Person.generateId )</span><br></pre></td></tr></table></figure>
-<ol start="5">
-<li>实例属性：</li>
-</ol>
-<ul>
-<li>写法1：写在方法内部，其实是动态添加到实例上：</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DetailPage</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span> () &#123;</span><br><span class="line">        <span class="keyword">this</span>.state = &#123;</span><br><span class="line">            number: <span class="number">0</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>写法2：（更贴近习惯）写在方法外。注意，虽然写在类中，但并不是定义在原型上，可以看作是实例属性定义的语法糖。React中我们就经常这样定义组件state：</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DetailPage</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    state = &#123;</span><br><span class="line">        number: <span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> detailPage = <span class="keyword">new</span> DetailPage()</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log( detailPage.state )	<span class="comment">// &#123; number: 0 &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log( DetailPage.prototype.state ) <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure>
-<ol start="6">
-<li>静态属性：关于静态属性需要定义在类外面的原因，阮一峰前辈在《ECMAScript 6 入门》一书中说到：</li>
-</ol>
-<blockquote>
-<p> ES6 明确规定，Class 内部只有静态方法，没有静态属性。</p>
-</blockquote>
-<ol start="7">
-<li>私有性：无论是变量还是方法，一般是公有；若想要保证其私有性，可以对属性名利用Symbol，然后写在模块内、类定义外，这样外部就访问不到了。举另外一个例子：</li>
-</ol>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> age = <span class="built_in">Symbol</span>(<span class="string">'age'</span>) <span class="comment">// 如果使用Symbol.for的话，外部还是有低概率猜到。所以用Symbol()</span></span><br><span class="line"><span class="keyword">const</span> getAge = <span class="built_in">Symbol</span>(<span class="string">'getAge'</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Girl</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span> () &#123;</span><br><span class="line">        <span class="keyword">this</span>[age] = <span class="string">'secret'</span> <span class="comment">// 外部访问不到[age]变量</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    [getAge] () &#123;	<span class="comment">// 外部访问不到[getAge]方法</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>[age]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol start="8">
-<li>get/set：实际上是定义在了实例的属性的descriptor上。</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/12/Vue：组件双向绑定的两种方式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="JK">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="大肥凯">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/12/Vue：组件双向绑定的两种方式/" itemprop="url">Vue：组件双向绑定的两种方式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-12T14:20:00+08:00">
-                2018-07-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>自定义组件在项目中是常见的需求。在Vue项目中，定义/封装一个具有双向绑定特性的组件时，需要处理好props与data的关系。</p>
-<p>举个简单例子，现在需要定义一个SuperInput组件，将普通的input[type=text]标签封装一下再加上一些漂亮的样式。用户代码可以在页面中这样使用：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;super-input v-model=&quot;count&quot; /&gt;</span><br></pre></td></tr></table></figure>
-<h2 id="分析关系"><a href="#分析关系" class="headerlink" title="分析关系"></a>分析关系</h2><p>文档树从外到内，需要关注三个角色：</p>
-<ul>
-<li>父页面（传递count）<ul>
-<li>SuperInput组件（接收count作为属性value）<ul>
-<li>input标签（双向绑定的最终目标）</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>可以看到，因为双向绑定最终还是需要落实到input上实现，所以自定义组件实质上充当了父页面与input之间的媒介。编写这个媒介，一般有两种思路。</p>
-<h2 id="1-直接沿用上层数据"><a href="#1-直接沿用上层数据" class="headerlink" title="1. 直接沿用上层数据"></a>1. 直接沿用上层数据</h2><p>这里的关键是，在input上不要直接使用v-model。因为“value”接收父页面的数据，在组件这一层只是作为props存在，是不能手动赋值的。由于v-model语法糖的性质，可以拆开成value和@input：value展示“value”属性，而@input就直接把用户输入“反映”到上层（父页面）。代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class=&quot;super-input&quot;&gt;</span><br><span class="line">    &lt;input type=&quot;text&quot; :value=&quot;value&quot; @input=&quot;$emit(&apos;change&apos;, $event.target.value)&quot; /&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;super-input&apos;,</span><br><span class="line">  props: [&apos;value&apos;]</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
-<p>想想上面说的三者关系，发现这种思路本质上让自定义组件成了一个不折不扣的媒介：把父页面的数据传给下层input，再把下层input的输入实时反映给父页面；它自身基本没有做什么额外的工作，相当于父页面在模板中直接使用input。</p>
-<p>这种方法的缺点是：组件是没有状态的，而“无状态组件”基本是一些展示型组件，没有额外的功能，适用于比较简单的场景。</p>
-<h2 id="2-本地维护一个代替者"><a href="#2-本地维护一个代替者" class="headerlink" title="2. 本地维护一个代替者"></a>2. 本地维护一个代替者</h2><p>意思是在自定义组件这一层，维护一个本地数据（data）作为代替者，它用来与上层数据进行同步。思路可以分为以下几步：</p>
-<ul>
-<li>在组件这一层维护一个本地data，比如“localValue”，与从上层接收到的“value”进行实时同步；</li>
-<li>这个“localValue”可以在input标签上使用v-model；</li>
-<li>对“localValue”的修改要实时反映给上层。</li>
-</ul>
-<p>然后，既然它是个data，那么就可以对input使用v-model进行双向绑定。代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class=&quot;number-picker&quot;&gt;</span><br><span class="line">    &lt;input type=&quot;text&quot; v-model=&quot;localValue&quot; /&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;number-picker&apos;,</span><br><span class="line">  props: [&apos;value&apos;],</span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      localValue: null</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  watch: &#123;</span><br><span class="line">    value: &#123; // 实现本地数据与上层同步</span><br><span class="line">      immediate: true,</span><br><span class="line">      handler (newVal) &#123;</span><br><span class="line">        this.localValue = newVal</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    localValue: &#123; // 把对本地数据的修改反映给上层</span><br><span class="line">      handler (newVal) &#123;</span><br><span class="line">        this.$emit(&apos;input&apos;, newVal)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
-<p>这种方法也有一个小缺点：囿于watch的触发时机（newValue !== oldValue）：</p>
-<ul>
-<li>当localValue赋相同的值时，localValue的观察函数不会回调；</li>
-<li>当两次emit所携带的值相同时（即传给相同的值给上层），value的观察函数也不会被回调。因此在视图上组件并不会刷新。</li>
-</ul>
-<p>因此也只能应对常见的场景。同时，因为localValue相当于value的副本，所以一定要在watch中控制好两者的同步，否则一个变了、另一个却没有跟着变。对于需要更深度的控制的场景，是使用“localValue”的同时，不使用v-model而是使用value + @input。这样就可以在@input、甚至@focus、@blur等回调中实现对localValue更多的操作。</p>
-<h2 id="某个场景"><a href="#某个场景" class="headerlink" title="某个场景"></a>某个场景</h2><p>针对上面说到的“handler函数有时不会被回调”的问题这通常没有什么问题，因为没必要重渲染同一个值。但我见过一个场景，组件需要在input回调中对用户输入进行修改的，以限制用户只能输入0～100的一个分数：假如我输入一个比100大的数字，在input中会检测到并修改回100。单纯使用这种方法会出现一个问题：第一次输入101，会看到输入框的值被掰回“100”；但如果我继续键入一个1，那么最终会显示“1001”。</p>
-<p>这里需要说明的是，其实对于这两次“非法”输入，组件都把“localValue”修改成了100。第二次只是因为Vue没有对组件视图进行刷新，所以我们看到的是“1001”（这个“1001”是HTML原汁原味的显示，这时候@input还没回调）。这里的原因是：</p>
-<blockquote>
-<p>两次非法输入，最终都修改为“100”，所以连续两次把“100”传递给上层。如此一来，value的观察函数在第二次没有被回调。</p>
-</blockquote>
-<p>我尝试着在非法输入时也emit给上层，以使其回调两次。但我发现并没有效果，不知道是否因为合并成了一次emit（待研究Vue源码），还是别的原因。最终，我选择了：</p>
-<blockquote>
-<p>this.$forceUpdate()</p>
-</blockquote>
-<p>作为我的解决方案，强行让Vue刷新本组件。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1876,7 +1726,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">32</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1889,7 +1739,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-count">67</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>

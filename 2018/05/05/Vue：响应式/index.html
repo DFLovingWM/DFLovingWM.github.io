@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="大肥凯">
 <meta property="og:description" content="Vue的基本思想是“数据驱动视图”，即只要更新数据，框架就会帮我们更新依赖该数据的视图/数据。 Vue源码在组件实例化后，对data函数返回的对象进行(递归的)“数据劫持”，使得我们只要在业务逻辑中mutate地更改data，就可以更新页面。但并不是所有对data的操作，都能够引发重渲染。所以我们至少需要了解Vue的响应式的基本原理。 1. 数据劫持组件实例化后，框架会对组件的所有属性进行数据劫持">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-10-15T01:40:39.018Z">
+<meta property="og:updated_time" content="2018-10-15T01:55:59.413Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Vue：响应式">
 <meta name="twitter:description" content="Vue的基本思想是“数据驱动视图”，即只要更新数据，框架就会帮我们更新依赖该数据的视图/数据。 Vue源码在组件实例化后，对data函数返回的对象进行(递归的)“数据劫持”，使得我们只要在业务逻辑中mutate地更改data，就可以更新页面。但并不是所有对data的操作，都能够引发重渲染。所以我们至少需要了解Vue的响应式的基本原理。 1. 数据劫持组件实例化后，框架会对组件的所有属性进行数据劫持">
@@ -312,7 +312,7 @@
 <li>computed属性”warning”也依赖user.password，所以其getter函数会执行。</li>
 </ul>
 <h2 id="2-缺点与解决方案"><a href="#2-缺点与解决方案" class="headerlink" title="2. 缺点与解决方案"></a>2. 缺点与解决方案</h2><p>“数据劫持”实际上是改写了data对象每一层属性的setter(和getter)，它有一些不能“劫持”的地方，表现在对象和数组这两种数据类型中。不过，它们都有一些独特的解决方案。</p>
-<h3 id="2-1-对象类型"><a href="#2-1-对象类型" class="headerlink" title="2.1 对象类型"></a>2.1 对象类型</h3><p>对于对象类型，数据劫持一般并不能监听新增的属性，除非使用特定API。</p>
+<h3 id="2-1-对象类型"><a href="#2-1-对象类型" class="headerlink" title="2.1 对象类型"></a>2.1 对象类型</h3><p>对于对象类型，数据劫持一般并不能监听新增的属性，除非使用特定API。可以参考<a href="https://vuejs.org/v2/guide/reactivity.html#Change-Detection-Caveats" target="_blank" rel="noopener">这里</a>。</p>
 <p>举个常见需求：假如现在要做商品列表的多选功能，即每个item可以被选中，并且在前面显示出勾勾表示已选。</p>
 <p>为了不对原始数据造成污染，额外用一个对象来记住item是否selected：对象的key为item的ID，value为一个boolean值表示是否选中。代码可能是这样的：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">    export default &#123;</span><br><span class="line">        name: &apos;product-list&apos;,</span><br><span class="line">        data () &#123;</span><br><span class="line">            return &#123;</span><br><span class="line">                productList: [], // 列表数据，从后台获取</span><br><span class="line">                selected: &#123;&#125; // 记住每个item的选中状态</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
@@ -327,7 +327,7 @@
 </blockquote>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> product <span class="keyword">of</span> <span class="keyword">this</span>.productList) &#123;</span><br><span class="line">    Vue.set(<span class="keyword">this</span>.selected, product.id, <span class="literal">false</span>)</span><br><span class="line">    <span class="comment">// 或：this.$set(this.selected, product.id, false)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>一旦对selected对象进行“劫持”之后，直接赋值就可以使页面得到更新。</p>
-<h3 id="2-2-数组类型"><a href="#2-2-数组类型" class="headerlink" title="2.2 数组类型"></a>2.2 数组类型</h3><p>对于Array类型的数据，下标赋值、length赋值这两个操作并不能触发其setter：</p>
+<h3 id="2-2-数组类型"><a href="#2-2-数组类型" class="headerlink" title="2.2 数组类型"></a>2.2 数组类型</h3><p>对于Array类型的数据，下标赋值、length赋值这两个操作并不能触发其setter，参考<a href="https://vuejs.org/v2/guide/list.html#Caveats" target="_blank" rel="noopener">这里</a>。比如：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.productList[<span class="number">0</span>] = <span class="literal">null</span> <span class="comment">// 视觉上，第一个item的内容不变</span></span><br><span class="line"><span class="keyword">this</span>.productList.length = <span class="number">0</span> <span class="comment">// 视觉上，list长度不变</span></span><br></pre></td></tr></table></figure>
 <p>所以也可以使用Vue.set或this.$set来强行对下标、length属性进行数据劫持，但是我认为并不是很好的做法，因为：</p>
 <ul>
@@ -404,18 +404,14 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/05/05/Vue：比较methods|computed|watch/" rel="next" title="Vue：比较methods|computed|watch">
-                <i class="fa fa-chevron-left"></i> Vue：比较methods|computed|watch
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/05/05/CSS：清除浮动/" rel="prev" title="清除浮动的几种思路">
-                清除浮动的几种思路 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/05/05/TODO_NPM全局路径/" rel="prev" title="NPM全局路径">
+                NPM全局路径 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -493,7 +489,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">32</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -506,7 +502,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-count">67</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>

@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="大肥凯">
 <meta property="og:description" content="感谢ES6 Kata，它让我觉得是时候对Iterator、Generator、Iterable等知识点作出总结了。 1. 前置知识首先要知道Iterator（迭代器）与Generator（生成器）这两个概念。迭代器和生成器，都是nextable（有next方法的对象）。 1.1 迭代器对于Iterator知识体系，可以参考Babel | Learning ES6 | Iterators + For">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-09-09T07:17:08.096Z">
+<meta property="og:updated_time" content="2018-10-15T13:41:30.463Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="大肥凯">
 <meta name="twitter:description" content="感谢ES6 Kata，它让我觉得是时候对Iterator、Generator、Iterable等知识点作出总结了。 1. 前置知识首先要知道Iterator（迭代器）与Generator（生成器）这两个概念。迭代器和生成器，都是nextable（有next方法的对象）。 1.1 迭代器对于Iterator知识体系，可以参考Babel | Learning ES6 | Iterators + For">
@@ -315,12 +315,38 @@
 <li>Iterable，表示可迭代对象。其特点是key为[Symbol.iterator]是一个方法，调用后返回一个迭代器：</li>
 </ol>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Iterable &#123;</span><br><span class="line">    [Symbol.iterator](): Iterator;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="1-2-生成器"><a href="#1-2-生成器" class="headerlink" title="1.2 生成器"></a>1.2 生成器</h3><p>说生成器之间，先说一个概念“Generator Function”（生成器函数）：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> * <span class="title">g</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'hello'</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'world'</span></span><br><span class="line">    <span class="comment">// return undefined	// 没有显式return时，其实隐含了这一句。对应的done才为true</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> f = g()</span><br><span class="line">f.next()	<span class="comment">// &#123; done: false, value: 'hello' &#125;</span></span><br><span class="line">f.next()	<span class="comment">// &#123; done: false, value: 'world' &#125;</span></span><br><span class="line">f.next()	<span class="comment">// &#123; done: true, value: undefined &#125;</span></span><br></pre></td></tr></table></figure>
-<p>上述例子中，g是一个Generator Function，调用后返回一个生成器f，其对象形状可以表示为：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Generator &#123;</span><br><span class="line">    next(value?: <span class="built_in">any</span>): IteratorResult; <span class="comment">// value可选，是Generator特有的传参功能</span></span><br><span class="line">    <span class="keyword">throw</span>(exception: <span class="built_in">any</span>);	<span class="comment">// 产生异常</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>而Generator Function在形式上虽然有个”*”号，但它是个内部可以使用yield关键字的特殊函数，其函数形状可以定义为：</p>
+<h3 id="1-2-生成器"><a href="#1-2-生成器" class="headerlink" title="1.2 生成器"></a>1.2 生成器</h3><p>说生成器之前，先说一个概念“Generator Function”（生成器函数）。Generator Function在形式上有个”*”号，但它也就是个内部可以使用yield关键字的特殊函数，其函数形状可以定义为：</p>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> GeneratorFunction &#123;</span><br><span class="line">    (): Generator;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>举个例子：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> * <span class="title">g</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'hello'</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'world'</span></span><br><span class="line">    <span class="comment">// return undefined	// 没有显式return时，其实隐含了这一句。对应的done才为true</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> f = g()</span><br><span class="line">f.next()	<span class="comment">// &#123; done: false, value: 'hello' &#125;</span></span><br><span class="line">f.next()	<span class="comment">// &#123; done: false, value: 'world' &#125;</span></span><br><span class="line">f.next()	<span class="comment">// &#123; done: true, value: undefined &#125;</span></span><br></pre></td></tr></table></figure>
+<p>上述例子中，g调用后返回一个生成器f，其对象形状可以表示为：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Generator &#123;</span><br><span class="line">    next(value?: <span class="built_in">any</span>): IteratorResult; <span class="comment">// value可选，是Generator特有的传参功能</span></span><br><span class="line">    <span class="keyword">throw</span>(exception: <span class="built_in">any</span>);	<span class="comment">// 产生异常</span></span><br><span class="line">    <span class="keyword">return</span>(value?: <span class="built_in">any</span>): IteratorResult;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="1-3-区别"><a href="#1-3-区别" class="headerlink" title="1.3 区别"></a>1.3 区别</h3><table>
+<thead>
+<tr>
+<th></th>
+<th>Generator</th>
+<th>Iterator</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>获取方式</td>
+<td>生成器函数调用返回</td>
+<td>手动实现next函数</td>
+</tr>
+<tr>
+<td>作用</td>
+<td>遍历；实现协程、异步</td>
+<td>遍历</td>
+</tr>
+<tr>
+<td>额外</td>
+<td>与ES6很多API有紧密联系（见下文）</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
 <h2 id="2-可迭代对象的常见场景"><a href="#2-可迭代对象的常见场景" class="headerlink" title="2. 可迭代对象的常见场景"></a>2. 可迭代对象的常见场景</h2><p>下面介绍几种与Iterable密切相关的方法，并探讨方法内部的大概实现（对Iterable的影响），以加深对相关知识的记忆。它们分别是：</p>
 <ul>
 <li>Array.from</li>
@@ -336,7 +362,7 @@
 </ul>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arrayLikeObject = &#123;</span><br><span class="line">	length: <span class="number">3</span>,</span><br><span class="line">	<span class="number">0</span>: <span class="string">'hello'</span>,</span><br><span class="line">	<span class="number">2</span>: <span class="string">'world'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">Array</span>.from(arrayLikeObject)	<span class="comment">// ["hello", undefined, "world"]</span></span><br></pre></td></tr></table></figure>
 <ul>
-<li>Iterator/Generator：需要注意，Array.from方法会使该Iterator/Generator发生改变，内部指针走到了尽头。拿最开始那个例子看：</li>
+<li>Generator：需要注意，Array.from方法会使该Generator发生改变，内部指针走到了尽头。拿最开始那个例子看：</li>
 </ul>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> * <span class="title">generatorFunction</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'hello'</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'world'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> generator = generatorFunction() <span class="comment">// 定义了一个生成器</span></span><br><span class="line"><span class="built_in">Array</span>.from(generator)	<span class="comment">// 将生成器转换为数组得到：['hello', 'world']</span></span><br><span class="line"></span><br><span class="line">generator.next()	<span class="comment">// (第一次)调用next时，却得到：&#123; done: true, value: undefined &#125;</span></span><br><span class="line"><span class="built_in">Array</span>.from(generator)	<span class="comment">// []</span></span><br></pre></td></tr></table></figure>
 <p>可以看到，Array.from作用于迭代器时，其实会循环调用迭代器的next方法直到其内部指针完结。所以之后调用next时，发现该迭代器已经“没用”了。所以这里有点危险。</p>
@@ -352,9 +378,11 @@
 </ul>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Array</span>.from([<span class="string">'hello'</span>, <span class="string">'world'</span>])	<span class="comment">// ["hello", "world"]</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.from(<span class="string">'hello'</span>)	<span class="comment">// ["h", "e", "l", "l", "o"]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> map = <span class="keyword">new</span> <span class="built_in">Map</span>()</span><br><span class="line">map.set(<span class="string">'name'</span>, <span class="string">'Alice'</span>)</span><br><span class="line">map.set(<span class="string">'age'</span>, <span class="number">10</span>)</span><br><span class="line"><span class="built_in">Array</span>.from(map)	<span class="comment">// [ ["name", "Alice"], ["age", 10] ]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> set = <span class="keyword">new</span> <span class="built_in">Set</span>()</span><br><span class="line">set.add(<span class="string">'name'</span>)</span><br><span class="line">set.add(<span class="string">'age'</span>)</span><br><span class="line"><span class="built_in">Array</span>.from(set)	<span class="comment">// ["name", "age"]</span></span><br></pre></td></tr></table></figure>
 <p>返回什么东西，当然是取决于[Symbol.iterator]方法是怎么实现的。</p>
+<p>其实，<u>generator也是一个Iterable</u>，我们可以随便验证一下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> * <span class="title">gen</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'hello'</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'world'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> generator = gen()</span><br><span class="line">generator[<span class="built_in">Symbol</span>.iterator]() === generator <span class="comment">// 返回true</span></span><br></pre></td></tr></table></figure>
+<p>所以本质上，这几种适用的对象可以总结为一个：Iterable。</p>
 <h3 id="2-2-for…of"><a href="#2-2-for…of" class="headerlink" title="2.2 for…of"></a>2.2 for…of</h3><p>遍历（可以看作是以数组的方式对某对象进行遍历，所以可能隐含一个转换为数组的过程）。作用对象包括：</p>
 <ul>
-<li>Iterator</li>
 <li>Iterable</li>
 </ul>
 <p>注意事项与Array.from一样。</p>
@@ -375,7 +403,6 @@
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[...obj]</span><br></pre></td></tr></table></figure>
 <p>需要注意，该Object依然需要满足以下条件之一：</p>
 <ul>
-<li>Iterator</li>
 <li>Iterable</li>
 </ul>
 <p>举个例子：</p>
@@ -383,7 +410,7 @@
 <h3 id="2-5-“反”解构"><a href="#2-5-“反”解构" class="headerlink" title="2.5 “反”解构"></a>2.5 “反”解构</h3><p>直接看一个例子：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> [...arr] = <span class="string">'minions'</span></span><br><span class="line"><span class="built_in">console</span>.log(arr) <span class="comment">// ['m', 'i', 'n', 'i', 'o', 'n', 's']</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">    name: <span class="string">'Gru'</span>,</span><br><span class="line">    age: <span class="string">'unknown'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> [...arr2] = <span class="built_in">Object</span>.values(obj)</span><br><span class="line"><span class="built_in">console</span>.log(arr2) <span class="comment">// ["Gru", "unknown"]</span></span><br></pre></td></tr></table></figure>
 <p>作为2.4的逆向过程，其实作用是类似的，所以也没什么好说的了。</p>
-<h2 id="3-String与Array互相转化（“茴”的N种写法）"><a href="#3-String与Array互相转化（“茴”的N种写法）" class="headerlink" title="3. String与Array互相转化（“茴”的N种写法）"></a>3. String与Array互相转化（“茴”的N种写法）</h2><p>这是个很小的话题了，但也可以总结一下：</p>
+<h2 id="3-String与Array互相转化"><a href="#3-String与Array互相转化" class="headerlink" title="3. String与Array互相转化"></a>3. String与Array互相转化</h2><p>这是个很小的话题了，但也可以总结一下：</p>
 <ol>
 <li>String转为Array（字符数组）：不止是string.split()，还有：<ul>
 <li>array = Array.from(string)</li>
@@ -511,7 +538,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">32</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -524,7 +551,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-count">67</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>
@@ -557,7 +584,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-前置知识"><span class="nav-number">1.</span> <span class="nav-text">1. 前置知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-迭代器"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 迭代器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-生成器"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 生成器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-可迭代对象的常见场景"><span class="nav-number">2.</span> <span class="nav-text">2. 可迭代对象的常见场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-Array-from"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 Array.from()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-for…of"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 for…of</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-Array实例的keys、values、entries方法"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 Array实例的keys、values、entries方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-解构：-…obj"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 解构：[…obj]</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-“反”解构"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 “反”解构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-String与Array互相转化（“茴”的N种写法）"><span class="nav-number">3.</span> <span class="nav-text">3. String与Array互相转化（“茴”的N种写法）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-后语"><span class="nav-number">4.</span> <span class="nav-text">4. 后语</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-参考"><span class="nav-number">5.</span> <span class="nav-text">5. 参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-前置知识"><span class="nav-number">1.</span> <span class="nav-text">1. 前置知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-迭代器"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 迭代器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-生成器"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 生成器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-区别"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 区别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-可迭代对象的常见场景"><span class="nav-number">2.</span> <span class="nav-text">2. 可迭代对象的常见场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-Array-from"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 Array.from()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-for…of"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 for…of</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-Array实例的keys、values、entries方法"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 Array实例的keys、values、entries方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-解构：-…obj"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 解构：[…obj]</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-“反”解构"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 “反”解构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-String与Array互相转化"><span class="nav-number">3.</span> <span class="nav-text">3. String与Array互相转化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-后语"><span class="nav-number">4.</span> <span class="nav-text">4. 后语</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-参考"><span class="nav-number">5.</span> <span class="nav-text">5. 参考</span></a></li></ol></div>
             
 
           </div>
